@@ -1,4 +1,5 @@
 #include "GCom.h"
+#include "GObj.h"
 
 GCom::GCom()
 {}
