@@ -1,6 +1,10 @@
 #include "GModel.h"
+#include <iostream>
+#include <GL/glew.h>
 
-GModel::GModel(std::string const &filepath, bool gamma = false) : 
+#include "stb_image.h"
+
+GModel::GModel(std::string const &filepath, bool gamma) :
     gamma_correction(gamma)
 {
     LoadModel(filepath);
@@ -13,7 +17,7 @@ void GModel::Draw(GShader shader)
 }
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-void GModel::LoadModel(string const &path)
+void GModel::LoadModel(std::string const &path)
 {
     // read file via ASSIMP
     Assimp::Importer importer;
@@ -21,7 +25,7 @@ void GModel::LoadModel(string const &path)
     // check for errors
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
-        cout << "[ERROR] ASSIMP:: " << importer.GetErrorString() << endl;
+        std::cout << "[ERROR] ASSIMP:: " << importer.GetErrorString() << std::endl;
         return;
     }
     // retrieve the directory path of the filepath
@@ -53,25 +57,25 @@ void GModel::ProcessNode(aiNode *node, const aiScene *scene)
 GMesh GModel::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 {
     // data to fill
-    vector<GVertex> vertices;
-    vector<unsigned int> indices;
-    vector<GTexture> textures;
+    std::vector<GVertex> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<GTexture> textures;
 
     // Walk through each of the mesh's vertices
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
-        Vertex vertex;
+        GVertex vertex;
         glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
         // positions
         vector.x = mesh->mVertices[i].x;
         vector.y = mesh->mVertices[i].y;
         vector.z = mesh->mVertices[i].z;
-        vertex.Position = vector;
+        vertex.position = vector;
         // normals
         vector.x = mesh->mNormals[i].x;
         vector.y = mesh->mNormals[i].y;
         vector.z = mesh->mNormals[i].z;
-        vertex.Normal = vector;
+        vertex.normal = vector;
         // texture coordinates
         if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
         {
@@ -80,20 +84,20 @@ GMesh GModel::ProcessMesh(aiMesh *mesh, const aiScene *scene)
             // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
             vec.x = mesh->mTextureCoords[0][i].x; 
             vec.y = mesh->mTextureCoords[0][i].y;
-            vertex.TexCoords = vec;
+            vertex.tex_coords = vec;
         }
         else
-            vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+            vertex.tex_coords = glm::vec2(0.0f, 0.0f);
         // tangent
         vector.x = mesh->mTangents[i].x;
         vector.y = mesh->mTangents[i].y;
         vector.z = mesh->mTangents[i].z;
-        vertex.Tangent = vector;
+        vertex.tangent = vector;
         // bitangent
         vector.x = mesh->mBitangents[i].x;
         vector.y = mesh->mBitangents[i].y;
         vector.z = mesh->mBitangents[i].z;
-        vertex.Bitangent = vector;
+        vertex.bitangent = vector;
         vertices.push_back(vertex);
     }
     // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
@@ -114,10 +118,10 @@ GMesh GModel::ProcessMesh(aiMesh *mesh, const aiScene *scene)
     // normal: texture_normalN
 
     // 1. diffuse maps
-    vector<GTexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<GTexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
     // 2. specular maps
-    vector<GTexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+    std::vector<GTexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     // 3. normal maps
     std::vector<GTexture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
@@ -132,9 +136,9 @@ GMesh GModel::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
 // the required info is returned as a Texture struct.
-vector<GTexture> GModel::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
+std::vector<GTexture> GModel::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
 {
-    vector<GTexture> textures;
+    std::vector<GTexture> textures;
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -163,9 +167,9 @@ vector<GTexture> GModel::LoadMaterialTextures(aiMaterial *mat, aiTextureType typ
     return textures;
 }
 
-unsigned int TextureFromFile(const char *path, const string &directory, bool gamma)
+unsigned int GModel::TextureFromFile(const char *path, const std::string &directory, bool gamma)
 {
-    string filename = string(path);
+    std::string filename = std::string(path);
     filename = directory + '/' + filename;
 
     unsigned int texture_id;

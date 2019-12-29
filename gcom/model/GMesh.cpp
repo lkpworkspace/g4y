@@ -1,5 +1,5 @@
 #include "GMesh.h"
-
+#include <GL/glew.h>
 
 GMesh::GMesh(std::vector<GVertex> vertices, std::vector<unsigned int> indices, std::vector<GTexture> textures)
 {
@@ -21,8 +21,8 @@ void GMesh::Draw(GShader shader)
     {
         glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
-        string number;
-        string name = textures[i].type;
+        std::string number;
+        std::string name = textures[i].type;
         if(name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
         else if(name == "texture_specular")

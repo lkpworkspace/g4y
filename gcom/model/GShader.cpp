@@ -3,6 +3,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <GL/glew.h>
+
 GShader::GShader(std::string vs_filepath, std::string fs_filepath)
 {
     std::string vs_string;

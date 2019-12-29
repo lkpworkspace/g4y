@@ -1,3 +1,2 @@
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
-
-ADD_EXECUTABLE(gfy.out ${GFY_SRCS} ${GCOM_SRCS} test.cpp)
+add_subdirectory(gfy_test)
+add_subdirectory(gmodel_test)

@@ -8,20 +8,23 @@
 
 #include "GShader.h"
 
+struct GVertex {
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 tex_coords;
+    glm::vec3 tangent;
+    glm::vec3 bitangent;
+};
+
+struct GTexture {
+    unsigned int id;
+    std::string type;
+    std::string path;
+};
+
 class GMesh
 {
-    struct GVertex {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 tex_coords;
-        glm::vec3 tangent;
-        glm::vec3 bitangent;
-    };
-    struct GTexture {
-        unsigned int id;
-        std::string type;
-        std::string path;
-    };
+    
 public:
     GMesh(std::vector<GVertex> vertices, std::vector<unsigned int> indices, std::vector<GTexture> textures);
     virtual ~GMesh(){}
