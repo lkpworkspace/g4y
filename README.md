@@ -1,8 +1,26 @@
-# gfy
+# G4Y
 
-## 依赖
-- assimp
-- glm
-- glew
-- imgui
-- stb
+## 安装依赖
+
+### Ubuntu
+- sudo apt-get install libassimp-dev
+- sudo apt-get install libglew-dev
+- sudo apt-get install libglfw3-dev
+- sudo apt-get install libglm-dev
+- git submodule init
+- git submodule update
+
+### Windows
+- Windows平台下需要自行从github上下载依赖库，编译，并配置CMake。
+
+## 构建
+
+```sh
+mkdir build
+cd build
+cmake ../
+make 
+```
+
+
+
