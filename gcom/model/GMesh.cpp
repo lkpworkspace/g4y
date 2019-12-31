@@ -10,7 +10,7 @@ GMesh::GMesh(std::vector<GVertex> vertices, std::vector<unsigned int> indices, s
     SetupMesh();
 }
 
-void GMesh::Draw(GShader shader) 
+void GMesh::Draw(std::shared_ptr<GShader> shader) 
 {
     // bind appropriate textures
     unsigned int diffuseNr  = 1;
@@ -33,7 +33,7 @@ void GMesh::Draw(GShader shader)
             number = std::to_string(heightNr++); // transfer unsigned int to stream
 
         // now set the sampler to the correct texture unit
-        glUniform1i(glGetUniformLocation(shader.ID(), (name + number).c_str()), i);
+        glUniform1i(glGetUniformLocation(shader->ID(), (name + number).c_str()), i);
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-
+#include <thread>
+#include <chrono>
 #include "GObj.h"
 #include "GCom.h"
 #include "GScene.h"
@@ -19,15 +20,16 @@ public:
         std::cout << "de construct:" << m_name << std::endl;
     }
 
-    virtual std::string GetComName() override { return "Transform"; }
+    virtual std::string ComName() override { return "Transform"; }
+
     virtual void Update() override
     {
-        std::cout << m_name << std::endl;
+        //std::cout << m_name << std::endl;
     }
     std::string m_name;
 };
 
-void build_world(std::shared_ptr<GScene> s)
+void build_scene(std::shared_ptr<GScene> s)
 {
     std::shared_ptr<GObj>  g1 = std::make_shared<GObj>();
     std::shared_ptr<GObj>  g2 = std::make_shared<GObj>();
@@ -46,15 +48,17 @@ void build_world(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
+    std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
-    s->SetCurScene();
-    build_world(s);
-
-    char buf[256];
-    int cnt = 0;
-    while(std::cin.getline(buf, sizeof(buf))){
-        std::cout << "Update : " << cnt++ << std::endl; 
-        s->Update();
+    w->SetScene(s);
+    build_scene(s);
+#ifdef USE_GUI
+    while(!glfwWindowShouldClose(w->window)){
+#else
+    while(true){
+#endif
+        w->Update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     return 0;
 }

@@ -1,3 +1,0 @@
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
-
-ADD_EXECUTABLE(gfy_test.out ${GFY_SRCS} gfy_test.cpp)

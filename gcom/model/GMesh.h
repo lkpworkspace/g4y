@@ -2,6 +2,7 @@
 #define __GMESH_H__
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -29,7 +30,7 @@ public:
     GMesh(std::vector<GVertex> vertices, std::vector<unsigned int> indices, std::vector<GTexture> textures);
     virtual ~GMesh(){}
 
-    void Draw(GShader shader);
+    void Draw(std::shared_ptr<GShader> shader);
 
     std::vector<unsigned int> indices;
     std::vector<GVertex>      vertices;

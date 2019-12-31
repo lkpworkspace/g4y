@@ -1,2 +1,5 @@
-add_subdirectory(gfy_test)
-add_subdirectory(gmodel_test)
+add_subdirectory(g4y_test)
+
+if(USE_GUI)
+    add_subdirectory(gui_test)
+endif(USE_GUI)

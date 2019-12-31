@@ -1,7 +1,12 @@
 #include "GModel.h"
 #include <iostream>
 #include <GL/glew.h>
+#include <GObj.h>
+#include "GScene.h"
+#include "GCamera.h"
+#include "GTransform.h"
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 GModel::GModel(std::string const &filepath, bool gamma) :
@@ -10,10 +15,29 @@ GModel::GModel(std::string const &filepath, bool gamma) :
     LoadModel(filepath);
 }
 
-void GModel::Draw(GShader shader)
+void GModel::Draw(std::shared_ptr<GShader> shader)
 {
     for(unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
+}
+
+void GModel::Init()
+{
+    m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom("GCamera"));
+    m_transform = Obj()->Transform();
+    m_shader = GScene::CurScene()->m_shader;
+}
+
+void GModel::OnRender()
+{
+    m_shader->Use();
+    glm::mat4 P = m_camera.lock()->Projection();
+    glm::mat4 V = m_camera.lock()->View();
+    glm::mat4 M = m_transform.lock()->model;
+    m_shader->SetUniform("projection", P);
+    m_shader->SetUniform("view", V);
+    m_shader->SetUniform("model", M);
+    Draw(m_shader);
 }
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -169,6 +193,7 @@ std::vector<GTexture> GModel::LoadMaterialTextures(aiMaterial *mat, aiTextureTyp
 
 unsigned int GModel::TextureFromFile(const char *path, const std::string &directory, bool gamma)
 {
+    std::cout << "load texture : "<< path << std::endl;
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
 

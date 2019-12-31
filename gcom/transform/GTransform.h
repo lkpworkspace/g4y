@@ -3,23 +3,24 @@
 #include "GCom.h"
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
-
+#include <iostream>
 class GTransform : public GCom
 {
 public:
-    GTransform(){}
-    virtual ~GTransform(){}
+    GTransform();
+    virtual ~GTransform();
 
-    virtual std::string GetComName() override { return "GTransform"; }
     virtual void Update() override
     {
 
     }
 
-    glm::vec3 postion;
+    virtual std::string ComName() override { return "GTransform"; }
 
-private:
-    glm::mat4x4 m_model;
+    glm::vec3 postion;
+    glm::vec3 rotate;
+    glm::vec3 scale;
+    glm::mat4x4 model;
 };
 
 #endif
