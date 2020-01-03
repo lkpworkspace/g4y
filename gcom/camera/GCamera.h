@@ -2,11 +2,14 @@
 #define __GCAMERA_H__
 #include "GCom.h"
 
+class GTransform;
 class GCamera : public GCom
 {
 public:
     GCamera();
     virtual ~GCamera();
+
+    virtual void Init() override;
 
     virtual void Update() override {}
 
@@ -24,6 +27,8 @@ private:
     float aspect;
     float near;
     float far;
+
+    std::weak_ptr<GTransform> m_transform;
 };
 
 #endif
