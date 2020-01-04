@@ -9,8 +9,7 @@ class CameraScripts : public GCom
 {
 public:
     CameraScripts(std::string title) :
-        title(title),
-        z(15.0f)
+        title(title)
     {
     }
 
@@ -23,9 +22,9 @@ public:
     {
         ImGui::Begin(title.c_str());                          // Create a window called "Hello, world!" and append into it.
 
-        ImGui::SliderFloat("Camera x", &x, -10.0f, 20.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::SliderFloat("Camera y", &y, -10.0f, 20.0f);
-        ImGui::SliderFloat("Camera z", &z, -20.0f, 20.0f);
+        ImGui::SliderFloat("Camera x", &x, -150.0f, 150.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::SliderFloat("Camera y", &y, -150.0f, 150.0f);
+        ImGui::SliderFloat("Camera z", &z, -150.0f, 150.0f);
 
         ImGui::SliderFloat("Camera rx", &rx, -180.0f, 180.0f);
         ImGui::SliderFloat("Camera ry", &ry, -180.0f, 180.0f);
@@ -40,12 +39,12 @@ public:
         Obj()->Transform()->rotate = glm::vec3(rx,ry,rz);
     }
 
-    float x;
-    float y;
-    float z;
-    float rx;
-    float ry;
-    float rz;
+    float x = 0.0f;
+    float y = 20.0f;
+    float z = 30.0f;
+    float rx = -20.0f;
+    float ry = 0.0f;
+    float rz = 0.0f;
 
     std::string title;
     std::weak_ptr<GTransform> m_transform;
@@ -59,9 +58,13 @@ public:
         x(pos.x),
         y(pos.y),
         z(pos.z)
-    {
+    {}
 
+    virtual void Awake() override
+    {
+        std::cout << "Model Scripts awake" << std::endl;
     }
+
     virtual void OnGUI() override
     {
         ImGui::Begin(title.c_str());                          // Create a window called "Hello, world!" and append into it.
@@ -90,8 +93,8 @@ public:
     }
 
     float x = 0.0f;
-    float y = -8.0f;
-    float z = -10.0f;
+    float y = 0.0f;
+    float z = 0.0f;
     float rx = 0.0f;
     float ry = 0.0f;
     float rz = 0.0f;
@@ -101,9 +104,11 @@ public:
 
 void build_scene(std::shared_ptr<GScene> s)
 {
-    std::shared_ptr<GObj>  camera = std::make_shared<GObj>();
-    std::shared_ptr<GObj>  model = std::make_shared<GObj>();
-    std::shared_ptr<GObj>  model2 = std::make_shared<GObj>();
+    auto  camera = std::make_shared<GObj>();
+    auto  model = std::make_shared<GObj>();
+    auto  model2 = std::make_shared<GObj>();
+    auto  model3 = std::make_shared<GObj>();
+    auto  grid = std::make_shared<GObj>();
 
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
@@ -111,16 +116,25 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->AddCom(std::static_pointer_cast<GCom>(std::make_shared<CameraScripts>("Camera Setting")));
 
     model->AddDefaultComs();
-    model->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model1", glm::vec3(-5, -8, -10))));
+    model->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10))));
     model->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj")));
 
     model2->AddDefaultComs();
-    model2->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model2", glm::vec3(5, -8, -10))));
+    model2->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model2", glm::vec3(0, 0, 0))));
     model2->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj")));
 
+    model3->AddDefaultComs();
+    model3->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model3", glm::vec3(10, 0, -10))));
+    model3->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj")));
+
+    grid->AddDefaultComs();
+    grid->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GGrid>(-100, 100, 1)));
+    
     s->AddChild(camera);
+    s->AddChild(grid);
     s->AddChild(model);
     s->AddChild(model2);
+    s->AddChild(model3);
 }
 
 int main(int argc, char** argv)

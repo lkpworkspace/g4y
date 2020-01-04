@@ -29,12 +29,15 @@ if(USE_GUI)
         ${PROJECT_SOURCE_DIR}/gcom/model/GModel.cpp
         ${PROJECT_SOURCE_DIR}/gcom/model/GMesh.cpp
         ${PROJECT_SOURCE_DIR}/gcom/model/GShader.cpp
+
+        ${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.cpp
     )
 endif(USE_GUI)
 
 include_directories(g4y)
 include_directories(gcom/transform)
 include_directories(gcom/camera)
+include_directories(gcom/shape)
 
 set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp

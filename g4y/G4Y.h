@@ -11,6 +11,7 @@
 
 #ifdef USE_GUI
 #include "GModel.h"
+#include "GGrid.h"
 #endif
 
 #endif

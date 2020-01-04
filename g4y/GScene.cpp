@@ -80,8 +80,16 @@ void GScene::OnRenderBegin()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
-        ImGui::Begin("G4Y Infomation");                          // Create a window called "Hello, world!" and append into it.
+        static bool show_demo = false;
+        ImGuiWindowFlags window_flags = 0;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        window_flags |= ImGuiWindowFlags_MenuBar;
+        window_flags |= ImGuiWindowFlags_NoBackground;
 
+        ImGui::Begin("G4Y Infomation", NULL, window_flags);                          // Create a window called "Hello, world!" and append into it.
+        ImGui::Checkbox("show demo", &show_demo);
+        if(show_demo)
+            ImGui::ShowDemoWindow(&show_demo);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
     }

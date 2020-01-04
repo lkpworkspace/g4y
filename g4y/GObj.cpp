@@ -98,6 +98,7 @@ void GObj::UpdateComAndChildren()
     if(!m_active) return;
 
     for(const auto& c : m_coms){
+        c->OnAwake();
         c->Update();
     }
     for(const auto& o : m_children){

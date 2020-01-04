@@ -21,10 +21,11 @@ public:
     GCom();
     virtual ~GCom();
 
-
     virtual void Init(){}
 
-    virtual void Update() = 0;
+    virtual void Awake(){}
+
+    virtual void Update(){}
 
     virtual void OnRender(){}
 
@@ -35,7 +36,11 @@ public:
     std::shared_ptr<GObj> Obj() { return m_obj.lock(); }
 
     virtual std::string ComName() { return "GCom"; }
+
+protected:
+    void OnAwake();
 private:
+    bool                m_awake;
     std::weak_ptr<GObj> m_obj;
 };
 
