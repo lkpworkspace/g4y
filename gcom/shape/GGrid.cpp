@@ -122,7 +122,7 @@ void GGrid::Update()
 
 void GGrid::OnRender()
 {
-    glm::vec4 color(1.0f, 1.0f, 1.0f, 0.2f);
+    glm::vec4 color(1.0f, 1.0f, 1.0f, 0.1f);
     glm::mat4 P = m_camera.lock()->Projection();
     glm::mat4 V = m_camera.lock()->View();
     glm::mat4 M = glm::mat4(1.0f);

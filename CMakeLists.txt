@@ -14,6 +14,7 @@ if(USE_GUI)
     add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLEW)
     
     include_directories(gcom/model)
+    include_directories(gcom/shape)
     include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui)
     include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui/examples)
     include_directories(${PROJECT_SOURCE_DIR}/3rd/stb)
@@ -37,7 +38,7 @@ endif(USE_GUI)
 include_directories(g4y)
 include_directories(gcom/transform)
 include_directories(gcom/camera)
-include_directories(gcom/shape)
+include_directories(gcom/msg)
 
 set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
@@ -49,6 +50,9 @@ set(G4Y_SRCS
 set(GCOM_SRCS
     ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
     ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GMsg.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GProtoBufMsg.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GClientProxy.cpp
 )
 
 add_subdirectory(examples)
