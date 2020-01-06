@@ -4,3 +4,6 @@
 [submodule "3rd/stb"]
 	path = 3rd/stb
 	url = https://github.com/nothings/stb.git
+[submodule "3rd/myframe"]
+	path = 3rd/myframe
+	url = https://github.com/lkpworkspace/myframe.git
