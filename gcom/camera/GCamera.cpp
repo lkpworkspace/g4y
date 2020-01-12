@@ -8,7 +8,7 @@ GCamera::GCamera() :
     fov(60.0f),
     aspect(1.0f),
     near(0.1f),
-    far(100.0f)
+    far(1000.0f)
 {}
 
 GCamera::~GCamera()
@@ -40,5 +40,4 @@ glm::mat4 GCamera::View()
     scale = glm::scale(scale, m_transform.lock()->scale);
 
     return scale * ratote * translate;
-    //return glm::lookAt(position, target, up);
 }

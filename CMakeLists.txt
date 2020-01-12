@@ -42,6 +42,7 @@ if(USE_GUI)
 
         ${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.cpp
         ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.cpp
+        ${PROJECT_SOURCE_DIR}/gcom/shape/GSkybox.cpp
     )
 endif(USE_GUI)
 

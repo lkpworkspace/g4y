@@ -13,6 +13,7 @@
 #include "GModel.h"
 #include "GGrid.h"
 #include "GAxis.h"
+#include "GSkybox.h"
 #endif
 
 #endif

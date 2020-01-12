@@ -63,11 +63,14 @@ public:
     virtual void Awake() override
     {
         std::cout << "Model Scripts awake" << std::endl;
+        m_tranform = Obj()->Transform();
     }
 
     virtual void OnGUI() override
     {
-        ImGui::Begin(title.c_str());                          // Create a window called "Hello, world!" and append into it.
+        ImGui::Begin(title.c_str());
+
+        ry = std::cos(glfwGetTime()) * 180;
 
         ImGui::SliderFloat("model x", &x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
         ImGui::SliderFloat("model y", &y, -10.0f, 10.0f);
@@ -77,19 +80,18 @@ public:
         ImGui::SliderFloat("model ry", &ry, -180.0f, 180.0f);
         ImGui::SliderFloat("model rz", &rz, 0.0f, 180.0f);
 
-        ry = std::cos(glfwGetTime()) * 180;
+        ImGui::SliderFloat("model sx", &sx, 0.0f, 1.0f);
+        ImGui::SliderFloat("model sy", &sy, 0.0f, 1.0f);
+        ImGui::SliderFloat("model sz", &sz, 0.0f, 1.0f);
+
         ImGui::End();
     }
 
     virtual void Update() override
     {
-        glm::mat4 m(1.0f);
-        
-        m = glm::translate(m, glm::vec3(x, y, z));
-        m = glm::rotate(m, glm::radians(rx), glm::vec3(1.0f, 0.0f, 0.0f));
-        m = glm::rotate(m, glm::radians(ry), glm::vec3(0.0f, 1.0f, 0.0f));
-        m = glm::rotate(m, glm::radians(rz), glm::vec3(0.0f, 0.0f, 1.0f));
-        Obj()->Transform()->model = m;
+        m_tranform.lock()->postion = glm::vec3(x, y, z);
+        m_tranform.lock()->rotate  = glm::vec3(rx, ry, rz);
+        m_tranform.lock()->scale   = glm::vec3(sx, sy, sz);  
     }
 
     float x = 0.0f;
@@ -98,22 +100,45 @@ public:
     float rx = 0.0f;
     float ry = 0.0f;
     float rz = 0.0f;
+    float sx = 1.0f;
+    float sy = 1.0f;
+    float sz = 1.0f;
 
     std::string title;
+    std::weak_ptr<GTransform> m_tranform;
 };
 
 void build_scene(std::shared_ptr<GScene> s)
 {
     auto  camera = std::make_shared<GObj>();
+    auto  grid = std::make_shared<GObj>();
     auto  model = std::make_shared<GObj>();
     auto  model2 = std::make_shared<GObj>();
     auto  model3 = std::make_shared<GObj>();
-    auto  grid = std::make_shared<GObj>();
 
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
     camera->AddCom(std::make_shared<CameraScripts>("Camera Setting"));
+    camera->AddCom(std::make_shared<GSkybox>(
+        std::vector<std::string>({
+            "/home/lkp/projs/gfy/build/skybox/right.jpg",
+            "/home/lkp/projs/gfy/build/skybox/left.jpg",
+            "/home/lkp/projs/gfy/build/skybox/top.jpg",
+            "/home/lkp/projs/gfy/build/skybox/bottom.jpg",
+            "/home/lkp/projs/gfy/build/skybox/front.jpg",
+            "/home/lkp/projs/gfy/build/skybox/back.jpg",
+            // "/home/lkp/projs/gfy/build/skybox3/perdicus_rt.tga",
+            // "/home/lkp/projs/gfy/build/skybox3/perdicus_lf.tga",
+            // "/home/lkp/projs/gfy/build/skybox3/perdicus_up.tga",
+            // "/home/lkp/projs/gfy/build/skybox3/perdicus_dn.tga",
+            // "/home/lkp/projs/gfy/build/skybox3/perdicus_bk.tga",
+            // "/home/lkp/projs/gfy/build/skybox3/perdicus_ft.tga",
+        })
+    ));
+
+    grid->AddDefaultComs();
+    grid->AddCom(std::make_shared<GGrid>(-100, 100, 1));
 
     model->AddDefaultComs();
     model->AddCom(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10)));
@@ -127,8 +152,7 @@ void build_scene(std::shared_ptr<GScene> s)
     model3->AddCom(std::make_shared<ModelScripts>("Model3", glm::vec3(10, 0, -10)));
     model3->AddCom(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj"));
 
-    grid->AddDefaultComs();
-    grid->AddCom(std::make_shared<GGrid>(-100, 100, 1));
+ 
     
     s->AddChild(camera);
     s->AddChild(grid);

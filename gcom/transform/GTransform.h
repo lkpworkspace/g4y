@@ -10,17 +10,14 @@ public:
     GTransform();
     virtual ~GTransform();
 
-    virtual void Update() override
-    {
-
-    }
+    virtual void Update() override;
 
     virtual std::string ComName() override { return "GTransform"; }
 
     glm::vec3 postion;
     glm::vec3 rotate;
     glm::vec3 scale;
-    glm::mat4x4 model;
+    glm::mat4 model;
 };
 
 #endif

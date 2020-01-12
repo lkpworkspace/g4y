@@ -21,9 +21,9 @@ void GModel::Draw(std::shared_ptr<GShader> shader)
         meshes[i].Draw(shader);
 }
 
-void GModel::Init()
+void GModel::Awake()
 {
-    m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom("GCamera"));
+    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
     m_transform = Obj()->Transform();
     m_shader = GScene::CurScene()->m_shader;
 }
