@@ -5,6 +5,15 @@ option(USE_GUI "use gui" ON)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
+# boost lib
+set(Boost_USE_STATIC_LIBS        ON) # only find static libs
+set(Boost_USE_MULTITHREADED      ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+find_package(Boost)
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+endif()
+
 # gl glew glm assimp imgui stb
 find_package(glm)
 if(USE_GUI)
@@ -32,6 +41,7 @@ if(USE_GUI)
         ${PROJECT_SOURCE_DIR}/gcom/model/GShader.cpp
 
         ${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.cpp
+        ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.cpp
     )
 endif(USE_GUI)
 
@@ -50,9 +60,6 @@ set(G4Y_SRCS
 set(GCOM_SRCS
     ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
     ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/msg/GMsg.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/msg/GProtoBufMsg.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/msg/GClientProxy.cpp
 )
 
 add_subdirectory(examples)

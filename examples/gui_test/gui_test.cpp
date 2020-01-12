@@ -112,23 +112,23 @@ void build_scene(std::shared_ptr<GScene> s)
 
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
-    camera->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GCamera>()));
-    camera->AddCom(std::static_pointer_cast<GCom>(std::make_shared<CameraScripts>("Camera Setting")));
+    camera->AddCom(std::make_shared<GCamera>());
+    camera->AddCom(std::make_shared<CameraScripts>("Camera Setting"));
 
     model->AddDefaultComs();
-    model->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10))));
-    model->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj")));
+    model->AddCom(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10)));
+    model->AddCom(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj"));
 
     model2->AddDefaultComs();
-    model2->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model2", glm::vec3(0, 0, 0))));
-    model2->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj")));
+    model2->AddCom(std::make_shared<ModelScripts>("Model2", glm::vec3(0, 0, 0)));
+    model2->AddCom(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj"));
 
     model3->AddDefaultComs();
-    model3->AddCom(std::static_pointer_cast<GCom>(std::make_shared<ModelScripts>("Model3", glm::vec3(10, 0, -10))));
-    model3->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj")));
+    model3->AddCom(std::make_shared<ModelScripts>("Model3", glm::vec3(10, 0, -10)));
+    model3->AddCom(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj"));
 
     grid->AddDefaultComs();
-    grid->AddCom(std::static_pointer_cast<GCom>(std::make_shared<GGrid>(-100, 100, 1)));
+    grid->AddCom(std::make_shared<GGrid>(-100, 100, 1));
     
     s->AddChild(camera);
     s->AddChild(grid);

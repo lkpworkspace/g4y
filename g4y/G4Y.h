@@ -12,6 +12,7 @@
 #ifdef USE_GUI
 #include "GModel.h"
 #include "GGrid.h"
+#include "GAxis.h"
 #endif
 
 #endif

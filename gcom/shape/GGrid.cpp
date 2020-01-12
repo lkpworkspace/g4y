@@ -28,31 +28,6 @@ static const char* fs_code = \
 "   FragColor = vcolor;\n"
 "}";
 
-float vertices[] = {
-    /* x    z   */
-    -2.0f, -100.0f,
-    -2.0f,  100.0f,
-    -1.0f, -100.0f,
-    -1.0f,  100.0f,
-     0.0f, -100.0f,
-     0.0f,  100.0f,
-     1.0f, -100.0f,
-     1.0f,  100.0f,
-     2.0f, -100.0f,
-     2.0f,  100.0f,
-
-    -100.0f, -2.0f,
-     100.0f, -2.0f,
-    -100.0f, -1.0f,
-     100.0f, -1.0f,
-    -100.0f,  0.0f,
-     100.0f,  0.0f,
-    -100.0f,  1.0f,
-     100.0f,  1.0f,
-    -100.0f,  2.0f,
-     100.0f,  2.0f,
-};
-
 GGrid::GGrid(int begin, int end, int step) :
     m_begin(begin),
     m_end(end),

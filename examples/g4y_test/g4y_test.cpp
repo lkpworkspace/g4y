@@ -35,9 +35,9 @@ void build_scene(std::shared_ptr<GScene> s)
     std::shared_ptr<GObj>  g2 = std::make_shared<GObj>();
     std::shared_ptr<GObj>  g3 = std::make_shared<GObj>();
 
-    g1->AddCom(std::static_pointer_cast<GCom>(std::make_shared<Transform>("g1")));
-    g2->AddCom(std::static_pointer_cast<GCom>(std::make_shared<Transform>("g2")));
-    g3->AddCom(std::static_pointer_cast<GCom>(std::make_shared<Transform>("g3")));
+    g1->AddCom(std::make_shared<Transform>("g1"));
+    g2->AddCom(std::make_shared<Transform>("g2"));
+    g3->AddCom(std::make_shared<Transform>("g3"));
 
     g1->AddChild(g2);
     s->AddChild(g1);
@@ -48,8 +48,8 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-    std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
-    std::shared_ptr<GScene> s = std::make_shared<GScene>();
+    auto w = std::make_shared<GWorld>();
+    auto s = std::make_shared<GScene>();
     w->SetScene(s);
     build_scene(s);
 #ifdef USE_GUI

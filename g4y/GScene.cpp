@@ -119,13 +119,18 @@ void GScene::Update()
 #ifdef USE_GUI
     glfwPollEvents();
 #endif
+    
+    OnRenderBegin();
 
     // update logic
     for( const auto& go : m_objs ) {
         go->UpdateComAndChildren();
     }
 
-    OnRenderBegin();
+    // late update logic
+    for( const auto& go : m_objs ) {
+        go->UpdateLate();
+    }
 
     // rendeing
     for(const auto& go : m_objs){

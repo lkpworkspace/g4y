@@ -22,14 +22,29 @@ public:
     bool AddChild(std::shared_ptr<GObj> obj);
     void DelChild(std::shared_ptr<GObj> obj);
 
+    template<typename T>
+    bool AddCom(std::shared_ptr<T> com){
+        return AddCom(std::static_pointer_cast<GCom>(com));
+    }
+    template<typename T>
+    void DelCom(std::shared_ptr<T> com){
+        DelCom(std::static_pointer_cast<GCom>(com));
+    }
     bool AddCom(std::shared_ptr<GCom> com);
-
     void DelCom(std::shared_ptr<GCom> com);
 
+    template<typename T>
+    std::shared_ptr<T> GetCom(std::string com_name){
+        auto com = GetCom(com_name);
+        if(com == nullptr) return nullptr;
+        return std::dynamic_pointer_cast<T>(com);
+    }
     std::shared_ptr<GCom> GetCom(std::string com_name);
     
     void SetTag(std::string tag);
     std::string Tag() { return m_tag; }
+
+    std::shared_ptr<GObj> Parent() { return m_parent.lock(); }
 
     std::shared_ptr<GTransform> Transform(){
         return std::static_pointer_cast<GTransform>(GetCom("GTransform"));
@@ -37,16 +52,20 @@ public:
 
     std::shared_ptr<GScene> Scene(){ return GScene::CurScene(); }
 
+    void AddDefaultComs();
+
+    std::string& UUID() { return m_uuid; }
+
     static std::shared_ptr<GObj> FindWithTag(std::string tag);
     static std::vector<std::shared_ptr<GObj>> FindObjsWithTag(std::string tag);
 
-    void AddDefaultComs();
-    
 protected:
 
     void Init();
 
     void UpdateComAndChildren();
+
+    void UpdateLate();
 
     void UpdateRender();
 
@@ -55,6 +74,8 @@ protected:
 private:
 
     bool         m_active;
+
+    std::string m_uuid;
 
     /* for search */
     std::string  m_tag;

@@ -1,8 +1,15 @@
+#include <iostream>
 #include "GObj.h"
 #include "GCom.h"
 #include "GScene.h"
 #include "GTransform.h"
-#include <iostream>
+#ifdef USE_GUI
+#include "GAxis.h"
+#endif
+
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 
 std::unordered_multimap<std::string, std::weak_ptr<GObj>> GObj::s_tagged_objs;
 
@@ -19,6 +26,8 @@ GObj::~GObj()
 void GObj::Init()
 {
     m_active = true;
+    boost::uuids::uuid a_uuid = boost::uuids::random_generator()(); 
+    m_uuid = boost::uuids::to_string(a_uuid);
 }
 
 void GObj::SetTag(std::string tag)
@@ -107,12 +116,29 @@ void GObj::UpdateComAndChildren()
     }
 }
 
+void GObj::UpdateLate()
+{
+    if(!m_active) return;
+
+    for(const auto& c : m_coms){
+        c->LateUpdate();
+    }
+    for(const auto& o : m_children){
+        if(!o->m_active) continue;
+        o->UpdateLate();
+    }
+}
+
 void GObj::UpdateRender()
 {
     if(!m_active) return;
 
     for(const auto& c : m_coms){
         c->OnRender();
+    }
+    for(const auto& o : m_children){
+        if(!o->m_active) continue;
+        o->UpdateRender();
     }
 }
 
@@ -123,9 +149,16 @@ void GObj::UpdateUI()
     for(const auto& c : m_coms){
         c->OnGUI();
     }
+    for(const auto& o : m_children){
+        if(!o->m_active) continue;
+        o->UpdateUI();
+    }
 }
 
 void GObj::AddDefaultComs()
 {
     AddCom(std::static_pointer_cast<GCom>(std::make_shared<GTransform>()));
+#ifdef USE_GUI
+    AddCom(std::make_shared<GAxis>());
+#endif
 }
