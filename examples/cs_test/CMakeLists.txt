@@ -28,5 +28,5 @@ ADD_EXECUTABLE(client.out ${PROTO_SRCS} ${PROTO_HDRS} ${CLIENT_TEST_SRCS} )
 
 ADD_EXECUTABLE(server.out ${PROTO_SRCS} ${PROTO_HDRS} ${SERVER_TEST_SRCS} )
 
-target_link_libraries(client.out GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES})
-target_link_libraries(server.out GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES})
+target_link_libraries(client.out GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES} ${BULLET_LIBRARIES})
+target_link_libraries(server.out GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES} ${BULLET_LIBRARIES})

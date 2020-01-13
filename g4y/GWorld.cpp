@@ -1,5 +1,6 @@
 #include "GWorld.h"
 #include "GScene.h"
+#include "GDynamicsWorld.h"
 #include <iostream>
 
 
@@ -7,6 +8,8 @@ GWorld::GWorld() :
     std::enable_shared_from_this<GWorld>()
 {
     InitGL();
+    m_phy_world = std::make_shared<GDynamicsWorld>();
+    m_phy_world->InitPhysics();
 }
 
 GWorld::~GWorld()
@@ -84,6 +87,7 @@ void GWorld::Update()
 void GWorld::SetScene(std::shared_ptr<GScene> s)
 {
     m_scene = s;
+    s->m_phy_world = m_phy_world;
     s->m_cur_scene = s;
     s->m_world = shared_from_this();
 }

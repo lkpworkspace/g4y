@@ -9,6 +9,7 @@
 #include "GTransform.h"
 #include "GCom.h"
 
+class GDynamicsWorld;
 class GObj : public std::enable_shared_from_this<GObj>
 {
     friend class GScene;
@@ -51,6 +52,8 @@ public:
     }
 
     std::shared_ptr<GScene> Scene(){ return GScene::CurScene(); }
+
+    std::shared_ptr<GDynamicsWorld> PhyWorld(){ return GScene::CurScene()->PhyWorld(); }
 
     void AddDefaultComs();
 

@@ -14,6 +14,12 @@ if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
+# bullet
+find_package(Bullet)
+if(BULLET_FOUND)
+    include_directories(${BULLET_INCLUDE_DIRS})
+endif()
+
 # gl glew glm assimp imgui stb
 find_package(glm)
 if(USE_GUI)
@@ -50,17 +56,21 @@ include_directories(g4y)
 include_directories(gcom/transform)
 include_directories(gcom/camera)
 include_directories(gcom/msg)
+include_directories(gcom/physics)
 
 set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GWorld.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GDynamicsWorld.cpp
 )
 
 set(GCOM_SRCS
     ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
     ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GGround.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GSphere.cpp
 )
 
 add_subdirectory(examples)

@@ -19,5 +19,5 @@ endif(USE_GUI)
 ADD_EXECUTABLE(g4y_test.out ${GFY_TEST_SRCS})
 
 if(USE_GUI)
-    target_link_libraries(g4y_test.out GL GLEW glm glfw assimp)
+    target_link_libraries(g4y_test.out GL GLEW glm glfw assimp ${BULLET_LIBRARIES})
 endif(USE_GUI)

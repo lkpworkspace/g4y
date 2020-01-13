@@ -1,6 +1,7 @@
 #include "GScene.h"
 #include "GObj.h"
 #include "GWorld.h"
+#include "GDynamicsWorld.h"
 #ifdef USE_GUI
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -113,7 +114,7 @@ void GScene::OnRenderEnd()
 void GScene::Update()
 {
     // update physics
-    // ...
+    m_phy_world.lock()->UpdateDynamicsWorld();
     
     // process event
 #ifdef USE_GUI

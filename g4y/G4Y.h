@@ -8,6 +8,9 @@
 
 #include "GTransform.h"
 #include "GCamera.h"
+#include "GDynamicsWorld.h"
+#include "GGround.h"
+#include "GSphere.h"
 
 #ifdef USE_GUI
 #include "GModel.h"

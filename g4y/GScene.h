@@ -10,6 +10,7 @@ class GModel;
 #endif
 class GObj;
 class GWorld;
+class GDynamicsWorld;
 class GScene : public std::enable_shared_from_this<GScene>
 {
     friend class GWorld;
@@ -21,6 +22,8 @@ public:
 
     void AddChild(std::shared_ptr<GObj> obj);
     void DelChild(std::shared_ptr<GObj> obj);
+
+    std::shared_ptr<GDynamicsWorld> PhyWorld() { return m_phy_world.lock(); }
 
     static std::shared_ptr<GScene> CurScene();
 #ifdef USE_GUI
@@ -34,6 +37,7 @@ private:
 
     std::unordered_set<std::shared_ptr<GObj>> m_objs;
     std::weak_ptr<GWorld>                     m_world;
+    std::weak_ptr<GDynamicsWorld>             m_phy_world;
     static std::weak_ptr<GScene>              m_cur_scene;
 };
 

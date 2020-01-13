@@ -11,6 +11,7 @@
 #endif
 
 class GScene;
+class GDynamicsWorld;
 class GWorld : public std::enable_shared_from_this<GWorld>
 {
     friend class GScene;
@@ -28,6 +29,7 @@ private:
     int  InitGL();
     void ExitGL();
     std::shared_ptr<GScene> m_scene;
+    std::shared_ptr<GDynamicsWorld> m_phy_world;
 };
 
 #endif

@@ -9,4 +9,4 @@ set(GUI_TEST_SRCS
 
 ADD_EXECUTABLE(gui_test.out ${GUI_TEST_SRCS})
 
-target_link_libraries(gui_test.out GL GLEW glm glfw assimp)
+target_link_libraries(gui_test.out GL GLEW glm glfw assimp ${BULLET_LIBRARIES})
