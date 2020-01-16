@@ -49,6 +49,7 @@ if(USE_GUI)
         ${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.cpp
         ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.cpp
         ${PROJECT_SOURCE_DIR}/gcom/shape/GSkybox.cpp
+        ${PROJECT_SOURCE_DIR}/gcom/shape/GCube.cpp
     )
 endif(USE_GUI)
 
@@ -69,8 +70,8 @@ set(G4Y_SRCS
 set(GCOM_SRCS
     ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
     ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GGround.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GSphere.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GSphereCollider.cpp
 )
 
 add_subdirectory(examples)

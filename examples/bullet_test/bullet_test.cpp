@@ -50,59 +50,28 @@ public:
     std::weak_ptr<GTransform> m_transform;
 };
 
-class ModelScripts : public GCom
+class ColliderScripts : public GCom
 {
 public:
-    ModelScripts(std::string title, glm::vec3 pos) :
-        title(title),
-        x(pos.x),
-        y(pos.y),
-        z(pos.z)
+    ColliderScripts(std::string title) :
+        title(title)
     {}
 
     virtual void Awake() override
     {
-        std::cout << "Model Scripts awake" << std::endl;
         m_tranform = Obj()->Transform();
-    }
-
-    virtual void OnGUI() override
-    {
-        ImGui::Begin(title.c_str());
-
-        ry = std::cos(glfwGetTime()) * 180;
-
-        ImGui::SliderFloat("model x", &x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::SliderFloat("model y", &y, -10.0f, 10.0f);
-        ImGui::SliderFloat("model z", &z, -10.0f, 10.0f);
-
-        ImGui::SliderFloat("model rx", &rx, 0.0f, 180.0f);
-        ImGui::SliderFloat("model ry", &ry, -180.0f, 180.0f);
-        ImGui::SliderFloat("model rz", &rz, 0.0f, 180.0f);
-
-        ImGui::SliderFloat("model sx", &sx, 0.0f, 1.0f);
-        ImGui::SliderFloat("model sy", &sy, 0.0f, 1.0f);
-        ImGui::SliderFloat("model sz", &sz, 0.0f, 1.0f);
-
-        ImGui::End();
     }
 
     virtual void Update() override
     {
-        m_tranform.lock()->postion = glm::vec3(x, y, z);
-        m_tranform.lock()->rotate  = glm::vec3(rx, ry, rz);
-        m_tranform.lock()->scale   = glm::vec3(sx, sy, sz);  
-    }
+         ImGui::Begin(title.c_str());
 
-    float x = 0.0f;
-    float y = 0.0f;
-    float z = 0.0f;
-    float rx = 0.0f;
-    float ry = 0.0f;
-    float rz = 0.0f;
-    float sx = 1.0f;
-    float sy = 1.0f;
-    float sz = 1.0f;
+        if(ImGui::Button("SetY")){
+            m_tranform.lock()->postion = glm::vec3(0, 50, 0);
+        }
+
+        ImGui::End();
+    }
 
     std::string title;
     std::weak_ptr<GTransform> m_tranform;
@@ -119,31 +88,16 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
     camera->AddCom(std::make_shared<CameraScripts>("Camera Setting"));
-    camera->AddCom(std::make_shared<GSkybox>(
-        std::vector<std::string>({
-            "/home/lkp/projs/gfy/build/skybox/right.jpg",
-            "/home/lkp/projs/gfy/build/skybox/left.jpg",
-            "/home/lkp/projs/gfy/build/skybox/top.jpg",
-            "/home/lkp/projs/gfy/build/skybox/bottom.jpg",
-            "/home/lkp/projs/gfy/build/skybox/front.jpg",
-            "/home/lkp/projs/gfy/build/skybox/back.jpg",
-            // "/home/lkp/projs/gfy/build/skybox3/perdicus_rt.tga",
-            // "/home/lkp/projs/gfy/build/skybox3/perdicus_lf.tga",
-            // "/home/lkp/projs/gfy/build/skybox3/perdicus_up.tga",
-            // "/home/lkp/projs/gfy/build/skybox3/perdicus_dn.tga",
-            // "/home/lkp/projs/gfy/build/skybox3/perdicus_bk.tga",
-            // "/home/lkp/projs/gfy/build/skybox3/perdicus_ft.tga",
-        })
-    ));
 
     grid->AddDefaultComs();
     grid->AddCom(std::make_shared<GGrid>(-100, 100, 1));
 
     ground->AddDefaultComs();
-    ground->AddCom(std::make_shared<GGround>());
+    ground->AddCom(std::make_shared<GMeshCollider>());
 
     sphere->AddDefaultComs();
-    sphere->AddCom(std::make_shared<GSphere>());
+    sphere->AddCom(std::make_shared<GSphereCollider>());
+    sphere->AddCom(std::make_shared<ColliderScripts>("set sphere"));
 
     s->AddChild(camera);
     s->AddChild(grid);

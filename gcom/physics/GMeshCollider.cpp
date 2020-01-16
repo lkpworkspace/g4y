@@ -1,8 +1,8 @@
-#include "GGround.h"
+#include "GMeshCollider.h"
 #include "GObj.h"
 #include "GTransform.h"
 
- void GGround::Awake()
+ void GMeshCollider::Awake()
  {
     m_transform = Obj()->Transform();
     m_phy_world = Obj()->PhyWorld();
@@ -15,7 +15,7 @@
     m_phy_world.lock()->AddRigiBody(m_rigidbody);
 }
 
-void GGround::Update()
+void GMeshCollider::Update()
 {
     btTransform trans;
     btScalar rx, ry, rz;
@@ -25,7 +25,7 @@ void GGround::Update()
     m_transform.lock()->rotate  = glm::vec3(rx, ry, rz);
 }
 
-void GGround::Exit()
+void GMeshCollider::Exit()
 {
     m_phy_world.lock()->DelRigiBody(m_rigidbody);
 }

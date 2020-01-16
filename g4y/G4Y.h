@@ -9,14 +9,15 @@
 #include "GTransform.h"
 #include "GCamera.h"
 #include "GDynamicsWorld.h"
-#include "GGround.h"
-#include "GSphere.h"
+#include "GMeshCollider.h"
+#include "GSphereCollider.h"
 
 #ifdef USE_GUI
 #include "GModel.h"
 #include "GGrid.h"
 #include "GAxis.h"
 #include "GSkybox.h"
+#include "GCube.h"
 #endif
 
 #endif
