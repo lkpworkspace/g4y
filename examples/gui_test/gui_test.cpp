@@ -13,7 +13,7 @@ public:
     {
     }
 
-    virtual void Init() override
+    virtual void Awake() override
     {
         m_transform = Obj()->Transform();
     }
@@ -35,6 +35,7 @@ public:
 
     virtual void Update() override
     {
+        //Obj()->Scene()->GLView()->GetShader()->SetUniform("view_pos", m_transform.lock()->postion);
         Obj()->Transform()->postion = glm::vec3(x,y,z);
         Obj()->Transform()->rotate = glm::vec3(rx,ry,rz);
     }
@@ -171,15 +172,10 @@ int main(int argc, char** argv)
 {
     std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
+
     w->SetScene(s);
+    
     build_scene(s);
-#ifdef USE_GUI
-    while(!glfwWindowShouldClose(w->window)){
-#else
-    while(true){
-#endif
-        w->Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-    return 0;
+
+    return w->Run();
 }

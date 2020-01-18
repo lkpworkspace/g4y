@@ -1,5 +1,6 @@
 #include "GMesh.h"
 #include <GL/glew.h>
+#include "GShader.h"
 
 GMesh::GMesh(std::vector<GVertex> vertices, std::vector<unsigned int> indices, std::vector<GTexture> textures)
 {
@@ -17,27 +18,31 @@ void GMesh::Draw(std::shared_ptr<GShader> shader)
     unsigned int specularNr = 1;
     unsigned int normalNr   = 1;
     unsigned int heightNr   = 1;
-    for(unsigned int i = 0; i < textures.size(); i++)
+    for(int i = 0; i < textures.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
         std::string number;
         std::string name = textures[i].type;
-        if(name == "texture_diffuse")
+        if(name == "material.diffuse")
             number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
+        else if(name == "material.specular")
             number = std::to_string(specularNr++); // transfer unsigned int to stream
-        else if(name == "texture_normal")
+        else if(name == "material.normal")
             number = std::to_string(normalNr++); // transfer unsigned int to stream
-            else if(name == "texture_height")
+        else if(name == "material.height")
             number = std::to_string(heightNr++); // transfer unsigned int to stream
 
         // now set the sampler to the correct texture unit
-        glUniform1i(glGetUniformLocation(shader->ID(), (name + number).c_str()), i);
+        if(i == 0){
+            shader->SetUniform(name.c_str(), i);
+        }else{
+            shader->SetUniform((name + number).c_str(), i);
+        }
+        //glUniform1i(glGetUniformLocation(shader->ID(), (name + number).c_str()), i);
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
-    
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

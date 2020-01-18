@@ -13,8 +13,6 @@ public:
 
     virtual void Awake() override;
 
-    virtual void Update() override;
-
     virtual void OnRender() override;
 
     virtual void Exit() override;

@@ -145,5 +145,6 @@ void GSkybox::OnRender()
 
 void GSkybox::Exit() 
 {
-
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }

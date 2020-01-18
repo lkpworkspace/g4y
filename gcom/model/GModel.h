@@ -36,8 +36,8 @@ private:
     void ProcessNode(aiNode *node, const aiScene *scene);
     unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = true);
 
-    std::shared_ptr<GShader> m_shader;
-    std::weak_ptr<GCamera> m_camera;
+    std::weak_ptr<GShader>    m_shader;
+    std::weak_ptr<GCamera>    m_camera;
     std::weak_ptr<GTransform> m_transform;
 };
 

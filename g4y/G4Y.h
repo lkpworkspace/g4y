@@ -13,6 +13,7 @@
 #include "GSphereCollider.h"
 
 #ifdef USE_GUI
+#include "GOpenGLView.h"
 #include "GModel.h"
 #include "GGrid.h"
 #include "GAxis.h"

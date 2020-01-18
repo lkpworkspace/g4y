@@ -121,5 +121,6 @@ void GGrid::OnRender()
 
 void GGrid::Exit()
 {
-    
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }

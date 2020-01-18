@@ -109,15 +109,10 @@ int main(int argc, char** argv)
 {
     std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
+    
     w->SetScene(s);
+    
     build_scene(s);
-#ifdef USE_GUI
-    while(!glfwWindowShouldClose(w->window)){
-#else
-    while(true){
-#endif
-        w->Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-    return 0;
+
+    return w->Run();
 }

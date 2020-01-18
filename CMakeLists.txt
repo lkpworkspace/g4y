@@ -20,6 +20,29 @@ if(BULLET_FOUND)
     include_directories(${BULLET_INCLUDE_DIRS})
 endif()
 
+include_directories(g4y)
+include_directories(gcom/transform)
+include_directories(gcom/camera)
+include_directories(gcom/msg)
+include_directories(gcom/physics)
+
+set(G4Y_SRCS
+    ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GWorld.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GDynamicsWorld.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GOpenGLView.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GShader.cpp
+)
+
+set(GCOM_SRCS
+    ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GSphereCollider.cpp
+)
+
 # gl glew glm assimp imgui stb
 find_package(glm)
 if(USE_GUI)
@@ -30,6 +53,7 @@ if(USE_GUI)
     
     include_directories(gcom/model)
     include_directories(gcom/shape)
+    include_directories(gcom/light)
     include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui)
     include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui/examples)
     include_directories(${PROJECT_SOURCE_DIR}/3rd/stb)
@@ -44,34 +68,14 @@ if(USE_GUI)
 
         ${PROJECT_SOURCE_DIR}/gcom/model/GModel.cpp
         ${PROJECT_SOURCE_DIR}/gcom/model/GMesh.cpp
-        ${PROJECT_SOURCE_DIR}/gcom/model/GShader.cpp
 
         ${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.cpp
         ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.cpp
         ${PROJECT_SOURCE_DIR}/gcom/shape/GSkybox.cpp
         ${PROJECT_SOURCE_DIR}/gcom/shape/GCube.cpp
+
+        ${PROJECT_SOURCE_DIR}/gcom/light/GLight.cpp
     )
 endif(USE_GUI)
-
-include_directories(g4y)
-include_directories(gcom/transform)
-include_directories(gcom/camera)
-include_directories(gcom/msg)
-include_directories(gcom/physics)
-
-set(G4Y_SRCS
-    ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
-    ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
-    ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
-    ${PROJECT_SOURCE_DIR}/g4y/GWorld.cpp
-    ${PROJECT_SOURCE_DIR}/g4y/GDynamicsWorld.cpp
-)
-
-set(GCOM_SRCS
-    ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GSphereCollider.cpp
-)
 
 add_subdirectory(examples)

@@ -71,11 +71,6 @@ void GAxis::Awake()
     glBindVertexArray(0);
 }
 
-void GAxis::Update() 
-{
-
-}
-
 void GAxis::OnRender() 
 {
     glm::mat4 P = m_camera.lock()->Projection();
@@ -106,5 +101,6 @@ void GAxis::OnRender()
 
 void GAxis::Exit() 
 {
-
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }

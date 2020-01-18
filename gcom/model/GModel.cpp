@@ -1,10 +1,11 @@
 #include "GModel.h"
 #include <iostream>
 #include <GL/glew.h>
-#include <GObj.h>
+#include "GObj.h"
 #include "GScene.h"
 #include "GCamera.h"
 #include "GTransform.h"
+#include "GOpenGLView.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -25,19 +26,25 @@ void GModel::Awake()
 {
     m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
     m_transform = Obj()->Transform();
-    m_shader = GScene::CurScene()->m_shader;
+    m_shader = GScene::CurScene()->GLView()->GetShader();
 }
 
 void GModel::OnRender()
 {
-    m_shader->Use();
+    m_shader.lock()->Use();
     glm::mat4 P = m_camera.lock()->Projection();
     glm::mat4 V = m_camera.lock()->View();
     glm::mat4 M = m_transform.lock()->model;
-    m_shader->SetUniform("projection", P);
-    m_shader->SetUniform("view", V);
-    m_shader->SetUniform("model", M);
-    Draw(m_shader);
+    m_shader.lock()->SetUniform("projection", P);
+    m_shader.lock()->SetUniform("view", V);
+    m_shader.lock()->SetUniform("model", M);
+    // directional light
+    // m_shader.lock()->SetUniform("view_pos", m_camera.lock()->Obj()->Transform()->postion);
+    // m_shader.lock()->SetUniform("dir_light.direction", 0.0f, 0.0f, -0.3f);
+    // m_shader.lock()->SetUniform("dir_light.ambient", 0.55f, 0.55f, 0.55f);
+    // m_shader.lock()->SetUniform("dir_light.diffuse", 0.4f, 0.4f, 0.4f);
+    // m_shader.lock()->SetUniform("dir_light.specular", 0.5f, 0.5f, 0.5f);
+    Draw(m_shader.lock());
 }
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -142,16 +149,16 @@ GMesh GModel::ProcessMesh(aiMesh *mesh, const aiScene *scene)
     // normal: texture_normalN
 
     // 1. diffuse maps
-    std::vector<GTexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<GTexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "material.diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
     // 2. specular maps
-    std::vector<GTexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+    std::vector<GTexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "material.specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     // 3. normal maps
-    std::vector<GTexture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+    std::vector<GTexture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "material.normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
     // 4. height maps
-    std::vector<GTexture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+    std::vector<GTexture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "material.height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     
     // return a mesh object created from the extracted mesh data

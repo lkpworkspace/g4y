@@ -125,5 +125,6 @@ void GCube::OnRender()
 
 void GCube::Exit()
 {
-    
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }

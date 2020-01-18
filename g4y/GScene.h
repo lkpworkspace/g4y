@@ -4,12 +4,9 @@
 #include <queue>
 #include <unordered_set>
 
-#ifdef USE_GUI
-class GShader;
-class GModel;
-#endif
 class GObj;
 class GWorld;
+class GOpenGLView;
 class GDynamicsWorld;
 class GScene : public std::enable_shared_from_this<GScene>
 {
@@ -25,19 +22,17 @@ public:
 
     std::shared_ptr<GDynamicsWorld> PhyWorld() { return m_phy_world.lock(); }
 
+    std::shared_ptr<GOpenGLView> GLView();
+
     static std::shared_ptr<GScene> CurScene();
-#ifdef USE_GUI
-    std::shared_ptr<GShader> m_shader;
-#endif
+
 private:
     void SetCurScene() { m_cur_scene = shared_from_this(); }
-    
-    void OnRenderBegin();
-    void OnRenderEnd();
 
     std::unordered_set<std::shared_ptr<GObj>> m_objs;
     std::weak_ptr<GWorld>                     m_world;
     std::weak_ptr<GDynamicsWorld>             m_phy_world;
+    std::weak_ptr<GOpenGLView>                m_gl_view;
     static std::weak_ptr<GScene>              m_cur_scene;
 };
 

@@ -2,10 +2,8 @@
 #include <string>
 #include <thread>
 #include <chrono>
-#include "GObj.h"
-#include "GCom.h"
-#include "GScene.h"
-#include "GWorld.h"
+
+#include "G4Y.h"
 
 class Transform : public GCom
 {
@@ -50,15 +48,10 @@ int main(int argc, char** argv)
 {
     auto w = std::make_shared<GWorld>();
     auto s = std::make_shared<GScene>();
+    
     w->SetScene(s);
+
     build_scene(s);
-#ifdef USE_GUI
-    while(!glfwWindowShouldClose(w->window)){
-#else
-    while(true){
-#endif
-        w->Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-    return 0;
+
+    return w->Run();
 }
