@@ -1,11 +1,11 @@
 #ifndef __GSPHERE_H__
 #define __GSPHERE_H__
 #include "GCom.h"
-#include "GDynamicsWorld.h"
+#include "GPhyWorld.h"
 
 class GTransform;
-class GDynamicsWorld;
-class GSphereCollider : public GCom
+class GPhyWorld;
+class GSphereCollider : public GCom, public btMotionState
 {
 public:
     GSphereCollider(){}
@@ -13,17 +13,18 @@ public:
 
     virtual void Awake() override;
 
-    virtual void Update() override;
-
     virtual void Exit() override;
+
+    virtual void getWorldTransform(btTransform& worldTrans ) const override;
+
+    virtual void setWorldTransform(const btTransform& worldTrans) override;
 
     virtual std::string ComName() override { return "GSphereCollider"; }
 
-private:
-    std::weak_ptr<GDynamicsWorld>   m_phy_world;
+// private:
+    std::weak_ptr<GPhyWorld>   m_phy_world;
     std::weak_ptr<GTransform>       m_transform;
     std::shared_ptr<btCollisionShape>     m_sphere;
-    std::shared_ptr<btDefaultMotionState> m_motion_state;
     std::shared_ptr<btRigidBody>          m_rigidbody;
 };
 

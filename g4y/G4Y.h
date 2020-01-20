@@ -8,7 +8,7 @@
 
 #include "GTransform.h"
 #include "GCamera.h"
-#include "GDynamicsWorld.h"
+#include "GPhyWorld.h"
 #include "GMeshCollider.h"
 #include "GSphereCollider.h"
 

@@ -22,6 +22,10 @@ public:
 
     bool WindowShouldClose();
 
+    bool GetMouseBtn(int btn);
+
+    bool GetKey(int key);
+
     void BeginRender();
 
     void PollEvents();

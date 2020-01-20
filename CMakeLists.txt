@@ -31,7 +31,7 @@ set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GWorld.cpp
-    ${PROJECT_SOURCE_DIR}/g4y/GDynamicsWorld.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GPhyWorld.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GOpenGLView.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GShader.cpp
 )

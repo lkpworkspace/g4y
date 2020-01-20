@@ -1,10 +1,10 @@
-#ifndef __GDYNAMICSWORLD_H__
-#define __GDYNAMICSWORLD_H__
+#ifndef __GPHYWORLD_H__
+#define __GPHYWORLD_H__
 #include <string>
 #include <memory>
 #include <btBulletDynamicsCommon.h>
 
-class GDynamicsWorld
+class GPhyWorld
 {
 public:
     void InitPhysics();
@@ -43,7 +43,7 @@ public:
 
     void UpdateDynamicsWorld();
 
-private:
+// private:
     std::shared_ptr<btDefaultCollisionConfiguration>        m_collision_cfg;
     std::shared_ptr<btCollisionDispatcher>                  m_collision_dispatcher;
     std::shared_ptr<btBroadphaseInterface>                  m_broadphase;

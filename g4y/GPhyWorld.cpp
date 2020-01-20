@@ -1,6 +1,6 @@
-#include "GDynamicsWorld.h"
+#include "GPhyWorld.h"
 
-void GDynamicsWorld::InitPhysics()
+void GPhyWorld::InitPhysics()
 {
     m_collision_cfg             = std::make_shared<btDefaultCollisionConfiguration>();
     m_collision_dispatcher      = std::make_shared<btCollisionDispatcher>(m_collision_cfg.get());
@@ -16,7 +16,7 @@ void GDynamicsWorld::InitPhysics()
     m_dynamics_world->setGravity(btVector3(0, -10, 0));
 }
 
-void GDynamicsWorld::UpdateDynamicsWorld()
+void GPhyWorld::UpdateDynamicsWorld()
 {
     m_dynamics_world->stepSimulation (1.f /60.f, 10) ;
     for(int i =  m_dynamics_world->getNumCollisionObjects() - 1; i >= 0; --i){
@@ -28,11 +28,11 @@ void GDynamicsWorld::UpdateDynamicsWorld()
         }else{
             trans = obj->getWorldTransform();
         }
-        printf("world pos object %d = %f, %f, %f \n", 
-            i, 
-            float(trans.getOrigin().getX()), 
-            float(trans.getOrigin().getY()), 
-            float(trans.getOrigin().getZ())
-        );
+        // printf("world pos object %d = %f, %f, %f \n", 
+        //     i, 
+        //     float(trans.getOrigin().getX()), 
+        //     float(trans.getOrigin().getY()), 
+        //     float(trans.getOrigin().getZ())
+        // );
     }
 }

@@ -102,12 +102,21 @@ std::shared_ptr<GCom> GObj::GetCom(std::string com_name)
         return m_named_coms[com_name].lock();
 }
 
+void GObj::Awake()
+{
+    for(const auto& c : m_coms){
+        c->OnAwake();
+    }
+    for(const auto& o : m_children){
+        o->Awake();
+    }
+}
+
 void GObj::UpdateComAndChildren()
 {
     if(!m_active) return;
 
     for(const auto& c : m_coms){
-        c->OnAwake();
         c->Update();
     }
     for(const auto& o : m_children){

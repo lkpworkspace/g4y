@@ -7,7 +7,7 @@
 class GObj;
 class GWorld;
 class GOpenGLView;
-class GDynamicsWorld;
+class GPhyWorld;
 class GScene : public std::enable_shared_from_this<GScene>
 {
     friend class GWorld;
@@ -20,7 +20,7 @@ public:
     void AddChild(std::shared_ptr<GObj> obj);
     void DelChild(std::shared_ptr<GObj> obj);
 
-    std::shared_ptr<GDynamicsWorld> PhyWorld() { return m_phy_world.lock(); }
+    std::shared_ptr<GPhyWorld> PhyWorld() { return m_phy_world.lock(); }
 
     std::shared_ptr<GOpenGLView> GLView();
 
@@ -31,7 +31,7 @@ private:
 
     std::unordered_set<std::shared_ptr<GObj>> m_objs;
     std::weak_ptr<GWorld>                     m_world;
-    std::weak_ptr<GDynamicsWorld>             m_phy_world;
+    std::weak_ptr<GPhyWorld>             m_phy_world;
     std::weak_ptr<GOpenGLView>                m_gl_view;
     static std::weak_ptr<GScene>              m_cur_scene;
 };

@@ -14,7 +14,7 @@
 #endif
 
 class GObj;
-class GDynamicsWorld;
+class GPhyWorld;
 class GCom
 {
     friend class GObj;
@@ -38,7 +38,7 @@ public:
 
     std::shared_ptr<GObj> Obj() { return m_obj.lock(); }
 
-    std::shared_ptr<GDynamicsWorld> DWorld() { return m_dworld.lock(); }
+    std::shared_ptr<GPhyWorld> DWorld() { return m_dworld.lock(); }
 
     virtual std::string ComName() { return "GCom"; }
 
@@ -47,7 +47,7 @@ protected:
 private:
     bool                m_awake;
     std::weak_ptr<GObj> m_obj;
-    std::weak_ptr<GDynamicsWorld> m_dworld;
+    std::weak_ptr<GPhyWorld> m_dworld;
 };
 
 #endif

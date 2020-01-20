@@ -3,7 +3,7 @@
 #include <thread>
 #include <chrono>
 #include "GScene.h"
-#include "GDynamicsWorld.h"
+#include "GPhyWorld.h"
 #include "GOpenGLView.h"
 
 
@@ -13,18 +13,13 @@ GWorld::GWorld() :
     m_gl_view = std::make_shared<GOpenGLView>();
     m_gl_view->InitGL();
 
-    m_phy_world = std::make_shared<GDynamicsWorld>();
+    m_phy_world = std::make_shared<GPhyWorld>();
     m_phy_world->InitPhysics();
 }
 
 GWorld::~GWorld()
 {
     m_gl_view->ExitGL();
-}
-
-void GWorld::Update()
-{
-    m_scene->Update();
 }
 
 int GWorld::Run()

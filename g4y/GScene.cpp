@@ -1,7 +1,7 @@
 #include "GScene.h"
 #include "GObj.h"
 #include "GWorld.h"
-#include "GDynamicsWorld.h"
+#include "GPhyWorld.h"
 #include "GOpenGLView.h"
 
 GScene::GScene() :
@@ -35,6 +35,11 @@ void GScene::DelChild(std::shared_ptr<GObj> obj)
 
 void GScene::Update()
 {
+    // awake
+    for( const auto& go : m_objs ) {
+        go->Awake();
+    }
+
     // update physics
     m_phy_world.lock()->UpdateDynamicsWorld();
     

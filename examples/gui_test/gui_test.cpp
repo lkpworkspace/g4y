@@ -35,8 +35,7 @@ public:
 
     virtual void Update() override
     {
-        //Obj()->Scene()->GLView()->GetShader()->SetUniform("view_pos", m_transform.lock()->postion);
-        Obj()->Transform()->postion = glm::vec3(x,y,z);
+        Obj()->Transform()->SetPostion(x,y,z);
         Obj()->Transform()->rotate = glm::vec3(rx,ry,rz);
     }
 
@@ -114,6 +113,7 @@ void build_scene(std::shared_ptr<GScene> s)
     auto  camera = std::make_shared<GObj>();
     auto  grid = std::make_shared<GObj>();
     auto  cube  = std::make_shared<GObj>();
+    auto  cube2 = std::make_shared<GObj>();
     auto  model = std::make_shared<GObj>();
     auto  model2 = std::make_shared<GObj>();
     auto  model3 = std::make_shared<GObj>();
@@ -146,6 +146,10 @@ void build_scene(std::shared_ptr<GScene> s)
     cube->AddCom(std::make_shared<GCube>());
     cube->AddCom(std::make_shared<ModelScripts>("cube", glm::vec3(0, 10, 0)));
 
+    cube2->AddDefaultComs();
+    cube2->AddCom(std::make_shared<GCube>());
+    cube2->AddCom(std::make_shared<ModelScripts>("cube2", glm::vec3(0, 10, 0)));
+
     model->AddDefaultComs();
     model->AddCom(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10)));
     model->AddCom(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj"));
@@ -162,8 +166,10 @@ void build_scene(std::shared_ptr<GScene> s)
     
     s->AddChild(camera);
     s->AddChild(grid);
-    s->AddChild(cube);
     s->AddChild(model);
+    //s->AddChild(cube);
+    model->AddChild(cube);
+    cube->AddChild(cube2);
     s->AddChild(model2);
     s->AddChild(model3);
 }

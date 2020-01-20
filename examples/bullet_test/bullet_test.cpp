@@ -60,6 +60,9 @@ public:
     virtual void Awake() override
     {
         m_tranform = Obj()->Transform();
+        m_tranform.lock()->SetPostion(0, 50, 0);
+        m_colli = Obj()->GetCom<GSphereCollider>("GSphereCollider");
+        m_dwld = Obj()->Scene()->PhyWorld();
     }
 
     virtual void Update() override
@@ -67,7 +70,14 @@ public:
          ImGui::Begin(title.c_str());
 
         if(ImGui::Button("SetY")){
-            m_tranform.lock()->postion = glm::vec3(0, 50, 0);
+            
+            // btTransform trans(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0));
+            // m_colli.lock()->m_rigidbody->setWorldTransform(trans);
+            
+            m_colli.lock()->m_rigidbody->translate(btVector3(0, 50, 0));
+
+            std::cout << m_colli.lock()->m_rigidbody->wantsSleeping() << std::endl;
+
         }
 
         ImGui::End();
@@ -75,6 +85,8 @@ public:
 
     std::string title;
     std::weak_ptr<GTransform> m_tranform;
+    std::weak_ptr<GSphereCollider> m_colli;
+    std::weak_ptr<GPhyWorld> m_dwld;
 };
 
 void build_scene(std::shared_ptr<GScene> s)
