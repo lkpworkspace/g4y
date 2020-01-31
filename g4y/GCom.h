@@ -15,7 +15,7 @@
 
 class GObj;
 class GPhyWorld;
-class GCom
+class GCom : public std::enable_shared_from_this<GCom>
 {
     friend class GObj;
 public:
@@ -38,16 +38,18 @@ public:
 
     std::shared_ptr<GObj> Obj() { return m_obj.lock(); }
 
-    std::shared_ptr<GPhyWorld> DWorld() { return m_dworld.lock(); }
+    std::shared_ptr<GPhyWorld> PhyWorld() { return m_phy_world.lock(); }
 
     virtual std::string ComName() { return "GCom"; }
+
+    double GetTime();
 
 protected:
     void OnAwake();
 private:
-    bool                m_awake;
-    std::weak_ptr<GObj> m_obj;
-    std::weak_ptr<GPhyWorld> m_dworld;
+    bool                     m_awake;
+    std::weak_ptr<GObj>      m_obj;
+    std::weak_ptr<GPhyWorld> m_phy_world;
 };
 
 #endif

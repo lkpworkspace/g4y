@@ -13,7 +13,12 @@ set(CLIENT_TEST_SRCS
     ${GCOM_SRCS} 
     ${GCOM_GUI_SRCS}
     ${G4Y_SRCS}
-    ${PROJECT_SOURCE_DIR}/gcom/msg/GPbCliMsgMgr.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GMsg.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GPbTransformMsg.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GMsgMgr.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GCliMsgMgr.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GCliMsgProxy.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GSrvMsgMgr.cpp
     TClient.cpp
 )
 
@@ -21,6 +26,12 @@ set(SERVER_TEST_SRCS
     ${GCOM_SRCS} 
     ${GCOM_GUI_SRCS}
     ${G4Y_SRCS} 
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GMsg.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GPbTransformMsg.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GMsgMgr.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GCliMsgMgr.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GCliMsgProxy.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/msg/GSrvMsgMgr.cpp
     TServer.cpp
 )
 

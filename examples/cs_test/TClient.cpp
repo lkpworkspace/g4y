@@ -4,10 +4,25 @@
 #include <chrono>
 
 #include "G4Y.h"
-#include "GPbMsgFmt.h"
-#include "GPbCliMsgMgr.h"
-#include "GPbCliTransformMsg.h"
+#include "GMsg.h"
+#include "GMsgMgr.h"
+#include "GCliMsgMgr.h"
+#include "GPbTransformMsg.h"
 
+/*
+    模拟测试流程1:
+        - 创建客户端消息管理组件
+        - 注册消息组件
+        - 添加至场景
+        - 创建消息组件并添加至世界
+        - 测试是否有创建消息广播出去
+    模拟测试流程2:
+        - 创建客户端消息管理组件
+        - 注册消息组件
+        - 添加至场景
+        - 模拟服务器发送其他客户端创建对象消息
+        - 测试客户端能否正常解析消息并创建对象
+*/
 class MsgScripts : public GCom
 {
 public:
@@ -19,31 +34,72 @@ public:
 
     virtual void Awake() override
     {
-        // get msg mgr
-        m_msg_mgr = Obj()->GetCom<GPbCliMsgMgr>("GPbCliMsgMgr");
-        m_msg_fmt = std::make_shared<GPbMsgFmt>();
+        auto msg_mgr_obj = GObj::FindWithTag("GCliMsgMgr");
+        if(msg_mgr_obj){
+            m_msgmgr = msg_mgr_obj->GetCom<GCliMsgMgr>("GCliMsgMgr");
+            if(m_msgmgr.expired()){
+                std::cout << "invalid msg mgr" << std::endl;
+                return;
+            }
+        }else{
+            std::cout << "can not find msgmgr obj" << std::endl;
+        }
     }
 
     virtual void OnGUI() override
     {
         ImGui::Begin(title.c_str());
-        if(ImGui::Button("create transform obj")){
-            auto msg = std::make_shared<GTransformMsg>();
-            msg->set_cmd(GTransformMsg_Cmd::GTransformMsg_Cmd_CREATE);
-            msg->set_suuid("123456");
-            msg->set_cuuid("");
-            if(m_msg_mgr.expired()){
-                std::cout << "error " << std::endl;
+        if(ImGui::Button("create loc msg com")){
+            auto obj = std::make_shared<GObj>();
+            auto msg = std::make_shared<GPbTransformMsg>(true);
+            obj->AddDefaultComs();
+            obj->Transform()->SetPostion(0, 20, 0);
+            obj->AddCom(msg);
+            Obj()->Scene()->AddChild(obj);
+        }
+        if(ImGui::Button("create remote msg com")){
+            auto obj = std::make_shared<GObj>();
+            auto msg = std::make_shared<GPbTransformMsg>(false);
+            obj->AddDefaultComs();
+            obj->Transform()->SetPostion(-10, 20, 0);
+            obj->AddCom(msg);
+            Obj()->Scene()->AddChild(obj);
+        }
+        if(ImGui::Button("sim server create msg com")){
+            // build msg
+            std::vector<std::shared_ptr<::google::protobuf::Message>> msgs;
+            msgs.clear();
+            auto obj = std::make_shared<GObj>();
+            auto msg_com = std::make_shared<GPbTransformMsg>(false);
+            msg_com->m_srv_id = "123456";
+            obj->AddDefaultComs();
+            obj->Transform()->SetPostion(0, 20, 0);
+            obj->AddCom(msg_com);
+            auto meta = msg_com->BuildMetaMsg();
+            auto msg = msg_com->BuildMsg();
+            auto info = msg_com->BuildInfoMsg(msg_com->MsgName(), GMsgInfo_Action_CREATE, msg->ByteSize());
+            auto meta_msg = std::static_pointer_cast<GMetaMsg>(meta);
+            auto info_msg = std::static_pointer_cast<GMsgInfo>(info);
+            auto info_ptr = meta_msg->add_info();
+            info_ptr->set_action(info_msg->action());
+            info_ptr->set_name(info_msg->name());
+            info_ptr->set_sz(info_msg->sz());
+            msgs.push_back(meta);
+            msgs.push_back(msg);
+            if(m_msgmgr.expired()){
+                std::cout << "invaild msgmgr" << std::endl;
             }else{
-                m_msg_mgr.lock()->PushMsg(m_msg_fmt->Serilize(msg));
+                // serilize msg
+                auto d = m_msgmgr.lock()->Serilize(msgs);
+                // push msg
+                m_msgmgr.lock()->PushMsg(d);
             }
         }
+
         ImGui::End();
     }
-
     std::string title;
-    std::weak_ptr<GPbCliMsgMgr> m_msg_mgr;
-    std::shared_ptr<GPbMsgFmt> m_msg_fmt;
+    std::weak_ptr<GCliMsgMgr> m_msgmgr;
 };
 
 class CameraScripts : public GCom
@@ -67,9 +123,9 @@ public:
 
     virtual void OnGUI() override
     {
-        ImGui::Begin(title.c_str());                          // Create a window called "Hello, world!" and append into it.
+        ImGui::Begin(title.c_str());
 
-        ImGui::SliderFloat("Camera x", &x, -150.0f, 150.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::SliderFloat("Camera x", &x, -150.0f, 150.0f);
         ImGui::SliderFloat("Camera y", &y, -150.0f, 150.0f);
         ImGui::SliderFloat("Camera z", &z, -150.0f, 150.0f);
 
@@ -102,9 +158,14 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->AddCom(std::make_shared<GCamera>());
     camera->AddCom(std::make_shared<CameraScripts>("Camera Setting"));
 
+    auto msgmgr_com = std::make_shared<GCliMsgMgr>();
+    msgmgr_com->RegMsgCom("GTransformMsg", [](bool loc){ 
+        return std::static_pointer_cast<GMsg>(std::make_shared<GPbTransformMsg>(loc)); 
+    });
+    
     msgmgr->AddDefaultComs();
-    msgmgr->AddCom(std::make_shared<GPbCliMsgMgr>());
-    msgmgr->AddCom<MsgScripts>(std::make_shared<MsgScripts>("sim server msg"));
+    msgmgr->AddCom(msgmgr_com);
+    msgmgr->AddCom(std::make_shared<MsgScripts>("sim server msg"));
 
     grid->AddDefaultComs();
     grid->AddCom(std::make_shared<GGrid>(-100, 100, 1));
@@ -116,7 +177,7 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-    // build the world
+#if 1
     std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
     
@@ -125,4 +186,8 @@ int main(int argc, char** argv)
     build_scene(s);
 
     return w->Run();
+#else
+    GMsgMgr::Test();
+    return 0;
+#endif
 }

@@ -23,8 +23,8 @@ endif()
 include_directories(g4y)
 include_directories(gcom/transform)
 include_directories(gcom/camera)
-include_directories(gcom/msg)
 include_directories(gcom/physics)
+include_directories(gcom/msg)
 
 set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp

@@ -117,10 +117,10 @@ void GObj::UpdateComAndChildren()
     if(!m_active) return;
 
     for(const auto& c : m_coms){
+        if(!c->m_awake) continue;
         c->Update();
     }
     for(const auto& o : m_children){
-        if(!o->m_active) continue;
         o->UpdateComAndChildren();
     }
 }
@@ -130,10 +130,10 @@ void GObj::UpdateLate()
     if(!m_active) return;
 
     for(const auto& c : m_coms){
+        if(!c->m_awake) continue;
         c->LateUpdate();
     }
     for(const auto& o : m_children){
-        if(!o->m_active) continue;
         o->UpdateLate();
     }
 }
@@ -143,10 +143,10 @@ void GObj::UpdateRender()
     if(!m_active) return;
 
     for(const auto& c : m_coms){
+        if(!c->m_awake) continue;
         c->OnRender();
     }
     for(const auto& o : m_children){
-        if(!o->m_active) continue;
         o->UpdateRender();
     }
 }
@@ -156,10 +156,10 @@ void GObj::UpdateUI()
      if(!m_active) return;
 
     for(const auto& c : m_coms){
+        if(!c->m_awake) continue;
         c->OnGUI();
     }
     for(const auto& o : m_children){
-        if(!o->m_active) continue;
         o->UpdateUI();
     }
 }

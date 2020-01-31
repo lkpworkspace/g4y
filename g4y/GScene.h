@@ -3,6 +3,7 @@
 #include <memory>
 #include <queue>
 #include <unordered_set>
+#include <boost/timer.hpp>
 
 class GObj;
 class GWorld;
@@ -31,7 +32,7 @@ private:
 
     std::unordered_set<std::shared_ptr<GObj>> m_objs;
     std::weak_ptr<GWorld>                     m_world;
-    std::weak_ptr<GPhyWorld>             m_phy_world;
+    std::weak_ptr<GPhyWorld>                  m_phy_world;
     std::weak_ptr<GOpenGLView>                m_gl_view;
     static std::weak_ptr<GScene>              m_cur_scene;
 };

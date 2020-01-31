@@ -140,12 +140,18 @@ bool GOpenGLView::WindowShouldClose()
 
 bool GOpenGLView::GetMouseBtn(int btn)
 {
+#ifdef USE_GUI
     return glfwGetMouseButton(window, btn);
+#else
+    return false;
+#endif
 }
 
 bool GOpenGLView::GetKey(int key)
 {
+#ifdef USE_GUI
     std::cout << glfwGetKey(window, key) << std::endl;
+#endif
     return true;
 }
 

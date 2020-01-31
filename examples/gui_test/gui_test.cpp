@@ -70,9 +70,9 @@ public:
     {
         ImGui::Begin(title.c_str());
 
-        ry = std::cos(glfwGetTime()) * 180;
+        ry = std::cos(GetTime()) * 180;
 
-        ImGui::SliderFloat("model x", &x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::SliderFloat("model x", &x, -10.0f, 10.0f);
         ImGui::SliderFloat("model y", &y, -10.0f, 10.0f);
         ImGui::SliderFloat("model z", &z, -10.0f, 10.0f);
 

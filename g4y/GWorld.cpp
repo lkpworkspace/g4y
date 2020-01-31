@@ -5,7 +5,7 @@
 #include "GScene.h"
 #include "GPhyWorld.h"
 #include "GOpenGLView.h"
-
+std::shared_ptr<boost::timer> GWorld::s_timer = std::make_shared<boost::timer>();
 
 GWorld::GWorld() :
     std::enable_shared_from_this<GWorld>()
@@ -20,6 +20,11 @@ GWorld::GWorld() :
 GWorld::~GWorld()
 {
     m_gl_view->ExitGL();
+}
+
+double GWorld::GetTime()
+{
+    return s_timer->elapsed();
 }
 
 int GWorld::Run()
