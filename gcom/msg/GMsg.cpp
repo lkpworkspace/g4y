@@ -50,8 +50,6 @@ void GMsg::Init()
                 cli_mgr->AddSrvObj(m_srv_id, Obj());
             }
             return;
-        }else{
-            std::cout << "[warning] can not find GCliMsgMgr com" << std::endl;
         }
    }
    {
@@ -68,8 +66,6 @@ void GMsg::Init()
             auto msg = BuildMsg();
             auto info = BuildInfoMsg(MsgName(), GMsgInfo_Action_CREATE, msg->ByteSize());
             srv_mgr->BroadcastMsg(shared_from_this(), info, msg);
-        }else{
-            std::cout << "[warning] can not find GSrvMsgMgr com" << std::endl;
         }
    }
 }

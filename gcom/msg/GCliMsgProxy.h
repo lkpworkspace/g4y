@@ -16,10 +16,10 @@ public:
     {}
     virtual ~GCliMsgProxy(){}
 
-    std::shared_ptr<GObj> MsgObj(std::string cid);
+    std::shared_ptr<GObj> MsgObj(std::string id);
 
-    void AddObj(std::string cid, std::shared_ptr<GObj>);
-    void DelObj(std::shared_ptr<GObj>);
+    void AddObj(std::string id, std::shared_ptr<GObj>);
+    void DelObj(std::string id);
     bool HaveObj(std::string id);
 
     unsigned int m_id;

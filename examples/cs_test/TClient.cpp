@@ -8,6 +8,7 @@
 #include "GMsgMgr.h"
 #include "GCliMsgMgr.h"
 #include "GPbTransformMsg.h"
+#include "GBoostMsgQueue.h"
 
 /*
     模拟测试流程1:
@@ -53,7 +54,7 @@ public:
             auto obj = std::make_shared<GObj>();
             auto msg = std::make_shared<GPbTransformMsg>(true);
             obj->AddDefaultComs();
-            obj->Transform()->SetPostion(0, 20, 0);
+            obj->Transform()->SetPostion(10, 20, 0);
             obj->AddCom(msg);
             Obj()->Scene()->AddChild(obj);
         }
@@ -177,7 +178,7 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-#if 1
+#if 0
     std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
     
@@ -187,7 +188,8 @@ int main(int argc, char** argv)
 
     return w->Run();
 #else
-    GMsgMgr::Test();
+    //GMsgMgr::Test();
+    GBoostMsgQueue::Test(false);
     return 0;
 #endif
 }

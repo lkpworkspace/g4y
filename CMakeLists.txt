@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 set(Boost_USE_STATIC_LIBS        ON) # only find static libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package(Boost)
+find_package(Boost COMPONENTS date_time system)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
@@ -25,6 +25,7 @@ include_directories(gcom/transform)
 include_directories(gcom/camera)
 include_directories(gcom/physics)
 include_directories(gcom/msg)
+include_directories(gcom/msg/msgio)
 
 set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
@@ -34,6 +35,7 @@ set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GPhyWorld.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GOpenGLView.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GShader.cpp
+    ${PROJECT_SOURCE_DIR}/g4y/GResourceMgr.cpp
 )
 
 set(GCOM_SRCS

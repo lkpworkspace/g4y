@@ -22,18 +22,23 @@ public:
     GCom();
     virtual ~GCom();
 
+    /* 初始化函数,在该组件加入到GObj被调用 */
     virtual void Init(){}
 
+    /* 在场景循环前被调用一次,随后不再别调用 */
     virtual void Awake(){}
 
+    /* 每一帧更新都会被调用 */
     virtual void Update(){}
 
+    /* 在Update之后被调用 */
     virtual void LateUpdate() {}
 
     virtual void OnRender(){}
 
     virtual void OnGUI(){}
 
+    /* 移除世界场景被调用 */
     virtual void Exit(){}
 
     std::shared_ptr<GObj> Obj() { return m_obj.lock(); }

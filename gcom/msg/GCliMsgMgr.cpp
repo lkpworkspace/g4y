@@ -86,7 +86,7 @@ void GCliMsgMgr::Init()
             - 是更新, 将消息发送给组件解析
             - 是删除, 将消息发送给组件解析
 */
-void GCliMsgMgr::Update()
+void GCliMsgMgr::LateUpdate()
 {
     // 解析并分发
     for( const auto& p : m_recv_msgs ) {

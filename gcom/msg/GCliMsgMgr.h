@@ -32,7 +32,7 @@ public:
 
     virtual void Init() override;
 
-    virtual void Update() override;
+    virtual void LateUpdate() override;
 
     virtual std::string ComName() { return "GCliMsgMgr"; }
 

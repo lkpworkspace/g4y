@@ -6,6 +6,8 @@
 #include "GCom.h"
 #include "GObj.h"
 
+#include "GResourceMgr.h"
+
 #include "GTransform.h"
 #include "GCamera.h"
 #include "GPhyWorld.h"

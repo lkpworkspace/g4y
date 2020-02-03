@@ -8,6 +8,8 @@ class GShader
 public:
     GShader(const std::string &vs, const std::string &fs, bool filepath = true);
     virtual ~GShader();
+
+    bool IsValid() { return m_valid; }
     
     void Use();
     unsigned int ID() { return m_id; }
@@ -30,6 +32,7 @@ private:
     void CheckCompileErrors(unsigned int shader, std::string type);
 
     unsigned int m_id;
+    bool         m_valid;
 };
 
 #endif

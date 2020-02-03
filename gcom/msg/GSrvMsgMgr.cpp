@@ -15,8 +15,13 @@ void GSrvMsgMgr::PushMsg(unsigned int id, std::string dat)
         cli = std::make_shared<GCliMsgProxy>(id);
         m_cli_proxy_vec.push_back(cli);
         m_cli_proxys[id] = cli;
+    }else{
+        cli = m_cli_proxys[id];
     }
     auto msgs = Deserilize(dat);
+    for(int i = 0; i < msgs.size(); ++i){
+        std::cout << msgs[i]->DebugString() << std::endl;
+    }
     auto meta_msg = std::static_pointer_cast<GMetaMsg>(msgs[0]);
     cli->m_recv_msgs[meta_msg->loc_id()] = msgs;
 }
@@ -39,14 +44,19 @@ std::pair<unsigned int, std::string> GSrvMsgMgr::PopMsg()
     return std::make_pair(-1, "");
 }
 
-void GSrvMsgMgr::Update()
+void GSrvMsgMgr::Init()
+{
+    Obj()->SetTag("GSrvMsgMgr");
+}
+
+void GSrvMsgMgr::LateUpdate()
 {
     // 根据接收到的消息,更新对象
     // 解析并分发
-    for(auto c : m_cli_proxy_vec){
+    for(const auto& c : m_cli_proxy_vec){
         auto cli = c.lock();
-        auto recv_msgs = c.lock()->m_recv_msgs;
-
+        auto& recv_msgs = c.lock()->m_recv_msgs;
+        if(recv_msgs.empty()) continue;
         for( const auto& p : recv_msgs ) {
             auto msgs = p.second;
             auto meta = std::static_pointer_cast<GMetaMsg>(p.second[0]);

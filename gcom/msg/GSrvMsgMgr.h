@@ -31,8 +31,10 @@ class GSrvMsgMgr : public GMsgMgr
 public:
     void PushMsg(unsigned int id, std::string);
     std::pair<unsigned int, std::string> PopMsg();
+    
+    void Init();
 
-    virtual void Update() override;
+    virtual void LateUpdate() override;
 
     virtual std::string ComName() { return "GSrvMsgMgr"; }
 

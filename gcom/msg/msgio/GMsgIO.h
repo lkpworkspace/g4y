@@ -9,8 +9,8 @@ public:
     /*
         return: -1 failed, >0 OK
     */
-    virtual int Read(std::string& dat, int len) = 0;
-    virtual int Write(std::string& dat) = 0;
+    virtual int Read(char*, int len) = 0;
+    virtual int Write(char*, int len) = 0;
 };
 
 #endif

@@ -13,20 +13,22 @@ public:
 
         return: true 打开或创建成功, false 打开或创建失败
     */
-    bool Start(char mod, std::string name);
+    bool Start(char mod, std::string name, int queue_len, int msg_sz);
 
-    virtual int Read(std::string& dat, int len) override
+    virtual int Read(char* buf, int len) override
     {
         using namespace boost::interprocess;
         message_queue::size_type recvd_size;
         unsigned int priority;
-        m_mq->receive(dat.data(), len, recvd_size, priority);
+        m_mq->receive(buf, len, recvd_size, priority);
     }
 
-    virtual int Write(std::string& dat) override
+    virtual int Write(char* buf, int len) override
     {
-        m_mq->send(dat.data(), dat.size(), 0);
+        m_mq->send(buf, len, 0);
     }
+
+    static void Test(bool srv);
 
     std::shared_ptr<boost::interprocess::message_queue> m_mq;
 };

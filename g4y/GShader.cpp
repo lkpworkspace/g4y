@@ -7,6 +7,7 @@
 #endif
 GShader::GShader(const std::string &vs, const std::string &fs, bool filepath)
 {
+    m_valid = false;
     if(filepath){
         std::string vs_string;
         std::string fs_string;
@@ -95,6 +96,8 @@ void GShader::CheckCompileErrors(unsigned int shader, std::string type)
             std::cout << "[ERROR] PROGRAM_LINKING_ERROR of type: " 
                     << type << "\n" << info_log << "\n" 
                     << std::endl;
+        }else{
+            m_valid = true;
         }
     }
 #endif
