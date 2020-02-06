@@ -5,25 +5,50 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <queue>
+#include <unordered_map>
 #include <boost/asio.hpp>
 #include "GCom.h"
 
+// for boost 1.56.0
+
 class GCom;
+class GMsgNetIO;
 class GSock
 {
+    enum { HEADER_LENGTH = 2 };
+    enum { MAX_BODY_LENGTH = 65535 };
 public:
-    bool Start(bool srv, std::string ip, unsigned int port);
-    bool Start();
+    GSock(unsigned int id, boost::asio::ip::tcp::socket socket, std::shared_ptr<GMsgNetIO> io) :
+        m_id(id),
+        m_sock(std::move(socket))
+    {
+        m_msg_netio = io;
+    }
 
-    void Read(char* buf, int len);
+    void Start();
 
-    void Write(char* buf, int len);
+    void DoReadHead();
 
+    void DoReadBody();
+
+    void Write(const char* buf, int len);
+
+    std::weak_ptr<GMsgNetIO>           m_msg_netio;
+    std::queue<std::string>            m_msg_queue; // recv msg queue
     boost::asio::ip::tcp::socket       m_sock;
+    unsigned int                       m_id;
+
+    char                               m_data[MAX_BODY_LENGTH];
+    unsigned short                     m_len;
 };
-class GMsgNetIO : public GCom
+class GCliMsgMgr;
+class GSrvMsgMgr;
+class GMsgNetIO : public GCom, public std::enable_shared_from_this<GMsgNetIO>
 {
 public:
+    GMsgNetIO();
+
     bool Start(bool srv, std::string ip, unsigned int port);
 
     void Accept();
@@ -32,10 +57,24 @@ public:
 
     virtual void Update() override;
 
-private:
-    boost::asio::io_service            m_io_context;
-    boost::asio::ip::tcp::socket       m_sock;
-    boost::asio::ip::tcp::acceptor     m_acceptor;
+    virtual std::string ComName() { return "GMsgNetIO"; }
+
+
+    unsigned int AssignId();
+
+    std::shared_ptr<GSock> Cli() { return m_socks.begin()->second; }
+
+    boost::asio::io_service                         m_io_context;
+    // for tcp server
+    std::shared_ptr<boost::asio::ip::tcp::acceptor> m_acceptor;
+    boost::asio::ip::tcp::socket                    m_socket;
+    // tcp socks
+    std::unordered_map<unsigned int, std::shared_ptr<GSock>>         m_socks;
+
+    unsigned int                                    m_assign_id;
+    bool                                            m_srv;
+    std::weak_ptr<GCliMsgMgr>                       m_climsgmgr;
+    std::weak_ptr<GSrvMsgMgr>                       m_srvmsgmgr;
 };
 
 #endif

@@ -15,7 +15,7 @@
 
 class GObj;
 class GPhyWorld;
-class GCom : public std::enable_shared_from_this<GCom>
+class GCom
 {
     friend class GObj;
 public:

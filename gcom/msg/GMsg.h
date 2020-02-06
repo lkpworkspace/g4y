@@ -11,7 +11,7 @@ enum class GMsgOperator : int {
 
 class GCom;
 class GMsgMgr;
-class GMsg : public GCom
+class GMsg : public GCom, public std::enable_shared_from_this<GMsg>
 {
 public:
     /*

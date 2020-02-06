@@ -36,6 +36,11 @@ int GWorld::Run()
     return 0;
 }
 
+void GWorld::Poll()
+{
+    m_scene->Update();
+}
+
 void GWorld::SetScene(std::shared_ptr<GScene> s)
 {
     m_scene = s;

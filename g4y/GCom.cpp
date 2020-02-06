@@ -3,7 +3,6 @@
 #include "GWorld.h"
 
 GCom::GCom() :
-    std::enable_shared_from_this<GCom>(),
     m_awake(false)
 {}
 

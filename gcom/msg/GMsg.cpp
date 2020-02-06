@@ -7,13 +7,14 @@
 #include <iostream>
 
 GMsg::GMsg(bool loc) :
-        m_loc(loc),
-        m_is_srv(false),
-        m_prt_srv_id(""),
-        m_prt_loc_id(""),
-        m_srv_id(""),
-        m_loc_id(""),
-        m_cli_id(-1)
+    std::enable_shared_from_this<GMsg>(),
+    m_loc(loc),
+    m_is_srv(false),
+    m_prt_srv_id(""),
+    m_prt_loc_id(""),
+    m_srv_id(""),
+    m_loc_id(""),
+    m_cli_id(-1)
 {
 }
 

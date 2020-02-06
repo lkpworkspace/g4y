@@ -21,6 +21,7 @@ public:
     static double GetTime();
 
     int Run();
+    void Poll();
 private:
     std::shared_ptr<GScene>                m_scene;
     std::shared_ptr<GPhyWorld>             m_phy_world;
