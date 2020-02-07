@@ -2,7 +2,8 @@
 #define __GWORLD_H__
 #include <unordered_set>
 #include <memory>
-#include <boost/timer.hpp>
+#include <thread>
+#include <chrono>
 
 class GScene;
 class GPhyWorld;
@@ -26,7 +27,6 @@ private:
     std::shared_ptr<GScene>                m_scene;
     std::shared_ptr<GPhyWorld>             m_phy_world;
     std::shared_ptr<GOpenGLView>           m_gl_view;
-    static std::shared_ptr<boost::timer>   s_timer;
 };
 
 #endif

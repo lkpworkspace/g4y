@@ -144,11 +144,11 @@ void build_scene(std::shared_ptr<GScene> s)
 
     cube->AddDefaultComs();
     cube->AddCom(std::make_shared<GCube>());
-    cube->AddCom(std::make_shared<ModelScripts>("cube", glm::vec3(0, 10, 0)));
+    //cube->AddCom(std::make_shared<ModelScripts>("cube", glm::vec3(0, 10, 0)));
 
     cube2->AddDefaultComs();
     cube2->AddCom(std::make_shared<GCube>());
-    cube2->AddCom(std::make_shared<ModelScripts>("cube2", glm::vec3(0, 10, 0)));
+    //cube2->AddCom(std::make_shared<ModelScripts>("cube2", glm::vec3(0, 10, 0)));
 
     model->AddDefaultComs();
     model->AddCom(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10)));

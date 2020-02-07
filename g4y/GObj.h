@@ -25,11 +25,14 @@ public:
 
     template<typename T>
     bool AddCom(std::shared_ptr<T> com){
-        return AddCom(std::static_pointer_cast<GCom>(com));
+        auto c = std::dynamic_pointer_cast<GCom>(com);
+        if(c) return AddCom(c);
+        return false;
     }
     template<typename T>
     void DelCom(std::shared_ptr<T> com){
-        DelCom(std::static_pointer_cast<GCom>(com));
+        auto c = std::dynamic_pointer_cast<GCom>(com);
+        if(c) DelCom(c);
     }
     bool AddCom(std::shared_ptr<GCom> com);
     void DelCom(std::shared_ptr<GCom> com);

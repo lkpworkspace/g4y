@@ -1,12 +1,10 @@
 #include "GWorld.h"
 #include <iostream>
-#include <thread>
-#include <chrono>
 #include "GScene.h"
 #include "GPhyWorld.h"
 #include "GOpenGLView.h"
-std::shared_ptr<boost::timer> GWorld::s_timer = std::make_shared<boost::timer>();
 
+auto g_begin_time = std::chrono::system_clock::now();
 GWorld::GWorld() :
     std::enable_shared_from_this<GWorld>()
 {
@@ -24,7 +22,10 @@ GWorld::~GWorld()
 
 double GWorld::GetTime()
 {
-    return s_timer->elapsed();
+    using namespace std::chrono;
+    auto tp = std::chrono::system_clock::now();
+    auto d = std::chrono::duration_cast<microseconds>(tp - g_begin_time);
+    return (d.count() * 1.0f / 1e6);
 }
 
 int GWorld::Run()
