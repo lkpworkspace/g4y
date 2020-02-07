@@ -32,10 +32,13 @@ public:
 
     void DoReadBody();
 
+    void DoWrite();
+
     void Write(const char* buf, int len);
 
     std::weak_ptr<GMsgNetIO>           m_msg_netio;
     std::queue<std::string>            m_msg_queue; // recv msg queue
+    std::queue<std::string>            m_snd_queue; // send msg queue
     boost::asio::ip::tcp::socket       m_sock;
     unsigned int                       m_id;
 
@@ -53,6 +56,8 @@ public:
 
     void Accept();
 
+    virtual void Init() override;
+
     virtual void Awake() override;
 
     virtual void Update() override;
@@ -64,13 +69,13 @@ public:
 
     std::shared_ptr<GSock> Cli() { return m_socks.begin()->second; }
 
-    boost::asio::io_service                         m_io_context;
     // for tcp server
     std::shared_ptr<boost::asio::ip::tcp::acceptor> m_acceptor;
     boost::asio::ip::tcp::socket                    m_socket;
     // tcp socks
     std::unordered_map<unsigned int, std::shared_ptr<GSock>>         m_socks;
 
+    bool                                            m_init;
     unsigned int                                    m_assign_id;
     bool                                            m_srv;
     std::weak_ptr<GCliMsgMgr>                       m_climsgmgr;

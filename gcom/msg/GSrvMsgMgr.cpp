@@ -19,9 +19,9 @@ void GSrvMsgMgr::PushMsg(unsigned int id, std::string dat)
         cli = m_cli_proxys[id];
     }
     auto msgs = Deserilize(dat);
-    for(int i = 0; i < msgs.size(); ++i){
-        std::cout << msgs[i]->DebugString() << std::endl;
-    }
+    // for(int i = 0; i < msgs.size(); ++i){
+    //     std::cout << msgs[i]->DebugString() << std::endl;
+    // }
     auto meta_msg = std::static_pointer_cast<GMetaMsg>(msgs[0]);
     cli->m_recv_msgs[meta_msg->loc_id()] = msgs;
 }

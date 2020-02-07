@@ -6,6 +6,7 @@
 #include "GSrvMsgMgr.h"
 #include "GMsg.h"
 
+boost::asio::io_service g_io_context;
 void GSock::Start()
 {
     DoReadHead();
@@ -48,18 +49,41 @@ void GSock::DoReadBody()
         });
 }
 
-void GSock::Write(const char* buf, int len)
+void GSock::DoWrite()
 {
     boost::asio::async_write(m_sock,
-        boost::asio::buffer(buf,len),
+        boost::asio::buffer(m_snd_queue.front().data(),m_snd_queue.front().length()),
         [this](boost::system::error_code ec, std::size_t /*length*/)
         {
-            if (ec){
-                m_msg_netio.lock()->m_socks.erase(m_id);
+            m_snd_queue.pop();
+            if (!ec){
+                if(!m_snd_queue.empty()){
+                    DoWrite();
+                }
             }else{
+                m_msg_netio.lock()->m_socks.erase(m_id);
                 std::cout << ec.message() << std::endl;
             }
         });
+}
+
+void GSock::Write(const char* buf, int len)
+{
+    std::string s;
+    unsigned short h = len;
+    s.append((char*)&h, 2);
+    s.append(buf, len);
+    g_io_context.post(
+        [this, s]()
+        {
+            bool write_in_progress = !m_snd_queue.empty();
+            m_snd_queue.push(s);
+            if (!write_in_progress)
+            {
+                DoWrite();
+            }
+        });
+    //m_snd_queue.emplace(s);
 }
 
 /*
@@ -86,8 +110,9 @@ void GSock::Write(const char* buf, int len)
 
 GMsgNetIO::GMsgNetIO() :
     std::enable_shared_from_this<GMsgNetIO>(),
+    m_init(false),
     m_assign_id(0),
-    m_socket(m_io_context)
+    m_socket(g_io_context)
 {
 }
 
@@ -98,12 +123,17 @@ unsigned int GMsgNetIO::AssignId()
 
 bool GMsgNetIO::Start(bool srv, std::string ip, unsigned int port)
 {
+    if(m_init) return false;
+
     m_srv = srv;
     using namespace boost::asio::ip;
     if(srv){
-        m_acceptor = std::make_shared<tcp::acceptor>(m_io_context, tcp::endpoint(tcp::v4(), port));
+        m_acceptor = std::make_shared<tcp::acceptor>(g_io_context, tcp::endpoint(tcp::v4(), port));
+        Accept();
+        m_init = true;
     }else{
-        tcp::resolver resolver(m_io_context);
+        std::cout << "[info] begin connect" << std::endl;
+        tcp::resolver resolver(g_io_context);
         auto endpoint_iterator = resolver.resolve({ ip, std::to_string(port) });
         unsigned int id = AssignId();
         m_socks.emplace(id, std::make_shared<GSock>(id, std::move(m_socket), shared_from_this()));
@@ -116,6 +146,7 @@ bool GMsgNetIO::Start(bool srv, std::string ip, unsigned int port)
                 auto cli = Cli();
                 cli->m_sock = std::move(m_socket);
                 cli->Start();
+                m_init = true;
             }else{
                 std::cout << "connect failed" << std::endl;
             }
@@ -143,6 +174,11 @@ void GMsgNetIO::Accept()
         });
 }
 
+void GMsgNetIO::Init()
+{
+    Obj()->SetTag("GMsgNetIO");
+}
+
 void GMsgNetIO::Awake()
 {
     if(m_srv){
@@ -164,12 +200,15 @@ void GMsgNetIO::Awake()
 
 void GMsgNetIO::Update()
 {
-    m_io_context.poll();
+    g_io_context.poll();
+
+    if(!m_init) return;
     // push msg to msgmgr
     for(const auto& p : m_socks){
         auto id = p.first;
         auto cli = p.second;
 
+        if(cli->m_msg_queue.empty()) continue;
         if(m_srv){
             m_srvmsgmgr.lock()->PushMsg(id, cli->m_msg_queue.front());
             cli->m_msg_queue.pop();

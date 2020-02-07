@@ -21,7 +21,7 @@ void GPbTransformMsg::Update()
             auto cli_msg_mgr = std::static_pointer_cast<GCliMsgMgr>(MsgMgr());
             cli_msg_mgr->BroadcastMsg(shared_from_this(), info, msg);
         }
-        test = true;
+        //test = true;
     }     
 }
 
