@@ -24,8 +24,11 @@
 class MoveScripts : public GCom
 {
 public:
-    MoveScripts(std::string title) :
-        title(title)
+    MoveScripts(std::string title, glm::vec3 pos) :
+        title(title),
+        x(pos.x),
+        y(pos.y),
+        z(pos.z)
     {
     }
 
@@ -55,9 +58,9 @@ public:
         ImGui::End();
     }
 
-    float x = 0.0f;
-    float y = 20.0f;
-    float z = 30.0f;
+    float x;
+    float y;
+    float z;
     float rx = -20.0f;
     float ry = 0.0f;
     float rz = 0.0f;
@@ -91,13 +94,13 @@ public:
 
     virtual void OnGUI() override
     {
+        static int cnt = 0;
         ImGui::Begin(title.c_str());
         if(ImGui::Button("Create msg com")){
             auto obj = std::make_shared<GObj>();
             auto msg = std::make_shared<GPbTransformMsg>(true);
-            auto move_srcipts = std::make_shared<MoveScripts>("move");
+            auto move_srcipts = std::make_shared<MoveScripts>("move" + std::to_string(cnt++), glm::vec3(0, 0, 0));
             obj->AddDefaultComs();
-            obj->Transform()->SetPostion(10, 20, 0);
             obj->AddCom(msg);
             obj->AddCom(move_srcipts);
             Obj()->Scene()->AddChild(obj);
@@ -119,7 +122,7 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
-    camera->AddCom(std::make_shared<MoveScripts>("Camera Setting"));
+    camera->AddCom(std::make_shared<MoveScripts>("Camera Setting", glm::vec3(0, 20, 30)));
 
     auto msgmgr_com = std::make_shared<GCliMsgMgr>();
     msgmgr_com->RegMsgCom("GTransformMsg", [](bool loc){ 

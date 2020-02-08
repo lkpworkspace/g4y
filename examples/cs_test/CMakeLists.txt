@@ -17,7 +17,6 @@ set(MSG_SRC
     ${PROJECT_SOURCE_DIR}/gcom/msg/GCliMsgProxy.cpp
     ${PROJECT_SOURCE_DIR}/gcom/msg/GSrvMsgMgr.cpp
     ${PROJECT_SOURCE_DIR}/gcom/msg/GMsgNetIO.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/msg/msgio/GBoostMsgQueue.cpp
 )
 
 set(CS_TEST_SRCS
@@ -28,13 +27,13 @@ set(CS_TEST_SRCS
 )
 
 ADD_EXECUTABLE(client.out TClient.cpp ${PROTO_SRCS} ${PROTO_HDRS} ${CS_TEST_SRCS} )
-target_link_libraries(client.out rt GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES} ${BULLET_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(client.out ${PROTOBUF_LIBRARIES} ${G4Y_LIBRARIES})
 
 ADD_EXECUTABLE(server.out TServer.cpp ${PROTO_SRCS} ${PROTO_HDRS} ${CS_TEST_SRCS} )
-target_link_libraries(server.out rt GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES} ${BULLET_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(server.out ${PROTOBUF_LIBRARIES} ${G4Y_LIBRARIES})
 
 ADD_EXECUTABLE(client Client.cpp ${PROTO_SRCS} ${PROTO_HDRS} ${CS_TEST_SRCS} )
-target_link_libraries(client rt GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES} ${BULLET_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(client ${PROTOBUF_LIBRARIES} ${G4Y_LIBRARIES})
 
 ADD_EXECUTABLE(server Server.cpp ${PROTO_SRCS} ${PROTO_HDRS} ${CS_TEST_SRCS} )
-target_link_libraries(server rt GL GLEW glm glfw assimp ${PROTOBUF_LIBRARIES} ${BULLET_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(server ${PROTOBUF_LIBRARIES} ${G4Y_LIBRARIES})

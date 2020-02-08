@@ -8,7 +8,9 @@ class GPbTransformMsg : public GMsg
 {
 public:
     GPbTransformMsg(bool loc) :
-        GMsg(loc)
+        GMsg(loc),
+        m_parse_cnt(0),
+        m_tmp(0)
     {}
     
     virtual void Init() override;
@@ -25,6 +27,8 @@ public:
 
 private:
     std::weak_ptr<GTransform> m_transform;
+    unsigned int              m_parse_cnt;
+    unsigned int              m_tmp;
 };
 
 #endif

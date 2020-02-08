@@ -8,6 +8,7 @@
 #include <queue>
 #include <unordered_map>
 #include <boost/asio.hpp>
+#include <mutex>
 #include "GCom.h"
 
 // for boost 1.56.0
@@ -21,7 +22,8 @@ class GSock
 public:
     GSock(unsigned int id, boost::asio::ip::tcp::socket socket, std::shared_ptr<GMsgNetIO> io) :
         m_id(id),
-        m_sock(std::move(socket))
+        m_sock(std::move(socket)),
+        m_recv_cnt(0)
     {
         m_msg_netio = io;
     }
@@ -36,6 +38,14 @@ public:
 
     void Write(const char* buf, int len);
 
+    void Close();
+
+    void Lock() { m_recv_msg_mutex.lock(); }
+
+    void Unlock() { m_recv_msg_mutex.unlock(); }
+
+    unsigned int                       m_recv_cnt;
+    std::mutex                         m_recv_msg_mutex;
     std::weak_ptr<GMsgNetIO>           m_msg_netio;
     std::queue<std::string>            m_msg_queue; // recv msg queue
     std::queue<std::string>            m_snd_queue; // send msg queue
@@ -67,7 +77,7 @@ public:
 
     unsigned int AssignId();
 
-    std::shared_ptr<GSock> Cli() { return m_socks.begin()->second; }
+    std::shared_ptr<GSock> Cli() { return m_socks.end() == m_socks.begin() ? nullptr : m_socks.begin()->second; }
 
     // for tcp server
     std::shared_ptr<boost::asio::ip::tcp::acceptor> m_acceptor;

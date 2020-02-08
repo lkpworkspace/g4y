@@ -3,7 +3,6 @@
 #include "GPbTransformMsg.h"
 #include "GMsgMgr.h"
 #include "GSrvMsgMgr.h"
-#include "GBoostMsgQueue.h"
 
 /*
     模拟测试流程1:
@@ -185,7 +184,6 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-#if 0
     std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
     
@@ -194,8 +192,4 @@ int main(int argc, char** argv)
     build_scene(s);
 
     return w->Run();
-#else
-    GBoostMsgQueue::Test(true);
-    return 0;
-#endif
 }

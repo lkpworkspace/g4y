@@ -3,6 +3,7 @@
 #include "GMsgMgr.h"
 #include "g4y.pb.h"
 #include <iostream>
+#include "GCommon.h"
 class GMsg;
 class GCom;
 class GObj;
@@ -44,6 +45,7 @@ public:
     void BroadcastMsg(std::shared_ptr<T>, std::shared_ptr<::google::protobuf::Message>, std::shared_ptr<::google::protobuf::Message>);
 
 private:
+    unsigned int m_pop_msg_cnt;
     // 本地消息对象(loc id, obj)
     std::unordered_map<std::string, std::weak_ptr<GObj>> m_loc_objs;
     // 服务端消息对象(srv id, obj)
@@ -58,8 +60,10 @@ private:
 template<typename T>
 void GCliMsgMgr::BroadcastMsg(std::shared_ptr<T> msg_com, std::shared_ptr<::google::protobuf::Message> info, std::shared_ptr<::google::protobuf::Message> msg)
 {
+    BOOST_LOG_FUNCTION();
     using namespace ::google::protobuf;
     auto com = std::static_pointer_cast<GMsg>(msg_com);
+    BOOST_LOG_SEV(g_lg::get(), debug) << "msg com " << com->LocId() << "broadcast msg";
     std::shared_ptr<Message> meta_msg;
     if(m_send_msgs.find(com->LocId()) == m_send_msgs.end()){
         // build meta msg

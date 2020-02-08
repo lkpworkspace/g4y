@@ -1,6 +1,5 @@
 #include "GPbTransformMsg.h"
-#include "GObj.h"
-#include "GTransform.h"
+#include "GCommon.h"
 #include "GMsgMgr.h"
 #include "GCliMsgMgr.h"
 
@@ -12,16 +11,16 @@ void GPbTransformMsg::Init()
 
 void GPbTransformMsg::Update()
 {
-    static bool test = false;
+    if(m_tmp++ % 3 != 0) return;
+    
     // 客户端本地创建的每个一段时间发送更新消息
-    if(!test && m_loc && !m_is_srv){
+    if(m_loc && !m_is_srv){
         auto msg = BuildMsg();
         auto info = BuildInfoMsg(MsgName(), GMsgInfo_Action_UPDATE, msg->ByteSize());
         if(MsgMgr()){
             auto cli_msg_mgr = std::static_pointer_cast<GCliMsgMgr>(MsgMgr());
             cli_msg_mgr->BroadcastMsg(shared_from_this(), info, msg);
         }
-        //test = true;
     }     
 }
 
@@ -48,6 +47,8 @@ std::shared_ptr<::google::protobuf::Message> GPbTransformMsg::BuildMsg()
 // create/update/delete
 void GPbTransformMsg::ParseMsg(std::shared_ptr<::google::protobuf::Message> msg)
 {
+    BOOST_LOG_FUNCTION();
+    BOOST_LOG_SEV(g_lg::get(), debug) << Obj()->UUID() << " parse " << ++m_parse_cnt;
     using namespace ::google::protobuf;
     auto tm = std::static_pointer_cast<GTransformMsg>(msg);
     m_transform.lock()->postion = glm::vec3(tm->posx(), tm->posy(), tm->posz());

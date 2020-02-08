@@ -1,11 +1,12 @@
 #include "GSrvMsgMgr.h"
-#include "GCom.h"
+#include "GCommon.h"
 #include "GMsgMgr.h"
-#include "GObj.h"
 #include "GMsg.h"
 
 void GSrvMsgMgr::PushMsg(unsigned int id, std::string dat)
 {
+    BOOST_LOG_FUNCTION();
+    static unsigned int cnt;
     // 找到客户端代理
     // 未找到就创建
     // 反序列化
@@ -18,10 +19,8 @@ void GSrvMsgMgr::PushMsg(unsigned int id, std::string dat)
     }else{
         cli = m_cli_proxys[id];
     }
+    BOOST_LOG_SEV(g_lg::get(), debug) << "cli " << id << " get msg " << ++cli->m_recv_msg_cnt;
     auto msgs = Deserilize(dat);
-    // for(int i = 0; i < msgs.size(); ++i){
-    //     std::cout << msgs[i]->DebugString() << std::endl;
-    // }
     auto meta_msg = std::static_pointer_cast<GMetaMsg>(msgs[0]);
     cli->m_recv_msgs[meta_msg->loc_id()] = msgs;
 }
@@ -36,7 +35,7 @@ std::pair<unsigned int, std::string> GSrvMsgMgr::PopMsg()
     for(int i = 0; i < m_cli_proxy_vec.size(); ++i){
         auto cli = m_cli_proxy_vec[i];
         if(cli.lock()->m_send_msgs.empty()) return std::make_pair(-1, "");
-
+        BOOST_LOG_SEV(g_lg::get(), debug) << "cli " << cli.lock()->m_id << " msg size " << cli.lock()->m_send_msgs.size();
         std::string d = Serilize(cli.lock()->m_send_msgs.begin()->second);
         cli.lock()->m_send_msgs.erase(cli.lock()->m_send_msgs.begin()->first);
         return std::make_pair(cli.lock()->m_id, d);
@@ -51,12 +50,15 @@ void GSrvMsgMgr::Init()
 
 void GSrvMsgMgr::LateUpdate()
 {
+    BOOST_LOG_FUNCTION();
     // 根据接收到的消息,更新对象
     // 解析并分发
     for(const auto& c : m_cli_proxy_vec){
         auto cli = c.lock();
         auto& recv_msgs = c.lock()->m_recv_msgs;
         if(recv_msgs.empty()) continue;
+        cli->m_process_recv_msg_cnt += recv_msgs.size();
+        BOOST_LOG_SEV(g_lg::get(), debug) << "cli " << cli->m_id << " process " << cli->m_process_recv_msg_cnt << " msg";
         for( const auto& p : recv_msgs ) {
             auto msgs = p.second;
             auto meta = std::static_pointer_cast<GMetaMsg>(p.second[0]);
@@ -65,6 +67,7 @@ void GSrvMsgMgr::LateUpdate()
                 obj = cli->MsgObj(meta->loc_id());
             }
             if(!obj){
+                BOOST_LOG_SEV(g_lg::get(), debug) << "create obj " << meta->loc_id();
                 obj = std::make_shared<GObj>();
                 cli->AddObj(meta->loc_id(), obj);
                 obj->AddDefaultComs();

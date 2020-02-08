@@ -3,7 +3,8 @@
 #include "GObj.h"
 #include "GMsg.h"
 
-GCliMsgMgr::GCliMsgMgr()
+GCliMsgMgr::GCliMsgMgr() :
+    m_pop_msg_cnt(0)
 {
     m_loc_objs.clear();
     m_srv_objs.clear();
@@ -25,12 +26,13 @@ void GCliMsgMgr::PushMsg(std::string dat)
 
 std::string GCliMsgMgr::PopMsg()
 {
+    BOOST_LOG_FUNCTION();
     // m_send_msgs
     // 打包消息
     // 序列化
     // 从消息缓存中删除
     if(m_send_msgs.empty()) return std::string();
-
+    BOOST_LOG_SEV(g_lg::get(), debug) << "cli msg mgr pop " << ++m_pop_msg_cnt;
     std::string d = Serilize(m_send_msgs.begin()->second);
     m_send_msgs.erase(m_send_msgs.begin()->first);
     return d;
@@ -130,13 +132,13 @@ void GCliMsgMgr::LateUpdate()
     m_recv_msgs.clear();
 
     // 仅用于调试
-    for( const auto& msgs : m_send_msgs ) {
-        for(const auto& msg : msgs.second){
-            std::cout << msg->DebugString();
-            std::cout << std::endl;
-        }    
-    }
-    m_send_msgs.clear();
+    // for( const auto& msgs : m_send_msgs ) {
+    //     for(const auto& msg : msgs.second){
+    //         std::cout << msg->DebugString();
+    //         std::cout << std::endl;
+    //     }    
+    // }
+    // m_send_msgs.clear();
 }
 
 

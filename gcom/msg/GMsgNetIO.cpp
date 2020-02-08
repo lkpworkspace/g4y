@@ -1,6 +1,6 @@
 #include "GMsgNetIO.h"
-#include "GCom.h"
-#include "GObj.h"
+#include "GCommon.h"
+
 #include "GMsgMgr.h"
 #include "GCliMsgMgr.h"
 #include "GSrvMsgMgr.h"
@@ -9,6 +9,9 @@
 boost::asio::io_service g_io_context;
 void GSock::Start()
 {
+    BOOST_LOG_FUNCTION();
+    src::severity_logger< severity_level > slg;
+    BOOST_LOG_SEV(g_lg::get(), debug) << "sock " << m_id << " start";
     DoReadHead();
 }
 
@@ -18,14 +21,15 @@ void GSock::DoReadHead()
         boost::asio::buffer(&m_len, HEADER_LENGTH),
         [this](boost::system::error_code ec, std::size_t /*length*/)
         {
+            BOOST_LOG_FUNCTION();
             if (!ec && m_len < MAX_BODY_LENGTH)
             {
                 DoReadBody();
             }
             else
             {
-                m_msg_netio.lock()->m_socks.erase(m_id);
-                std::cout << ec.message() << std::endl;
+                Close();
+                BOOST_LOG_SEV(g_lg::get(), debug) << "sock " << m_id << " " << ec.message();
             }
         });
 }
@@ -36,21 +40,28 @@ void GSock::DoReadBody()
         boost::asio::buffer(m_data, m_len),
         [this](boost::system::error_code ec, std::size_t /*length*/)
         {
+            BOOST_LOG_FUNCTION();
             if (!ec)
             {
+                BOOST_LOG_SEV(g_lg::get(), debug) << "sock recv" << ++m_recv_cnt;
                 m_msg_queue.push(std::string(m_data, m_len));
                 DoReadHead();
             }
             else
             {
-                m_msg_netio.lock()->m_socks.erase(m_id);
-                std::cout << ec.message() << std::endl;
+                Close();
+                BOOST_LOG_SEV(g_lg::get(), debug) << "sock " << m_id << " " << ec.message();
             }
         });
 }
 
 void GSock::DoWrite()
 {
+    BOOST_LOG_FUNCTION();
+    if(m_snd_queue.size() > 20){
+        BOOST_LOG_SEV(g_lg::get(), warning) << "sock " << m_id << " write queue size > 20";
+        return;
+    }
     boost::asio::async_write(m_sock,
         boost::asio::buffer(m_snd_queue.front().data(),m_snd_queue.front().length()),
         [this](boost::system::error_code ec, std::size_t /*length*/)
@@ -61,18 +72,24 @@ void GSock::DoWrite()
                     DoWrite();
                 }
             }else{
-                m_msg_netio.lock()->m_socks.erase(m_id);
-                std::cout << ec.message() << std::endl;
+                Close();
+                BOOST_LOG_SEV(g_lg::get(), debug) << "sock " << m_id << " " << ec.message();
             }
         });
 }
 
+void GSock::Close()
+{
+    if(m_msg_netio.expired()) return;
+    auto& socks = m_msg_netio.lock()->m_socks;
+    if(socks.find(m_id) != socks.end()){
+        socks.erase(m_id);
+    }
+}
+
 void GSock::Write(const char* buf, int len)
 {
-    std::string s;
-    unsigned short h = len;
-    s.append((char*)&h, 2);
-    s.append(buf, len);
+    std::string s(buf, len);
     g_io_context.post(
         [this, s]()
         {
@@ -83,7 +100,6 @@ void GSock::Write(const char* buf, int len)
                 DoWrite();
             }
         });
-    //m_snd_queue.emplace(s);
 }
 
 /*
@@ -124,7 +140,7 @@ unsigned int GMsgNetIO::AssignId()
 bool GMsgNetIO::Start(bool srv, std::string ip, unsigned int port)
 {
     if(m_init) return false;
-
+    
     m_srv = srv;
     using namespace boost::asio::ip;
     if(srv){
@@ -201,37 +217,48 @@ void GMsgNetIO::Awake()
 void GMsgNetIO::Update()
 {
     g_io_context.poll();
-
     if(!m_init) return;
     // push msg to msgmgr
     for(const auto& p : m_socks){
         auto id = p.first;
         auto cli = p.second;
-
-        if(cli->m_msg_queue.empty()) continue;
-        if(m_srv){
-            m_srvmsgmgr.lock()->PushMsg(id, cli->m_msg_queue.front());
-            cli->m_msg_queue.pop();
-        }else{
-            m_climsgmgr.lock()->PushMsg(cli->m_msg_queue.front());
-            cli->m_msg_queue.pop();
+        while(!cli->m_msg_queue.empty()){
+            if(m_srv){
+                m_srvmsgmgr.lock()->PushMsg(id, cli->m_msg_queue.front());
+                cli->m_msg_queue.pop();
+            }else{
+                m_climsgmgr.lock()->PushMsg(cli->m_msg_queue.front());
+                cli->m_msg_queue.pop();
+            }
         }
     }
 
     // pop msg from msgmgr
     if(m_srv){
+        std::string s;
         while(1){
             auto p = m_srvmsgmgr.lock()->PopMsg();
             if(p.first == -1) break;
+            if(m_socks.find(p.first) == m_socks.end()) break;
             auto cli = m_socks[p.first];
-            cli->Write(p.second.data(), p.second.size());
+            unsigned short h = p.second.size();
+            s.append((char*)&h, 2);
+            s.append(p.second.data(), p.second.size());
+            cli->Write(s.data(), s.size());
+            s.clear();
         }
     }else{
-        while(1){
-            auto d = m_climsgmgr.lock()->PopMsg();
-            if(d.empty()) break;
-            auto cli = Cli();
-            cli->Write(d.data(), d.size());
+        std::string s;
+        auto cli = Cli();
+        if(cli != nullptr){
+            while(1){
+                auto d = m_climsgmgr.lock()->PopMsg();
+                if(d.empty()) break;
+                unsigned short h = d.size();
+                s.append((char*)&h, 2);
+                s.append(d.data(), d.size());
+            }
         }
+        cli->Write(s.data(), s.size());
     }
 }

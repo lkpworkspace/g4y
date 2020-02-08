@@ -9,4 +9,4 @@ set(BULLET_TEST_SRCS
 
 ADD_EXECUTABLE(bullet_test.out ${BULLET_TEST_SRCS})
 
-target_link_libraries(bullet_test.out GL GLEW glm glfw assimp ${BULLET_LIBRARIES})
+target_link_libraries(bullet_test.out ${G4Y_LIBRARIES})

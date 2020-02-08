@@ -6,10 +6,11 @@ option(USE_GUI "use gui" ON)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 # boost lib
+add_definitions(-DBOOST_LOG_DYN_LINK)
 set(Boost_USE_STATIC_LIBS       OFF) # only find static libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package(Boost COMPONENTS date_time system)
+find_package(Boost 1.65 COMPONENTS date_time system log)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
@@ -28,6 +29,7 @@ include_directories(gcom/msg)
 include_directories(gcom/msg/msgio)
 
 set(G4Y_SRCS
+    ${PROJECT_SOURCE_DIR}/g4y/GLog.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
@@ -79,5 +81,17 @@ if(USE_GUI)
         ${PROJECT_SOURCE_DIR}/gcom/light/GLight.cpp
     )
 endif(USE_GUI)
+
+set(G4Y_LIBRARIES
+    rt
+    GL 
+    GLEW 
+    glm 
+    glfw 
+    assimp 
+    pthread
+    ${BULLET_LIBRARIES}
+    ${Boost_LIBRARIES}
+)
 
 add_subdirectory(examples)

@@ -12,7 +12,9 @@ class GCliMsgProxy
 {
 public:
     GCliMsgProxy(unsigned int id) :
-        m_id(id)
+        m_id(id),
+        m_recv_msg_cnt(0),
+        m_process_recv_msg_cnt(0)
     {}
     virtual ~GCliMsgProxy(){}
 
@@ -23,6 +25,8 @@ public:
     bool HaveObj(std::string id);
 
     unsigned int m_id;
+    unsigned int m_recv_msg_cnt;
+    unsigned int m_process_recv_msg_cnt;
     // loc id, obj
     std::unordered_map<std::string, std::weak_ptr<GObj>> m_msg_objs;
 
