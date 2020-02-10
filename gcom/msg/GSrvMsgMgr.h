@@ -31,6 +31,8 @@ class GSrvMsgMgr : public GMsgMgr
 public:
     void PushMsg(unsigned int id, std::string);
     std::pair<unsigned int, std::string> PopMsg();
+
+    void NewCli(unsigned int id);
     
     void Init();
 
@@ -42,6 +44,7 @@ public:
     template<typename T>
     void BroadcastMsg(std::shared_ptr<T>, std::shared_ptr<::google::protobuf::Message>, std::shared_ptr<::google::protobuf::Message>);
 
+    void BroadcastMsg(unsigned int, std::string obj_loc_id, std::vector<std::shared_ptr<::google::protobuf::Message>>);
 private:
     // 便于遍历
     std::vector<std::weak_ptr<GCliMsgProxy>> m_cli_proxy_vec;
@@ -60,7 +63,7 @@ void GSrvMsgMgr::BroadcastMsg(std::shared_ptr<T> msg_com, std::shared_ptr<::goog
     for(const auto& p : m_cli_proxys){
         auto cli_id = p.first;
         auto cli    = p.second;
-        auto send_msgs = cli->m_send_msgs;
+        auto& send_msgs = cli->m_send_msgs;
 
         if(com->m_cli_id == cli_id) continue;
 

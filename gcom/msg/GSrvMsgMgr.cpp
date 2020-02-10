@@ -3,6 +3,16 @@
 #include "GMsgMgr.h"
 #include "GMsg.h"
 
+void GSrvMsgMgr::NewCli(unsigned int id)
+{
+    std::shared_ptr<GCliMsgProxy> cli = nullptr;
+    if(m_cli_proxys.find(id) == m_cli_proxys.end()){
+        cli = std::make_shared<GCliMsgProxy>(id);
+        m_cli_proxy_vec.push_back(cli);
+        m_cli_proxys[id] = cli;
+    }
+}
+
 void GSrvMsgMgr::PushMsg(unsigned int id, std::string dat)
 {
     BOOST_LOG_FUNCTION();
@@ -34,13 +44,26 @@ std::pair<unsigned int, std::string> GSrvMsgMgr::PopMsg()
     // 返回序列化的消息
     for(int i = 0; i < m_cli_proxy_vec.size(); ++i){
         auto cli = m_cli_proxy_vec[i];
-        if(cli.lock()->m_send_msgs.empty()) return std::make_pair(-1, "");
-        BOOST_LOG_SEV(g_lg::get(), debug) << "cli " << cli.lock()->m_id << " msg size " << cli.lock()->m_send_msgs.size();
+        if(cli.lock()->m_send_msgs.empty()) continue;
+        BOOST_LOG_SEV(g_lg::get(), debug) << "cli " << cli.lock()->m_id << " pop msg -------------------------------------";
         std::string d = Serilize(cli.lock()->m_send_msgs.begin()->second);
         cli.lock()->m_send_msgs.erase(cli.lock()->m_send_msgs.begin()->first);
         return std::make_pair(cli.lock()->m_id, d);
     }
     return std::make_pair(-1, "");
+}
+
+void GSrvMsgMgr::BroadcastMsg(unsigned int id, std::string obj_loc_id, std::vector<std::shared_ptr<::google::protobuf::Message>> msgs)
+{
+    for(const auto& p : m_cli_proxys){
+        auto cli_id = p.first;
+        auto cli    = p.second;
+        auto& send_msgs = cli->m_send_msgs;
+
+        if(id == cli_id) continue;
+        BOOST_LOG_SEV(g_lg::get(), debug) << "before forward cli " << id << " msg to cli " << cli_id << "-------------------------------------";
+        send_msgs[obj_loc_id] = msgs;
+    }
 }
 
 void GSrvMsgMgr::Init()
@@ -51,8 +74,8 @@ void GSrvMsgMgr::Init()
 void GSrvMsgMgr::LateUpdate()
 {
     BOOST_LOG_FUNCTION();
-    // 根据接收到的消息,更新对象
-    // 解析并分发
+
+    // 根据接收到的消息,创建或更新对象
     for(const auto& c : m_cli_proxy_vec){
         auto cli = c.lock();
         auto& recv_msgs = c.lock()->m_recv_msgs;
@@ -65,6 +88,10 @@ void GSrvMsgMgr::LateUpdate()
             std::shared_ptr<GObj> obj = nullptr;
             if(cli->HaveObj(meta->loc_id())){
                 obj = cli->MsgObj(meta->loc_id());
+                // 转发消息给其他客户端
+                BOOST_LOG_SEV(g_lg::get(), debug) << "cli " << cli->m_id << " forward msg -------------";
+                meta->set_srv_id(obj->UUID());
+                BroadcastMsg(cli->m_id, meta->loc_id(), msgs);
             }
             if(!obj){
                 BOOST_LOG_SEV(g_lg::get(), debug) << "create obj " << meta->loc_id();

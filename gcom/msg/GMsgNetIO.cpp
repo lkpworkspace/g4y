@@ -182,6 +182,7 @@ void GMsgNetIO::Accept()
                 unsigned int id = AssignId();
                 m_socks.emplace(id, std::make_shared<GSock>(id, std::move(m_socket), shared_from_this()));
                 m_socks[id]->Start();
+                m_srvmsgmgr.lock()->NewCli(id);
                 std::cout << "get client " << id << std::endl;
             }else{
                 std::cout << ec.message() << std::endl;

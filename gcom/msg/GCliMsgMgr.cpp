@@ -1,6 +1,5 @@
 #include "GCliMsgMgr.h"
-#include "GCom.h"
-#include "GObj.h"
+#include "GCommon.h"
 #include "GMsg.h"
 
 GCliMsgMgr::GCliMsgMgr() :
@@ -21,6 +20,7 @@ void GCliMsgMgr::PushMsg(std::string dat)
     // 缓存对象消息
     auto msgs = Deserilize(dat);
     auto meta_msg = std::static_pointer_cast<GMetaMsg>(msgs[0]);
+    BOOST_LOG_SEV(g_lg::get(), debug) << "get msg " << meta_msg->DebugString();
     m_recv_msgs[meta_msg->srv_id()] = msgs;
 }
 
@@ -102,8 +102,7 @@ void GCliMsgMgr::LateUpdate()
         }
         if(HaveSrvObj(meta->srv_id())){
             obj = m_srv_objs[meta->srv_id()].lock();
-        }
-        if(!obj){
+        }else{
             obj = std::make_shared<GObj>();
             m_srv_objs[meta->srv_id()] = obj;
             obj->AddDefaultComs();
@@ -121,24 +120,15 @@ void GCliMsgMgr::LateUpdate()
                 msg_com->ParseMsg(msgs[i + 1]);
                 continue;
             }
-            if(nullptr != com && loc){
-                auto msg_com = std::static_pointer_cast<GMsg>(com);
-                msg_com->ParseMsg(msgs[i + 1]);
+            if(nullptr == com) {
+                BOOST_LOG_SEV(g_lg::get(), error) << "Unknown msg, skiped";
                 continue;
             }
-            std::cout << "[error] unknown msg, skiped" << std::endl;
+            auto msg_com = std::static_pointer_cast<GMsg>(com);
+            msg_com->ParseMsg(msgs[i + 1]);
         }
     }
     m_recv_msgs.clear();
-
-    // 仅用于调试
-    // for( const auto& msgs : m_send_msgs ) {
-    //     for(const auto& msg : msgs.second){
-    //         std::cout << msg->DebugString();
-    //         std::cout << std::endl;
-    //     }    
-    // }
-    // m_send_msgs.clear();
 }
 
 
