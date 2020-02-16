@@ -26,7 +26,15 @@ public:
     virtual void Init(){}
 
     /* 在场景循环前被调用一次,随后不再别调用 */
-    virtual void Awake(){}
+    virtual void Start(){}
+
+    virtual void OnCollisionEnter(){};
+    virtual void OnCollisionStay(){};
+    virtual void OnCollisionExit(){};
+
+    virtual void OnTriggerEnter(){};
+    virtual void OnTriggerStay(){};
+    virtual void OnTriggerExit(){};
 
     /* 每一帧更新都会被调用 */
     virtual void Update(){}
@@ -50,9 +58,9 @@ public:
     double GetTime();
 
 protected:
-    void OnAwake();
+    void OnStart();
 private:
-    bool                     m_awake;
+    bool                     m_start;
     std::weak_ptr<GObj>      m_obj;
     std::weak_ptr<GPhyWorld> m_phy_world;
 };

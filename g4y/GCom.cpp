@@ -3,17 +3,17 @@
 #include "GWorld.h"
 
 GCom::GCom() :
-    m_awake(false)
+    m_start(false)
 {}
 
 GCom::~GCom()
 {}
 
-void GCom::OnAwake()
+void GCom::OnStart()
 {
-    if(!m_awake){
-        m_awake = true;
-        Awake();
+    if(!m_start){
+        m_start = true;
+        Start();
     }
 }
 

@@ -102,13 +102,22 @@ std::shared_ptr<GCom> GObj::GetCom(std::string com_name)
         return m_named_coms[com_name].lock();
 }
 
-void GObj::Awake()
+std::vector<std::shared_ptr<GCom>> GObj::GetComs()
+{
+    std::vector<std::shared_ptr<GCom>> coms;
+    for(const auto& c : m_coms){
+        coms.push_back(c);
+    }
+    return coms;
+}
+
+void GObj::Start()
 {
     for(const auto& c : m_coms){
-        c->OnAwake();
+        c->OnStart();
     }
     for(const auto& o : m_children){
-        o->Awake();
+        o->Start();
     }
 }
 
@@ -117,7 +126,7 @@ void GObj::UpdateComAndChildren()
     if(!m_active) return;
 
     for(const auto& c : m_coms){
-        if(!c->m_awake) continue;
+        if(!c->m_start) continue;
         c->Update();
     }
     for(const auto& o : m_children){
@@ -130,7 +139,7 @@ void GObj::UpdateLate()
     if(!m_active) return;
 
     for(const auto& c : m_coms){
-        if(!c->m_awake) continue;
+        if(!c->m_start) continue;
         c->LateUpdate();
     }
     for(const auto& o : m_children){
@@ -143,7 +152,7 @@ void GObj::UpdateRender()
     if(!m_active) return;
 
     for(const auto& c : m_coms){
-        if(!c->m_awake) continue;
+        if(!c->m_start) continue;
         c->OnRender();
     }
     for(const auto& o : m_children){
@@ -156,7 +165,7 @@ void GObj::UpdateUI()
      if(!m_active) return;
 
     for(const auto& c : m_coms){
-        if(!c->m_awake) continue;
+        if(!c->m_start) continue;
         c->OnGUI();
     }
     for(const auto& o : m_children){

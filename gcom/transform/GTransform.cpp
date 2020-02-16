@@ -24,7 +24,7 @@ void GTransform::SetPostion(glm::vec3& vec)
     postion = vec;
 }
 
-void GTransform::Awake()
+void GTransform::Start()
 {
     auto parent = Obj()->Parent();
     if(parent){

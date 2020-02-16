@@ -13,7 +13,7 @@ public:
     {
     }
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         m_transform = Obj()->Transform();
     }
@@ -60,7 +60,7 @@ public:
         z(pos.z)
     {}
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         std::cout << "Model Scripts awake" << std::endl;
         m_tranform = Obj()->Transform();

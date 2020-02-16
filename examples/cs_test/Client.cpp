@@ -32,7 +32,7 @@ public:
     {
     }
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         m_transform = Obj()->Transform();
     }
@@ -78,7 +78,7 @@ public:
 
     virtual std::string ComName() override { return "MsgScripts"; }
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         auto msg_mgr_obj = GObj::FindWithTag("GCliMsgMgr");
         if(msg_mgr_obj){

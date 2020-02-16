@@ -37,7 +37,7 @@ void GScene::Update()
 {
     // awake
     for( const auto& go : m_objs ) {
-        go->Awake();
+        go->Start();
     }
 
     // update physics

@@ -57,12 +57,12 @@ public:
         title(title)
     {}
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         m_tranform = Obj()->Transform();
         m_tranform.lock()->SetPostion(0, 50, 0);
-        m_colli = Obj()->GetCom<GSphereCollider>("GSphereCollider");
         m_dwld = Obj()->Scene()->PhyWorld();
+        m_rigibody = Obj()->GetCom<GRigibody>("GRigibody");
     }
 
     virtual void Update() override
@@ -71,21 +71,25 @@ public:
 
         if(ImGui::Button("SetY")){
             
-            // btTransform trans(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0));
-            // m_colli.lock()->m_rigidbody->setWorldTransform(trans);
+            btTransform trans(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0));
+            m_rigibody.lock()->m_rigidbody->setWorldTransform(trans);
             
-            m_colli.lock()->m_rigidbody->translate(btVector3(0, 50, 0));
-
-            std::cout << m_colli.lock()->m_rigidbody->wantsSleeping() << std::endl;
+            //m_colli.lock()->m_rigidbody->translate(btVector3(0, 50, 0));
+            //std::cout << m_colli.lock()->m_rigidbody->wantsSleeping() << std::endl;
 
         }
 
         ImGui::End();
     }
 
+    virtual void OnCollisionStay() override
+    {
+        std::cout << "CollisionStay called" << std::endl;
+    }
+
     std::string title;
     std::weak_ptr<GTransform> m_tranform;
-    std::weak_ptr<GSphereCollider> m_colli;
+    std::weak_ptr<GRigibody> m_rigibody;
     std::weak_ptr<GPhyWorld> m_dwld;
 };
 
@@ -108,6 +112,7 @@ void build_scene(std::shared_ptr<GScene> s)
     ground->AddCom(std::make_shared<GMeshCollider>());
 
     sphere->AddDefaultComs();
+    sphere->AddCom(std::make_shared<GRigibody>());
     sphere->AddCom(std::make_shared<GSphereCollider>());
     sphere->AddCom(std::make_shared<ColliderScripts>("set sphere"));
 

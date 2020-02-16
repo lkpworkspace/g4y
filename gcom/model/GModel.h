@@ -24,7 +24,7 @@ public:
 
     void Draw(std::shared_ptr<GShader> shader);
 
-    virtual void Awake() override;
+    virtual void Start() override;
 
     virtual void OnRender() override;
 

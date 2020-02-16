@@ -10,7 +10,7 @@ public:
     GTransform();
     virtual ~GTransform();
 
-    virtual void Awake() override;
+    virtual void Start() override;
 
     virtual void Update() override;
 

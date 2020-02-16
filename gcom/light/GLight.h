@@ -11,7 +11,7 @@ public:
     GLight();
     virtual ~GLight();
 
-    virtual void Awake() override;
+    virtual void Start() override;
 
     virtual void OnRender() override;
 

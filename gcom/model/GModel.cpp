@@ -22,7 +22,7 @@ void GModel::Draw(std::shared_ptr<GShader> shader)
         meshes[i].Draw(shader);
 }
 
-void GModel::Awake()
+void GModel::Start()
 {
     m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
     m_transform = Obj()->Transform();

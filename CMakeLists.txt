@@ -43,6 +43,8 @@ set(G4Y_SRCS
 set(GCOM_SRCS
     ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
     ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GCollider.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GRigibody.cpp
     ${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.cpp
     ${PROJECT_SOURCE_DIR}/gcom/physics/GSphereCollider.cpp
 )

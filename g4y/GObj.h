@@ -44,6 +44,7 @@ public:
         return std::dynamic_pointer_cast<T>(com);
     }
     std::shared_ptr<GCom> GetCom(std::string com_name);
+    std::vector<std::shared_ptr<GCom>> GetComs();
     
     void SetTag(std::string tag);
     std::string Tag() { return m_tag; }
@@ -69,7 +70,7 @@ protected:
 
     void Init();
 
-    void Awake();
+    void Start();
 
     void UpdateComAndChildren();
 

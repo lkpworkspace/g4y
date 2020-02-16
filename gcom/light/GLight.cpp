@@ -10,7 +10,7 @@ GLight::~GLight()
 {}
 
 
-void GLight::Awake()
+void GLight::Start()
 {    
     m_transform = Obj()->Transform();
     m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom("GCamera"));

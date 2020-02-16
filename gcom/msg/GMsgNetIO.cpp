@@ -196,7 +196,7 @@ void GMsgNetIO::Init()
     Obj()->SetTag("GMsgNetIO");
 }
 
-void GMsgNetIO::Awake()
+void GMsgNetIO::Start()
 {
     if(m_srv){
         auto msgmgr_obj = Obj()->FindWithTag("GSrvMsgMgr");

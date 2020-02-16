@@ -21,7 +21,7 @@ public:
 
     virtual std::string ComName() override { return "MsgScripts"; }
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         auto msg_mgr_obj = GObj::FindWithTag("GSrvMsgMgr");
         if(msg_mgr_obj){
@@ -117,7 +117,7 @@ public:
     {
     }
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         m_transform = Obj()->Transform();
     }

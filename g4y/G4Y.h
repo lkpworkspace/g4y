@@ -11,6 +11,7 @@
 #include "GTransform.h"
 #include "GCamera.h"
 #include "GPhyWorld.h"
+#include "GRigibody.h"
 #include "GMeshCollider.h"
 #include "GSphereCollider.h"
 

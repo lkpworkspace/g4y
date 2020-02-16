@@ -79,7 +79,7 @@ GCube::~GCube()
 {}
 
 
-void GCube::Awake()
+void GCube::Start()
 {    
     m_transform = Obj()->Transform();
     m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom("GCamera"));

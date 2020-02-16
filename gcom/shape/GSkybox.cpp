@@ -106,7 +106,7 @@ void GSkybox::LoadCubemap()
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
-void GSkybox::Awake()
+void GSkybox::Start()
 {
     m_transform = Obj()->Transform();
     m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");

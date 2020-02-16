@@ -22,7 +22,7 @@ public:
     {
     }
 
-    virtual void Awake() override
+    virtual void Start() override
     {
         m_transform = Obj()->Transform();
     }

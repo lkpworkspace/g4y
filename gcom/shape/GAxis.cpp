@@ -43,7 +43,7 @@ static float trianglep_vertices[] = {
     0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 };
 
-void GAxis::Awake()
+void GAxis::Start()
 {
     m_transform = Obj()->Transform();
     m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
