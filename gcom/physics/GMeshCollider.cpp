@@ -25,5 +25,8 @@ void GMeshCollider::Start()
 
 void GMeshCollider::Exit()
 {
-    m_phy_world.lock()->DelCollisionObj(m_col_obj);
+    auto com = Obj()->GetCom("GRigibody");
+   if(com == nullptr){
+      m_phy_world.lock()->DelCollisionObj(m_col_obj);
+   }
 }

@@ -25,6 +25,7 @@ public:
     virtual std::string ColliderName() { return "GCollider"; }
 
     std::shared_ptr<btCollisionShape>     m_shape;
+    std::shared_ptr<btCollisionObject>    m_col_obj;
 
     std::set<const btCollisionObject*>          m_last_cols;
     std::set<const btCollisionObject*>          m_cur_cols;

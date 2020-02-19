@@ -18,12 +18,22 @@ public:
         m_tranform = Obj()->Transform();
         m_dwld = Obj()->Scene()->PhyWorld();
         m_rigibody = Obj()->GetCom<GRigibody>("GRigibody");
+
+        
     }
 
     virtual void Update() override
     {
          ImGui::Begin(title.c_str());
 
+         if(ImGui::Button("Set Trigger True")){
+            auto rigidbody = m_rigibody.lock()->m_rigidbody;
+            rigidbody->setCollisionFlags(rigidbody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+        }ImGui::SameLine();
+        if(ImGui::Button("Set Trigger false")){
+            auto rigidbody = m_rigibody.lock()->m_rigidbody;
+            rigidbody->setCollisionFlags(0);
+        }ImGui::SameLine();
         if(ImGui::Button("SetY")){
             
             btTransform trans(btQuaternion(0, 0, 0, 1), btVector3(0, 10, 0));
@@ -71,6 +81,16 @@ public:
     virtual void OnCollisionExit() override
     {
         std::cout << "[OnCollisionExit] " << Obj()->UUID() << std::endl;
+    }
+
+    virtual void OnTriggerEnter()override{
+        std::cout << "[OnTriggerEnter] " << Obj()->UUID() << std::endl;
+    }
+    virtual void OnTriggerStay()override{
+        // std::cout << "[OnTriggerStay] " << Obj()->UUID() << std::endl;
+    }
+    virtual void OnTriggerExit()override{
+        std::cout << "[OnTriggerExit] " << Obj()->UUID() << std::endl;
     }
 
     std::string title;

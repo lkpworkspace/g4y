@@ -23,7 +23,6 @@ public:
 private:
     std::weak_ptr<GPhyWorld>              m_phy_world;
     std::weak_ptr<GTransform>             m_transform;
-    std::shared_ptr<btCollisionObject>    m_col_obj;
 };
 
 #endif

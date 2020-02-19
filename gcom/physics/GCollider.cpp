@@ -23,15 +23,21 @@ void GCollider::OnCollision(const btCollisionObject* col_obj)
     //  如果存在就调用OnCollisionStay函数
     //  如果不存在就调用OnCollisionEnter函数
     // 将碰撞对象加入到当前hash表中
-    
+    bool is_trigger = (m_col_obj->getCollisionFlags() == btCollisionObject::CF_NO_CONTACT_RESPONSE);
     bool col_obj_exist = (m_last_cols.find(col_obj) != m_last_cols.end());
     // 获得所有组件并调用碰撞消息
     auto coms = Obj()->GetComs();
     for(const auto& c : coms){
         if(col_obj_exist){
-            c->OnCollisionStay();
+            if(!is_trigger)
+                c->OnCollisionStay();
+            else
+                c->OnTriggerStay();
         }else{
-            c->OnCollisionEnter();
+            if(!is_trigger)
+                c->OnCollisionEnter();
+            else
+                c->OnTriggerEnter();
         }
     }
     m_cur_cols.insert(col_obj);
@@ -44,11 +50,15 @@ void GCollider::OnCollisionEnd()
     // 如果不存在， 则说明碰撞对象离开，调用OnCollisionExit函数， 并删除该对象
     // 将这一次的对象加入到上一次的hash表中，并去重复
     // 清空当前hash表
+    bool is_trigger = (m_col_obj->getCollisionFlags() == btCollisionObject::CF_NO_CONTACT_RESPONSE);
     auto coms = Obj()->GetComs();
     for(auto begin = m_last_cols.begin(); begin != m_last_cols.end(); ){
         if(m_cur_cols.find(*begin) == m_cur_cols.end()){
             for(const auto& c : coms){
-                c->OnCollisionExit();
+                if(!is_trigger)
+                    c->OnCollisionExit();
+                else
+                    c->OnTriggerExit();
             }
             begin = m_last_cols.erase(begin);
         }else{
