@@ -11,17 +11,50 @@
             碰撞形状
             transform
             phy_world
-        在Awake函数中
+        在Start函数中
             判断是否含有Rigibody组件
                 有，不做任何事
                 没有， 就创建一个碰撞对象加入物理世界
 */
 
-void GCollider::OnCollision()
+void GCollider::OnCollision(const btCollisionObject* col_obj)
 {
+    // 判断该对象是否存在与上一次的碰撞，
+    //  如果存在就调用OnCollisionStay函数
+    //  如果不存在就调用OnCollisionEnter函数
+    // 将碰撞对象加入到当前hash表中
+    
+    bool col_obj_exist = (m_last_cols.find(col_obj) != m_last_cols.end());
     // 获得所有组件并调用碰撞消息
     auto coms = Obj()->GetComs();
     for(const auto& c : coms){
-        c->OnCollisionStay();
+        if(col_obj_exist){
+            c->OnCollisionStay();
+        }else{
+            c->OnCollisionEnter();
+        }
     }
+    m_cur_cols.insert(col_obj);
+}
+
+void GCollider::OnCollisionEnd()
+{
+    // 遍历上一次碰撞对象中 在这一次中是否存在
+    // 如果存在，说明碰撞没有离开
+    // 如果不存在， 则说明碰撞对象离开，调用OnCollisionExit函数， 并删除该对象
+    // 将这一次的对象加入到上一次的hash表中，并去重复
+    // 清空当前hash表
+    auto coms = Obj()->GetComs();
+    for(auto begin = m_last_cols.begin(); begin != m_last_cols.end(); ){
+        if(m_cur_cols.find(*begin) == m_cur_cols.end()){
+            for(const auto& c : coms){
+                c->OnCollisionExit();
+            }
+            begin = m_last_cols.erase(begin);
+        }else{
+            ++begin;
+        }
+    }
+    m_last_cols.insert(m_cur_cols.begin(), m_cur_cols.end());
+    m_cur_cols.clear();
 }

@@ -31,16 +31,11 @@ static const char* fs_code = \
 static float line_vertices[] = {
     /* pos color */
     0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-    3.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 3.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-    0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 1.0f,
-};
-
-static float trianglep_vertices[] = {
-    /* pos color */
-    0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 };
 
 void GAxis::Start()
@@ -76,13 +71,6 @@ void GAxis::OnRender()
     glm::mat4 P = m_camera.lock()->Projection();
     glm::mat4 V = m_camera.lock()->View();
     glm::mat4 M = m_transform.lock()->model;
-    // glm::mat4 M(1.0f);
-    // glm::vec3 rot = m_transform.lock()->rotate;
-
-    // M = glm::translate(M, m_transform.lock()->postion);
-    // M = glm::rotate(M, glm::radians(rot.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    // M = glm::rotate(M, glm::radians(rot.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    // M = glm::rotate(M, glm::radians(rot.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
     m_shader->Use();
     m_shader->SetUniform("projection", P);

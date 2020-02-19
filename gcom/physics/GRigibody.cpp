@@ -2,7 +2,7 @@
 #include "GCommon.h"
 
 /*
-    在Awake中
+    在Start中
         寻找碰撞组件
             未找到就报错
             找到，创建rigibody组件，并加入世界
@@ -23,18 +23,48 @@ void GRigibody::Start()
         btRigidBody::btRigidBodyConstructionInfo rbinfo(mass, this, collider->m_shape.get(), inertia);
         m_rigidbody = std::make_shared<btRigidBody>(rbinfo);
         m_rigidbody->setUserPointer(this);
+
+        m_rigidbody->setAnisotropicFriction(btVector3(1,1,1));
+        m_rigidbody->setRollingFriction(1);  // 滚动摩擦
+        m_rigidbody->setSpinningFriction(1); // 旋转摩擦
+        m_rigidbody->setHitFraction(1);
+
         m_rigidbody->setActivationState(DISABLE_DEACTIVATION);
         m_phy_world.lock()->AddRigiBody(m_rigidbody);
     }
 }
 
-void GRigibody::OnCollision()
+void GRigibody::OnCollision(const btCollisionObject* col_obj)
 {
+    bool col_obj_exist = (m_last_cols.find(col_obj) != m_last_cols.end());
+
     // 获得所有组件并调用碰撞消息
     auto coms = Obj()->GetComs();
     for(const auto& c : coms){
-        c->OnCollisionStay();
+        if(col_obj_exist){
+            c->OnCollisionStay();
+        }else{
+            c->OnCollisionEnter();
+        }
     }
+    m_cur_cols.insert(col_obj);
+}
+
+void GRigibody::OnCollisionEnd()
+{
+   auto coms = Obj()->GetComs();
+    for(auto begin = m_last_cols.begin(); begin != m_last_cols.end(); ){
+        if(m_cur_cols.find(*begin) == m_cur_cols.end()){
+            for(const auto& c : coms){
+                c->OnCollisionExit();
+            }
+            begin = m_last_cols.erase(begin);
+        }else{
+            ++begin;
+        }
+    }
+    m_last_cols.insert(m_cur_cols.begin(), m_cur_cols.end());
+    m_cur_cols.clear();
 }
 
 void GRigibody::getWorldTransform(btTransform& worldTrans ) const

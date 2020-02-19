@@ -55,7 +55,7 @@ int GOpenGLView::InitGL()
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
     // Create window with graphics context
-    window = glfwCreateWindow(1024, 768, "G4Y", NULL, NULL);
+    window = glfwCreateWindow(1280, 854, "G4Y", NULL, NULL);
     if (window == NULL)
         return 1;
     glfwMakeContextCurrent(window);

@@ -2,6 +2,7 @@
 #define __GMESHCOLLIDER_H__
 #include "GCollider.h"
 #include "GPhyWorld.h"
+#include <iostream>
 
 class GTransform;
 class GPhyWorld;

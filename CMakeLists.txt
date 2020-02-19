@@ -96,4 +96,5 @@ set(G4Y_LIBRARIES
     ${Boost_LIBRARIES}
 )
 
+include_directories(examples)
 add_subdirectory(examples)

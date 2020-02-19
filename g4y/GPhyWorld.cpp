@@ -21,36 +21,57 @@ void GPhyWorld::InitPhysics()
 
 void GPhyWorld::UpdateDynamicsWorld()
 {
-    m_dynamics_world->stepSimulation (1.f /60.f, 10) ;
+    m_dynamics_world->stepSimulation (1.f /60.f, 10);
+
+    m_all_col_objs.clear();
+    for(int i =  m_dynamics_world->getNumCollisionObjects() - 1; i >= 0; --i){
+        btCollisionObject* obj = m_dynamics_world->getCollisionObjectArray()[i];
+        btRigidBody* body = btRigidBody::upcast(obj) ;
+        btTransform trans;
+        if(body && body->getMotionState()){
+            body->getMotionState()->getWorldTransform(trans);
+        }else{
+            trans = obj->getWorldTransform();
+        }
+        // printf("world pos object %d = %f, %f, %f \n", 
+        //     i, 
+        //     float(trans.getOrigin().getX()), 
+        //     float(trans.getOrigin().getY()), 
+        //     float(trans.getOrigin().getZ())
+        // );
+        m_all_col_objs.push_back(obj);
+    }
 
     int num_manifolds = m_dynamics_world->getDispatcher()->getNumManifolds();
     for(int i = 0; i < num_manifolds; ++i){
         btPersistentManifold* contact_manifold = m_dynamics_world->getDispatcher()->getManifoldByIndexInternal(i);
         const btCollisionObject* obA = static_cast<const btCollisionObject*>(contact_manifold->getBody0());
         const btCollisionObject* obB = static_cast<const btCollisionObject*>(contact_manifold->getBody1());
+        void* pA = obA->getUserPointer();
+        void* pB = obB->getUserPointer();
+        auto comA = static_cast<GCom*>(pA);
+        auto comB = static_cast<GCom*>(pB);
 
         int num_contacts = contact_manifold->getNumContacts();
+
+        // printf("collision A: %s, B: %s, i: %d, num_point: %d\n", comA->ComName().c_str(), comB->ComName().c_str(), i, num_contacts);
         for(int j = 0; j < num_contacts; ++j){
             btManifoldPoint& pt = contact_manifold->getContactPoint(j);
-            printf("distance %f\n", pt.getDistance());
-            if(pt.getDistance() < 0.f){
-                void* pA = obA->getUserPointer();
-                void* pB = obB->getUserPointer();
-                auto comA = static_cast<GCom*>(pA);
-                auto comB = static_cast<GCom*>(pB);
+            // printf("distance %f\n", pt.getDistance());
+            if(pt.getDistance() <= 0.f){
                 if(comA->ComName() == "GCollider"){
                     auto collider = static_cast<GCollider*>(comA);
-                    collider->OnCollision();
+                    collider->OnCollision(obB);
                 }else{
                     auto rigibody = static_cast<GRigibody*>(comA);
-                    rigibody->OnCollision();
+                    rigibody->OnCollision(obB);
                 }
                 if(comB->ComName() == "GCollider"){
                     auto collider = static_cast<GCollider*>(comB);
-                    collider->OnCollision();
+                    collider->OnCollision(obA);
                 }else{
                     auto rigibody = static_cast<GRigibody*>(comB);
-                    rigibody->OnCollision();
+                    rigibody->OnCollision(obA);
                 }
 
                 // const btVector3& ptA = pt.getPositionWorldOnA();
@@ -68,21 +89,17 @@ void GPhyWorld::UpdateDynamicsWorld()
             }
         }
     }
-    
-    for(int i =  m_dynamics_world->getNumCollisionObjects() - 1; i >= 0; --i){
-        btCollisionObject* obj = m_dynamics_world->getCollisionObjectArray()[i];
-        btRigidBody* body = btRigidBody::upcast(obj) ;
-        btTransform trans;
-        if(body && body->getMotionState()){
-            body->getMotionState()->getWorldTransform(trans);
+
+    // 调用所有碰撞对象的OnCollisionEnd函數
+    for(const auto& o : m_all_col_objs){
+        void* pobj = o->getUserPointer();
+        auto com_obj = static_cast<GCom*>(pobj);
+        if(com_obj->ComName() == "GCollider"){
+            auto collider = static_cast<GCollider*>(com_obj);
+            collider->OnCollisionEnd();
         }else{
-            trans = obj->getWorldTransform();
+            auto rigibody = static_cast<GRigibody*>(com_obj);
+            rigibody->OnCollisionEnd();
         }
-        // printf("world pos object %d = %f, %f, %f \n", 
-        //     i, 
-        //     float(trans.getOrigin().getX()), 
-        //     float(trans.getOrigin().getY()), 
-        //     float(trans.getOrigin().getZ())
-        // );
     }
 }

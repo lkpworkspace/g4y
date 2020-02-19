@@ -2,6 +2,7 @@
 #define __GPHYWORLD_H__
 #include <string>
 #include <memory>
+#include <vector>
 #include <btBulletDynamicsCommon.h>
 
 class GPhyWorld
@@ -49,6 +50,8 @@ public:
     std::shared_ptr<btBroadphaseInterface>                  m_broadphase;
     std::shared_ptr<btSequentialImpulseConstraintSolver>    m_solver;
     std::shared_ptr<btDiscreteDynamicsWorld>                m_dynamics_world;
+
+    std::vector<btCollisionObject*>                         m_all_col_objs;
 };
 
 #endif
