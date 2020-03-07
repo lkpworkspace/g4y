@@ -45,7 +45,7 @@ public:
             auto obj = std::make_shared<GObj>();
             auto msg_com = std::make_shared<GPbTransformMsg>(false);
             obj->AddDefaultComs();
-            obj->Transform()->SetPostion(0, 20, 0);
+            obj->Transform()->SetPosition(glm::vec3(0, 20, 0));
             obj->AddCom(msg_com);
             msg_com->m_srv_id = "srv_id_xxx";
             msg_com->m_loc_id = "loc_id_xxx";
@@ -78,7 +78,7 @@ public:
             auto msg_com = std::make_shared<GPbTransformMsg>(false);
             obj->AddDefaultComs();
             posx++;
-            obj->Transform()->SetPostion(posx, 20, 0);
+            obj->Transform()->SetPosition(glm::vec3(posx, 20, 0));
             obj->AddCom(msg_com);
             msg_com->m_srv_id = "srv_id_xxx";
             msg_com->m_loc_id = "loc_id_xxx";
@@ -124,8 +124,8 @@ public:
 
     virtual void Update() override
     {
-        Obj()->Transform()->postion = glm::vec3(x,y,z);
-        Obj()->Transform()->rotate = glm::vec3(rx,ry,rz);
+        Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
+        Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
     }
 
     virtual void OnGUI() override

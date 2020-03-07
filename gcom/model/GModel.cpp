@@ -34,7 +34,7 @@ void GModel::OnRender()
     m_shader.lock()->Use();
     glm::mat4 P = m_camera.lock()->Projection();
     glm::mat4 V = m_camera.lock()->View();
-    glm::mat4 M = m_transform.lock()->model;
+    glm::mat4 M = m_transform.lock()->ToMat4();
     m_shader.lock()->SetUniform("projection", P);
     m_shader.lock()->SetUniform("view", V);
     m_shader.lock()->SetUniform("model", M);

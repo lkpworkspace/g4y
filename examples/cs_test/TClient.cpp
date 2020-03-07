@@ -53,7 +53,7 @@ public:
             auto obj = std::make_shared<GObj>();
             auto msg = std::make_shared<GPbTransformMsg>(true);
             obj->AddDefaultComs();
-            obj->Transform()->SetPostion(10, 20, 0);
+            obj->Transform()->SetPosition(glm::vec3(10, 20, 0));
             obj->AddCom(msg);
             Obj()->Scene()->AddChild(obj);
         }
@@ -61,7 +61,7 @@ public:
             auto obj = std::make_shared<GObj>();
             auto msg = std::make_shared<GPbTransformMsg>(false);
             obj->AddDefaultComs();
-            obj->Transform()->SetPostion(-10, 20, 0);
+            obj->Transform()->SetPosition(glm::vec3(-10, 20, 0));
             obj->AddCom(msg);
             Obj()->Scene()->AddChild(obj);
         }
@@ -73,7 +73,7 @@ public:
             auto msg_com = std::make_shared<GPbTransformMsg>(false);
             msg_com->m_srv_id = "123456";
             obj->AddDefaultComs();
-            obj->Transform()->SetPostion(0, 20, 0);
+            obj->Transform()->SetPosition(glm::vec3(0, 20, 0));
             obj->AddCom(msg_com);
             auto meta = msg_com->BuildMetaMsg();
             auto msg = msg_com->BuildMsg();
@@ -117,8 +117,8 @@ public:
 
     virtual void Update() override
     {
-        Obj()->Transform()->postion = glm::vec3(x,y,z);
-        Obj()->Transform()->rotate = glm::vec3(rx,ry,rz);
+        Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
+        Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
     }
 
     virtual void OnGUI() override

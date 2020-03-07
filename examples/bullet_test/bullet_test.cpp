@@ -18,8 +18,6 @@ public:
         m_tranform = Obj()->Transform();
         m_dwld = Obj()->Scene()->PhyWorld();
         m_rigibody = Obj()->GetCom<GRigibody>("GRigibody");
-
-        
     }
 
     virtual void Update() override
@@ -33,13 +31,33 @@ public:
         if(ImGui::Button("Set Trigger false")){
             auto rigidbody = m_rigibody.lock()->m_rigidbody;
             rigidbody->setCollisionFlags(0);
+        }
+        if(ImGui::Button("SetAnisotropicFriction")){
+            m_rigibody.lock()->m_rigidbody->setAnisotropicFriction(btVector3(2,2,2), btCollisionObject::CF_ANISOTROPIC_FRICTION);
         }ImGui::SameLine();
-        if(ImGui::Button("SetY")){
-            
-            btTransform trans(btQuaternion(0, 0, 0, 1), btVector3(0, 10, 0));
-            m_rigibody.lock()->m_rigidbody->setWorldTransform(trans);
+        if(ImGui::Button("Add Constraint")){
+            //m_rigibody.lock()->m_rigidbody->setAnisotropicFriction(btVector3(2,2,2), btCollisionObject::CF_ANISOTROPIC_FRICTION);
+            btVector3 pivotInA(0,5,0);
+            btTypedConstraint* p2p = new btPoint2PointConstraint(*m_rigibody.lock()->m_rigidbody.get(), pivotInA);
+            Obj()->PhyWorld()->m_dynamics_world->addConstraint(p2p);
         }
 
+        if(ImGui::Button("SetY")){
+            btTransform trans(btQuaternion(0, 30, 0), btVector3(0, 10, 0));
+            m_rigibody.lock()->m_rigidbody->setWorldTransform(trans);
+        }ImGui::SameLine();
+        if(ImGui::Button("Rotate +Y")){
+            auto q = m_tranform.lock()->Rotation();
+            auto p = m_tranform.lock()->Position();
+            q = glm::rotate(q, glm::radians(45.f), glm::vec3(0,1,0));
+            m_rigibody.lock()->m_rigidbody->setWorldTransform(btTransform{btQuaternion(q.x, q.y, q.z, q.w), btVector3(p.x, p.y, p.z)});
+        }ImGui::SameLine();
+        if(ImGui::Button("Rotate -Y")){
+            auto q = m_tranform.lock()->Rotation();
+            auto p = m_tranform.lock()->Position();
+            q = glm::rotate(q, glm::radians(-45.f), glm::vec3(0,1,0));
+            m_rigibody.lock()->m_rigidbody->setWorldTransform(btTransform{btQuaternion(q.x, q.y, q.z, q.w), btVector3(p.x, p.y, p.z)});
+        }ImGui::SameLine();
         if(ImGui::Button("Move +Y")){            
             m_rigibody.lock()->m_rigidbody->translate(btVector3(0, 1, 0));
         }ImGui::SameLine();
@@ -57,6 +75,11 @@ public:
         }ImGui::SameLine();
         if(ImGui::Button("Move -X")){            
             m_rigibody.lock()->m_rigidbody->translate(btVector3(-2, 0, 0));
+        }
+
+        if(ImGui::Button("Move forward")){            
+            auto forward = m_tranform.lock()->Forward();
+            m_rigibody.lock()->m_rigidbody->translate(btVector3(forward.x, forward.y, forward.z));
         }
         auto rigibody = m_rigibody.lock()->m_rigidbody;
         ImGui::Text("CollisionFlags              (%d)", rigibody->getCollisionFlags());
@@ -119,13 +142,13 @@ void build_scene(std::shared_ptr<GScene> s)
     ground->AddCom(std::make_shared<GMeshCollider>());
 
     sphere->AddDefaultComs();
-    sphere->Transform()->SetPostion(-5, 10, 0);
+    sphere->Transform()->Translate(-5, 10, 0);
     sphere->AddCom(std::make_shared<GRigibody>());
     sphere->AddCom(std::make_shared<GSphereCollider>());
     sphere->AddCom(std::make_shared<ColliderScripts>("set sphere"));
 
     sphere2->AddDefaultComs();
-    sphere2->Transform()->SetPostion(5, 10, 0);
+    sphere2->Transform()->Translate(5, 10, 0);
     sphere2->AddCom(std::make_shared<GRigibody>());
     sphere2->AddCom(std::make_shared<GSphereCollider>());
     sphere2->AddCom(std::make_shared<ColliderScripts>("set sphere2"));
@@ -139,6 +162,7 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
+#if 1
     std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
     
@@ -147,4 +171,35 @@ int main(int argc, char** argv)
     build_scene(s);
 
     return w->Run();
+#else
+    glm::mat4 m(1.0f);
+
+    //m = glm::translate(m, glm::vec3(1.0f, 0.0f, 0.0f));
+    m = glm::rotate(m, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    auto v4 = m[0];
+    std::cout << v4.x << std::endl;
+    std::cout << v4.y << std::endl;
+    std::cout << v4.z << std::endl;
+    std::cout << v4.w << std::endl << std::endl;
+
+    v4 = m[1];
+    std::cout << v4.x << std::endl;
+    std::cout << v4.y << std::endl;
+    std::cout << v4.z << std::endl;
+    std::cout << v4.w << std::endl << std::endl;
+
+    v4 = m[2];
+    std::cout << v4.x << std::endl;
+    std::cout << v4.y << std::endl;
+    std::cout << v4.z << std::endl;
+    std::cout << v4.w << std::endl << std::endl;
+
+    v4 = m[3];
+    std::cout << v4.x << std::endl;
+    std::cout << v4.y << std::endl;
+    std::cout << v4.z << std::endl;
+    std::cout << v4.w << std::endl << std::endl;
+
+#endif
 }

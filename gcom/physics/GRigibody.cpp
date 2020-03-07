@@ -80,11 +80,10 @@ void GRigibody::OnCollisionEnd()
 
 void GRigibody::getWorldTransform(btTransform& worldTrans ) const
 {
-    btVector3 pos(m_transform.lock()->postion.x, m_transform.lock()->postion.y, m_transform.lock()->postion.z);
-    btQuaternion qua;
-    qua.setEulerZYX(m_transform.lock()->rotate.z, m_transform.lock()->rotate.y, m_transform.lock()->rotate.x);
-    worldTrans.setOrigin(pos);
-    worldTrans.setRotation(qua);
+    auto p = m_transform.lock()->Position();
+    auto q = m_transform.lock()->Rotation();
+    worldTrans.setOrigin(btVector3(p.x, p.y, p.z));
+    worldTrans.setRotation(btQuaternion(q.x, q.y, q.z, q.w));
 }
 
 void GRigibody::setWorldTransform(const btTransform& worldTrans)
@@ -92,6 +91,6 @@ void GRigibody::setWorldTransform(const btTransform& worldTrans)
     btTransform trans = worldTrans;
     btScalar rx, ry, rz;
     trans.getRotation().getEulerZYX(rz, ry, rx);
-    m_transform.lock()->postion = glm::vec3(trans.getOrigin().x(), trans.getOrigin().y(), trans.getOrigin().z());
-    m_transform.lock()->rotate  = glm::vec3(rx, ry, rz);
+    m_transform.lock()->SetPosition(glm::vec3(trans.getOrigin().x(), trans.getOrigin().y(), trans.getOrigin().z()));
+    m_transform.lock()->SetRotation(glm::vec3(rx, ry, rz));
 }

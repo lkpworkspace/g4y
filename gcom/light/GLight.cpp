@@ -21,7 +21,7 @@ void GLight::OnRender()
     glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
     glm::mat4 P = m_camera.lock()->Projection();
     glm::mat4 V = m_camera.lock()->View();
-    glm::mat4 M = m_transform.lock()->model;
+    glm::mat4 M = m_transform.lock()->ToMat4();
 }
 
 void GLight::Exit()

@@ -70,7 +70,7 @@ void GAxis::OnRender()
 {
     glm::mat4 P = m_camera.lock()->Projection();
     glm::mat4 V = m_camera.lock()->View();
-    glm::mat4 M = m_transform.lock()->model;
+    glm::mat4 M = m_transform.lock()->ToMat4();
 
     m_shader->Use();
     m_shader->SetUniform("projection", P);

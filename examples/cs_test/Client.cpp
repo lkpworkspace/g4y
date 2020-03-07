@@ -39,8 +39,8 @@ public:
 
     virtual void Update() override
     {
-        Obj()->Transform()->postion = glm::vec3(x,y,z);
-        Obj()->Transform()->rotate = glm::vec3(rx,ry,rz);
+        Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
+        Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
     }
 
     virtual void OnGUI() override

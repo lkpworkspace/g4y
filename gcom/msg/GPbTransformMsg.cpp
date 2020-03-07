@@ -29,9 +29,9 @@ std::shared_ptr<::google::protobuf::Message> GPbTransformMsg::BuildMsg()
     using namespace ::google::protobuf;
     auto msg = std::make_shared<GTransformMsg>();
 
-    glm::vec3 pos = m_transform.lock()->postion;
-    glm::vec3 rot = m_transform.lock()->rotate;
-    glm::vec3 scl = m_transform.lock()->scale;
+    glm::vec3 pos = m_transform.lock()->Position();
+    glm::vec3 rot = m_transform.lock()->EulerAngles();
+    glm::vec3 scl = m_transform.lock()->Scale();
     msg->set_posx(pos.x);
     msg->set_posy(pos.y);
     msg->set_posz(pos.z);
@@ -51,9 +51,9 @@ void GPbTransformMsg::ParseMsg(std::shared_ptr<::google::protobuf::Message> msg)
     BOOST_LOG_SEV(g_lg::get(), debug) << Obj()->UUID() << " parse " << ++m_parse_cnt;
     using namespace ::google::protobuf;
     auto tm = std::static_pointer_cast<GTransformMsg>(msg);
-    m_transform.lock()->postion = glm::vec3(tm->posx(), tm->posy(), tm->posz());
-    m_transform.lock()->rotate  = glm::vec3(tm->rx(), tm->ry(), tm->rz());
-    m_transform.lock()->scale   = glm::vec3(tm->sx(), tm->sy(), tm->sz());
+    m_transform.lock()->SetPosition(glm::vec3(tm->posx(), tm->posy(), tm->posz()));
+    m_transform.lock()->SetRotation(glm::vec3(tm->rx(), tm->ry(), tm->rz()));
+    m_transform.lock()->SetScale(glm::vec3(tm->sx(), tm->sy(), tm->sz()));
 }
 
 

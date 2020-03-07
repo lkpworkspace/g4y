@@ -26,18 +26,21 @@ void GPhyWorld::UpdateDynamicsWorld()
     m_all_col_objs.clear();
     for(int i =  m_dynamics_world->getNumCollisionObjects() - 1; i >= 0; --i){
         btCollisionObject* obj = m_dynamics_world->getCollisionObjectArray()[i];
-        btRigidBody* body = btRigidBody::upcast(obj) ;
-        btTransform trans;
-        if(body && body->getMotionState()){
-            body->getMotionState()->getWorldTransform(trans);
-        }else{
-            trans = obj->getWorldTransform();
-        }
-        // printf("world pos object %d = %f, %f, %f \n", 
+        // btRigidBody* body = btRigidBody::upcast(obj) ;
+        // btTransform trans;
+        // if(body && body->getMotionState()){
+        //     body->getMotionState()->getWorldTransform(trans);
+        // }else{
+        //     trans = obj->getWorldTransform();
+        // }
+        // btScalar x, y, z;
+        // trans.getRotation().getEulerZYX(x, y, z);
+        // printf("world pos object %d = %f, %f, %f; %f %f %f\n", 
         //     i, 
         //     float(trans.getOrigin().getX()), 
         //     float(trans.getOrigin().getY()), 
-        //     float(trans.getOrigin().getZ())
+        //     float(trans.getOrigin().getZ()),
+        //     x, y, z
         // );
         m_all_col_objs.push_back(obj);
     }
