@@ -27,23 +27,21 @@ public:
     {
         ImGui::Begin(title.c_str());
 
-        //ry = std::cos(GetTime()) * 180;
+        bool slider_rotate[3];
+        slider_rotate[0] = ImGui::SliderFloat("model rx", &rx, 0.0f, 180.0f);
+        slider_rotate[1] = ImGui::SliderFloat("model ry", &ry, -180.0f, 180.0f);
+        slider_rotate[2] = ImGui::SliderFloat("model rz", &rz, 0.0f, 180.0f);
+        if(slider_rotate[0] || slider_rotate[1] || slider_rotate[2])
+            m_tranform.lock()->SetRotation(glm::vec3(rx, ry, rz));
 
-        // ImGui::SliderFloat("model x", &x, -10.0f, 10.0f);
-        // ImGui::SliderFloat("model y", &y, -10.0f, 10.0f);
-        // ImGui::SliderFloat("model z", &z, -10.0f, 10.0f);
-
-        ImGui::SliderFloat("model rx", &rx, 0.0f, 180.0f);
-        ImGui::SliderFloat("model ry", &ry, -180.0f, 180.0f);
-        ImGui::SliderFloat("model rz", &rz, 0.0f, 180.0f);
-
-        ImGui::SliderFloat("model sx", &sx, 0.0f, 1.0f);
-        ImGui::SliderFloat("model sy", &sy, 0.0f, 1.0f);
-        ImGui::SliderFloat("model sz", &sz, 0.0f, 1.0f);
-
-        //m_tranform.lock()->SetPosition(glm::vec3(x, y, z));
-        m_tranform.lock()->SetRotation(glm::vec3(rx, ry, rz));
-        m_tranform.lock()->SetScale(glm::vec3(sx, sy, sz));  
+        bool slider_scale[3];
+        slider_scale[0] = ImGui::SliderFloat("model sx", &sx, 0.0f, 1.0f);
+        slider_scale[1] = ImGui::SliderFloat("model sy", &sy, 0.0f, 1.0f);
+        slider_scale[2] = ImGui::SliderFloat("model sz", &sz, 0.0f, 1.0f);
+        if(slider_scale[0] || slider_scale[1] || slider_scale[2])
+        {
+            m_tranform.lock()->SetScale(glm::vec3(sx, sy, sz));  
+        }
 
         if(ImGui::Button("Translate Forward")){
             m_tranform.lock()->Translate(m_tranform.lock()->Forward());
@@ -112,9 +110,9 @@ void build_scene(std::shared_ptr<GScene> s)
     // cube->AddCom(std::make_shared<GCube>());
     cube->AddCom(std::make_shared<ModelScripts>("cube", glm::vec3(0, 10, 0)));
 
-    // cube2->AddDefaultComs();
+    cube2->AddDefaultComs();
     // cube2->AddCom(std::make_shared<GCube>());
-    //cube2->AddCom(std::make_shared<ModelScripts>("cube2", glm::vec3(0, 10, 0)));
+    cube2->AddCom(std::make_shared<ModelScripts>("cube2", glm::vec3(-10, 10, 0)));
 
     // model->AddDefaultComs();
     // model->AddCom(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10)));
@@ -132,10 +130,9 @@ void build_scene(std::shared_ptr<GScene> s)
     
     s->AddChild(camera);
     s->AddChild(grid);
-    // s->AddChild(model);
     s->AddChild(cube);
-    //model->AddChild(cube);
-    //cube->AddChild(cube2);
+    cube->AddChild(cube2);
+    // s->AddChild(model);
     // s->AddChild(model2);
     // s->AddChild(model3);
 }

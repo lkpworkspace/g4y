@@ -79,7 +79,7 @@ void GAxis::OnRender()
 
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH,GL_NICEST);
-    glLineWidth(2);
+    glLineWidth(1);
 
     glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
     glDrawArrays(GL_LINES, 0, sizeof(line_vertices));

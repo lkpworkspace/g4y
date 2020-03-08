@@ -3,7 +3,6 @@
 
 GTransform::Transform::Transform()
 : pos(glm::vec3(0,0,0))
-, rot2(0, 0, 0)
 , rot(glm::vec3(0, 0, 0))
 , scale(glm::vec3(1,1,1))
 {}
@@ -14,9 +13,24 @@ GTransform::Transform::Transform(const glm::vec3& _pos, const glm::quat& _rot, g
 , scale(_scale)
 {}
 
+GTransform::Transform::Transform(const GTransform::Transform &trans)
+{
+   operator=(trans);
+}
+
+GTransform::Transform& GTransform::Transform::operator=(const GTransform::Transform &trans)
+{
+    pos = trans.pos;
+    rot = trans.rot;
+    scale = trans.scale;
+
+    return *this;
+}
+
 GTransform::Transform GTransform::Transform::Inverted() const
 {
     Transform trans;
+
     trans.rot = glm::conjugate(rot);
     trans.pos = trans.rot * (-pos / scale);
     trans.scale = glm::vec3(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z);
@@ -25,27 +39,16 @@ GTransform::Transform GTransform::Transform::Inverted() const
 
 GTransform::Transform GTransform::Transform::operator*(const Transform& rhs) const
 {
-    return {rot * (rhs.pos * scale) + pos, rot * rhs.rot, scale * rhs.scale};
+    return {(rot * (rhs.pos * scale)) + pos, rot * rhs.rot, scale * rhs.scale};
 }
 
 glm::mat4 GTransform::Transform::ToMat4() const
 {
-    // auto mtx = glm::mat4_cast(rot);
-    // mtx = glm::scale(mtx, scale);
-    // mtx[3] = glm::vec4(pos.x, pos.y, pos.z, mtx[3].w);
-    // return mtx;
-    glm::mat4 t(1.0f);
-    glm::mat4 r(1.0f);
-    glm::mat4 s(1.0f);
-
-    s = glm::scale(s, scale);
-
-    r = glm::mat4_cast(rot);
-
-    t = glm::translate(t, pos);
-
-    // SRT
-    return t * r * s;
+    auto mtx = glm::mat4_cast(rot);
+    mtx = glm::scale(mtx, scale);
+    //mtx = glm::translate(mtx, pos);
+    mtx[3] = glm::vec4(pos.x, pos.y, pos.z, mtx[3].w);
+    return mtx;
 }
 
 GTransform::GTransform()
@@ -57,11 +60,13 @@ GTransform::~GTransform()
 void GTransform::SetPosition(glm::vec3 pos)
 {
     wld_trans.pos = pos;
+    UpdateTransform(Obj(), true);
 }
 
 void GTransform::SetScale(glm::vec3 scale)
 {
     wld_trans.scale = scale;
+    UpdateTransform(Obj(), true);
 }
 
 void GTransform::SetRotation(glm::vec3 eulers)
@@ -76,6 +81,7 @@ void GTransform::SetRotation(glm::vec3 eulers)
 void GTransform::SetRotation(glm::quat q)
 {
     wld_trans.rot = q;
+    UpdateTransform(Obj(), true);
 }
 
 void GTransform::RotateAround(glm::vec3 target, glm::vec3 axis, float euler)
@@ -89,6 +95,7 @@ void GTransform::Translate(float x, float y, float z)
 void GTransform::Translate(glm::vec3 translation)
 {
     wld_trans.pos += translation;
+    UpdateTransform(Obj(), true);
 }
 
 glm::vec3 GTransform::Position()
@@ -106,8 +113,7 @@ glm::vec3 GTransform::EulerAngles()
     // 角度转弧度 π/180×角度
     // 弧度变角度 180/π×弧度
     auto radians = glm::eulerAngles(wld_trans.rot);
-    auto c = (180.0f / glm::pi<float>());
-    return glm::vec3(c * radians.x, c * radians.y, c * radians.z);
+    return glm::vec3(glm::degrees<float>(radians.x), glm::degrees<float>(radians.y), glm::degrees<float>(radians.z));
 }
 
 glm::quat GTransform::Rotation()
@@ -144,6 +150,34 @@ void GTransform::Start()
     if(parent){
         m_parent_trans = parent->Transform();
     }
+    UpdateTransform(Obj(), true);
+}
+
+// update DFS
+void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
+{
+    if(obj == nullptr) return;
+    bool parent_valid = (obj->Parent() == nullptr) ? false : true;
+
+    if(update_local && parent_valid){
+        local_trans = (obj->Parent()->Transform()->wld_trans.Inverted() * wld_trans);
+    }
+
+    auto children = obj->Children();
+    for(const auto& o : children){
+        o->Transform()->wld_trans = (wld_trans * o->Transform()->local_trans);
+        // auto p = o->Transform()->wld_trans.pos;
+        // auto e = o->Transform()->EulerAngles();
+        // auto s = o->Transform()->Scale();
+        // std::cout << "pos   : " << p.x << " " << p.y << " " << p.z << std::endl;
+        // std::cout << "euler : " << e.x << " " << e.y << " " << e.z << std::endl;
+        // std::cout << "scale : " << s.x << " " << s.y << " " << s.z << std::endl;
+        UpdateTransform(o, false);
+    }
+}
+
+void GTransform::UpdateGlobalTransform(std::shared_ptr<GObj> obj)
+{
 }
 
 // void GTransform::Update()

@@ -49,7 +49,8 @@ public:
     void SetTag(std::string tag);
     std::string Tag() { return m_tag; }
 
-    std::shared_ptr<GObj> Parent() { return m_parent.lock(); }
+    std::shared_ptr<GObj> Parent() { return m_parent.expired() ? nullptr : m_parent.lock(); }
+    std::vector<std::shared_ptr<GObj>> Children();
 
     std::shared_ptr<GTransform> Transform(){
         return std::static_pointer_cast<GTransform>(GetCom("GTransform"));

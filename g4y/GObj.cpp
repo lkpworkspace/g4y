@@ -111,6 +111,11 @@ std::vector<std::shared_ptr<GCom>> GObj::GetComs()
     return coms;
 }
 
+std::vector<std::shared_ptr<GObj>> GObj::Children() 
+{ 
+    return std::vector<std::shared_ptr<GObj>>{m_children.begin(), m_children.end()}; 
+}
+
 void GObj::Start()
 {
     for(const auto& c : m_coms){

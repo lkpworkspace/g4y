@@ -35,8 +35,10 @@ public:
     glm::mat4 ToMat4();
 
 private:
+    void UpdateTransform(std::shared_ptr<GObj> obj, bool update_local);
+    void UpdateGlobalTransform(std::shared_ptr<GObj> obj);
+
     struct Transform{
-        glm::vec3 rot2;
         glm::quat rot;
         glm::vec3 pos;
         glm::vec3 scale;
@@ -44,6 +46,10 @@ private:
         Transform();
 
         Transform(const glm::vec3& _pos, const glm::quat& _rot, glm::vec3 _scale);
+
+        Transform(const Transform &trans);
+
+        Transform& operator=(const Transform &trans);
 
         Transform Inverted() const;
 
