@@ -38,8 +38,7 @@ public:
         slider_scale[0] = ImGui::SliderFloat("model sx", &sx, 0.0f, 1.0f);
         slider_scale[1] = ImGui::SliderFloat("model sy", &sy, 0.0f, 1.0f);
         slider_scale[2] = ImGui::SliderFloat("model sz", &sz, 0.0f, 1.0f);
-        if(slider_scale[0] || slider_scale[1] || slider_scale[2])
-        {
+        if(slider_scale[0] || slider_scale[1] || slider_scale[2]){
             m_tranform.lock()->SetScale(glm::vec3(sx, sy, sz));  
         }
 
@@ -52,7 +51,21 @@ public:
         if(ImGui::Button("Translate Right")){
             m_tranform.lock()->Translate(m_tranform.lock()->Right());
         }
-
+        {
+            auto p = m_tranform.lock()->LocalPosition();
+            auto r = m_tranform.lock()->LocalEulerAngles();
+            ImGui::Text("local pos     (%f, %f, %f)", p.x, p.y, p.z);
+            ImGui::Text("local rotate  (%f, %f, %f)", r.x, r.y, r.z);
+        }
+        {
+            auto p = m_tranform.lock()->Position();
+            auto r = m_tranform.lock()->EulerAngles();
+            auto s = m_tranform.lock()->Scale();
+            ImGui::Text("global pos    (%f, %f, %f)", p.x, p.y, p.z);
+            ImGui::Text("global rotate (%f, %f, %f)", r.x, r.y, r.z);
+            ImGui::Text("       scale  (%f, %f, %f)", s.x, s.y, s.z);
+        }
+        
         ImGui::End();
     }
 
@@ -85,7 +98,7 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
-    camera->AddCom(std::make_shared<CameraScripts>());
+    camera->AddCom(std::make_shared<CameraScripts>(glm::vec3(0, 10, 15)));
     // camera->AddCom(std::make_shared<GSkybox>(
     //     std::vector<std::string>({
     //         "/home/lkp/projs/gfy/build/skybox/right.jpg",

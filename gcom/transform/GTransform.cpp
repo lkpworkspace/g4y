@@ -63,10 +63,16 @@ void GTransform::SetPosition(glm::vec3 pos)
     UpdateTransform(Obj(), true);
 }
 
-void GTransform::SetScale(glm::vec3 scale)
+void GTransform::SetScale(glm::vec3 s)
 {
-    wld_trans.scale = scale;
-    UpdateTransform(Obj(), true);
+     bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    if(!parent_valid){
+        wld_trans.scale = s;
+        UpdateTransform(Obj(), true);
+        return;
+    }
+    local_trans.scale = s;
+    UpdateGlobalTransform(Obj());
 }
 
 void GTransform::SetRotation(glm::vec3 eulers)
@@ -103,11 +109,6 @@ glm::vec3 GTransform::Position()
     return wld_trans.pos;
 }
 
-glm::vec3 GTransform::Scale()
-{
-    return wld_trans.scale;
-}
-
 glm::vec3 GTransform::EulerAngles()
 {
     // 角度转弧度 π/180×角度
@@ -137,6 +138,57 @@ glm::vec3 GTransform::Forward()
 {
     auto q = wld_trans.rot;
     return glm::normalize(mat3_cast(q)[2]);
+}
+
+glm::vec3 GTransform::LocalPosition()
+{
+    return local_trans.pos;
+}
+glm::vec3 GTransform::LocalEulerAngles()
+{
+    auto radians = glm::eulerAngles(local_trans.rot);
+    return glm::vec3(glm::degrees<float>(radians.x), glm::degrees<float>(radians.y), glm::degrees<float>(radians.z));
+}
+glm::quat GTransform::LocalRotation()
+{
+    return local_trans.rot;
+}
+glm::vec3 GTransform::Scale()
+{
+    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    if(!parent_valid){
+        return wld_trans.scale;
+    }
+    return local_trans.scale;
+}
+
+void GTransform::SetLocalPostion(glm::vec3 pos)
+{
+    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    if(!parent_valid){
+        SetPosition(pos);
+        return;
+    }
+    local_trans.pos = pos;
+    UpdateGlobalTransform(Obj());
+}
+void GTransform::SetLocalRotation(glm::vec3 eulers)
+{
+    auto rot = glm::quat(glm::vec3(0,0,0));
+    rot = glm::rotate(rot, glm::radians(eulers.y), glm::vec3(0, 1, 0));
+    rot = glm::rotate(rot, glm::radians(eulers.x), glm::vec3(1, 0, 0));
+    rot = glm::rotate(rot, glm::radians(eulers.z), glm::vec3(0, 0, 1));
+    SetLocalRotation(rot);
+}
+void GTransform::SetLocalRotation(glm::quat q)
+{
+    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    if(!parent_valid){
+        SetRotation(q);
+        return;
+    }
+    local_trans.rot = q;
+    UpdateGlobalTransform(Obj());
 }
 
 glm::mat4 GTransform::ToMat4()
@@ -178,6 +230,8 @@ void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
 
 void GTransform::UpdateGlobalTransform(std::shared_ptr<GObj> obj)
 {
+    wld_trans = obj->Parent()->Transform()->wld_trans * local_trans;
+    UpdateTransform(Obj(), true);
 }
 
 // void GTransform::Update()
