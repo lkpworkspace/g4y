@@ -142,15 +142,29 @@ glm::vec3 GTransform::Forward()
 
 glm::vec3 GTransform::LocalPosition()
 {
+    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    if(!parent_valid){
+        return wld_trans.pos;
+    }
     return local_trans.pos;
 }
 glm::vec3 GTransform::LocalEulerAngles()
 {
-    auto radians = glm::eulerAngles(local_trans.rot);
+    glm::vec3 radians;
+    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    if(!parent_valid){
+        radians = glm::eulerAngles(wld_trans.rot);
+    }else{
+        radians = glm::eulerAngles(local_trans.rot);
+    }
     return glm::vec3(glm::degrees<float>(radians.x), glm::degrees<float>(radians.y), glm::degrees<float>(radians.z));
 }
 glm::quat GTransform::LocalRotation()
 {
+    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    if(!parent_valid){
+        return wld_trans.rot;
+    }
     return local_trans.rot;
 }
 glm::vec3 GTransform::Scale()
