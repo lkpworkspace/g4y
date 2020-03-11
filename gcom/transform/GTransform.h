@@ -3,6 +3,7 @@
 #include "GCom.h"
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
+#include "glm/gtx/quaternion.hpp"
 #include <iostream>
 class GTransform : public GCom
 {
@@ -28,6 +29,8 @@ public:
     void SetLocalPostion(glm::vec3);
     void SetLocalRotation(glm::vec3);
     void SetLocalRotation(glm::quat q);
+
+    void LookAt(glm::vec3 target, glm::vec3 wld_up = glm::vec3(0, 1, 0));
 
     glm::vec3 Forward();
     glm::vec3 Right();

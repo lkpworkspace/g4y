@@ -65,7 +65,7 @@ void GTransform::SetPosition(glm::vec3 pos)
 
 void GTransform::SetScale(glm::vec3 s)
 {
-     bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
     if(!parent_valid){
         wld_trans.scale = s;
         UpdateTransform(Obj(), true);
@@ -91,7 +91,17 @@ void GTransform::SetRotation(glm::quat q)
 }
 
 void GTransform::RotateAround(glm::vec3 target, glm::vec3 axis, float euler)
-{}
+{
+    auto q = glm::angleAxis(glm::radians(euler), glm::normalize(axis));
+    wld_trans.pos = (q * (wld_trans.pos - target)) + target;
+    UpdateTransform(Obj(), true);
+}
+
+void GTransform::LookAt(glm::vec3 target, glm::vec3 wld_up)
+{
+    wld_trans.rot = glm::quatLookAt(glm::normalize(target - wld_trans.pos) * -1.0f, wld_up);
+    UpdateTransform(Obj(), true);
+}
 
 void GTransform::Translate(float x, float y, float z)
 {
@@ -225,8 +235,29 @@ void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
     if(obj == nullptr) return;
     bool parent_valid = (obj->Parent() == nullptr) ? false : true;
 
+    // {
+    //     auto p = local_trans.pos;
+    //     auto s = local_trans.scale;
+    //     std::cout << "before local  pos   : " << p.x << " " << p.y << " " << p.z << std::endl;
+    //     std::cout << "before local  scale : " << s.x << " " << s.y << " " << s.z << std::endl;
+
+    //     p = wld_trans.pos;
+    //     s = wld_trans.scale;
+    //     std::cout << "wld pos             : " << p.x << " " << p.y << " " << p.z << std::endl;
+    //     std::cout << "wld scale           : " << s.x << " " << s.y << " " << s.z << std::endl;
+    // }
+
     if(update_local && parent_valid){
-        local_trans = (obj->Parent()->Transform()->wld_trans.Inverted() * wld_trans);
+        auto inverted_trans = obj->Parent()->Transform()->wld_trans.Inverted();
+        // auto p = inverted_trans.pos;
+        // auto s = inverted_trans.scale;
+        // std::cout << "invert pos          : " << p.x << " " << p.y << " " << p.z << std::endl;
+        // std::cout << "invert scale        : " << s.x << " " << s.y << " " << s.z << std::endl;
+        local_trans = (inverted_trans * wld_trans);
+        // p = local_trans.pos;
+        // s = local_trans.scale;
+        // std::cout << "local  pos          : " << p.x << " " << p.y << " " << p.z << std::endl;
+        // std::cout << "local  scale        : " << s.x << " " << s.y << " " << s.z << std::endl;
     }
 
     auto children = obj->Children();
@@ -234,7 +265,7 @@ void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
         o->Transform()->wld_trans = (wld_trans * o->Transform()->local_trans);
         // auto p = o->Transform()->wld_trans.pos;
         // auto e = o->Transform()->EulerAngles();
-        // auto s = o->Transform()->Scale();
+        // auto s = o->Transform()->local_trans.scale;
         // std::cout << "pos   : " << p.x << " " << p.y << " " << p.z << std::endl;
         // std::cout << "euler : " << e.x << " " << e.y << " " << e.z << std::endl;
         // std::cout << "scale : " << s.x << " " << s.y << " " << s.z << std::endl;
@@ -245,7 +276,7 @@ void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
 void GTransform::UpdateGlobalTransform(std::shared_ptr<GObj> obj)
 {
     wld_trans = obj->Parent()->Transform()->wld_trans * local_trans;
-    UpdateTransform(Obj(), true);
+    UpdateTransform(Obj(), false);
 }
 
 // void GTransform::Update()
