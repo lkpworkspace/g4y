@@ -8,22 +8,35 @@
 class GScene;
 class GPhyWorld;
 class GOpenGLView;
-class GWorld : public std::enable_shared_from_this<GWorld>
+class GWorld
 {
     friend class GScene;
 public:
-    GWorld();
-    virtual ~GWorld();
+
+    static void StaticInit();
+
+    static std::unique_ptr< GWorld > s_instance;
 
     void LoadCfg(std::string cfg);
 
     void SetScene(std::shared_ptr<GScene> s);
 
+    std::shared_ptr<GPhyWorld> PhyWorld();
+    std::shared_ptr<GOpenGLView> GLView();
+
+    /* second */
     static double GetTime();
+
+    /* second */
+    static double GetDeltaTime();
 
     int Run();
     void Poll();
+
+    ~GWorld();
 private:
+    GWorld();
+
     std::shared_ptr<GScene>                m_scene;
     std::shared_ptr<GPhyWorld>             m_phy_world;
     std::shared_ptr<GOpenGLView>           m_gl_view;

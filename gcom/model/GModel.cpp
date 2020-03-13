@@ -6,6 +6,7 @@
 #include "GCamera.h"
 #include "GTransform.h"
 #include "GOpenGLView.h"
+#include "GWorld.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -26,7 +27,7 @@ void GModel::Start()
 {
     m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
     m_transform = Obj()->Transform();
-    m_shader = GScene::CurScene()->GLView()->GetShader();
+    m_shader = GWorld::s_instance->GLView()->GetShader();
 }
 
 void GModel::OnRender()

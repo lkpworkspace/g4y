@@ -4,7 +4,7 @@
 #include "GMsgMgr.h"
 #include "GSrvMsgMgr.h"
 #include "GMsgNetIO.h"
-#include "CameraScripts.h"
+#include "CameraScript.h"
 
 /*
     测试1:
@@ -25,7 +25,7 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
-    camera->AddCom(std::make_shared<CameraScripts>(glm::vec3(0, 20, 30)));
+    camera->AddCom(std::make_shared<CameraScript>(glm::vec3(0, 20, 30)));
 
     auto msgmgr_com = std::make_shared<GSrvMsgMgr>();
     msgmgr_com->RegMsgCom("GTransformMsg", [](bool loc){ 
@@ -50,12 +50,12 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-    std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
+    GWorld::StaticInit();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
-    
-    w->SetScene(s);
+
+    GWorld::s_instance->SetScene(s);
 
     build_scene(s);
 
-    return w->Run();
+    return GWorld::s_instance->Run();
 }

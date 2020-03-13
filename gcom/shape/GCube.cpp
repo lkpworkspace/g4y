@@ -123,7 +123,7 @@ void GCube::OnRender()
     glDisable(GL_BLEND);
 }
 
-void GCube::Exit()
+void GCube::OnDestroy()
 {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);

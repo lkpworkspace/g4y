@@ -24,7 +24,7 @@ void GLight::OnRender()
     glm::mat4 M = m_transform.lock()->ToMat4();
 }
 
-void GLight::Exit()
+void GLight::OnDestroy()
 {
     
 }

@@ -29,6 +29,7 @@ include_directories(gcom/msg)
 include_directories(gcom/msg/msgio)
 
 set(G4Y_SRCS
+    ${PROJECT_SOURCE_DIR}/g4y/G4Y.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GLog.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
@@ -47,10 +48,12 @@ set(GCOM_SRCS
     ${PROJECT_SOURCE_DIR}/gcom/physics/GRigibody.cpp
     ${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.cpp
     ${PROJECT_SOURCE_DIR}/gcom/physics/GSphereCollider.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/physics/GBoxCollider.cpp
 )
 
 # gl glew glm assimp imgui stb
 find_package(glm)
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
 if(USE_GUI)
     find_package(assimp)
     

@@ -20,7 +20,7 @@ public:
 
     virtual void OnRender() override;
 
-    virtual void Exit() override;
+    virtual void OnDestroy() override;
 
 private:
     void LoadCubemap();

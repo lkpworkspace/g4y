@@ -46,7 +46,7 @@ public:
         }
     }
 
-    virtual void OnGUI() override
+    virtual void Update() override
     {
         ImGui::Begin(title.c_str());
         if(ImGui::Button("create loc msg com")){
@@ -117,12 +117,6 @@ public:
 
     virtual void Update() override
     {
-        Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
-        Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
-    }
-
-    virtual void OnGUI() override
-    {
         ImGui::Begin(title.c_str());
 
         ImGui::SliderFloat("Camera x", &x, -150.0f, 150.0f);
@@ -134,6 +128,8 @@ public:
         ImGui::SliderFloat("Camera rz", &rz, -180.0f, 180.0f);
 
         ImGui::End();
+        Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
+        Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
     }
 
     float x = 0.0f;
@@ -177,12 +173,12 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-    std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
+    GWorld::StaticInit();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
-    
-    w->SetScene(s);
+
+    GWorld::s_instance->SetScene(s);
 
     build_scene(s);
 
-    return w->Run();
+    return GWorld::s_instance->Run();
 }

@@ -143,7 +143,7 @@ void GSkybox::OnRender()
     glDepthFunc(GL_LESS);
 }
 
-void GSkybox::Exit() 
+void GSkybox::OnDestroy() 
 {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);

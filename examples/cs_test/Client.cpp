@@ -9,8 +9,8 @@
 #include "GCliMsgMgr.h"
 #include "GPbTransformMsg.h"
 #include "GMsgNetIO.h"
-#include "CameraScripts.h"
-#include "MoveScripts.h"
+#include "CameraScript.h"
+#include "MoveScript.h"
 
 /*
     测试1: 创建一个本地消息对象
@@ -47,14 +47,14 @@ public:
         }
     }
 
-    virtual void OnGUI() override
+    virtual void Update() override
     {
         static int cnt = 0;
         ImGui::Begin(title.c_str());
         if(ImGui::Button("Create msg com")){
             auto obj = std::make_shared<GObj>();
             auto msg = std::make_shared<GPbTransformMsg>(true);
-            auto move_srcipts = std::make_shared<MoveScripts>("move" + std::to_string(cnt++), glm::vec3(0, 0, 0));
+            auto move_srcipts = std::make_shared<MoveScript>("move" + std::to_string(cnt++), glm::vec3(0, 0, 0));
             obj->AddDefaultComs();
             obj->AddCom(msg);
             obj->AddCom(move_srcipts);
@@ -77,7 +77,7 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
-    camera->AddCom(std::make_shared<CameraScripts>(glm::vec3(0, 20, 30)));
+    camera->AddCom(std::make_shared<CameraScript>(glm::vec3(0, 20, 30)));
 
     auto msgmgr_com = std::make_shared<GCliMsgMgr>();
     msgmgr_com->RegMsgCom("GTransformMsg", [](bool loc){ 
@@ -104,12 +104,12 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-    std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
+    GWorld::StaticInit();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
-    
-    w->SetScene(s);
+
+    GWorld::s_instance->SetScene(s);
 
     build_scene(s);
 
-    return w->Run();
+    return GWorld::s_instance->Run();
 }

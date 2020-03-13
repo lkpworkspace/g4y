@@ -24,4 +24,24 @@
 #include "GCube.h"
 #endif
 
+namespace g4y
+{
+
+    bool getkey(int ch);
+
+    bool getkeydown(int ch);
+
+    bool getmousedown(int b = 1);
+
+    double gettime();
+
+    double getdeltatime();
+
+    std::shared_ptr<GScene> curscene();
+
+    std::shared_ptr<GPhyWorld> phyworld();
+
+    std::shared_ptr<GOpenGLView> glview();
+}
+
 #endif

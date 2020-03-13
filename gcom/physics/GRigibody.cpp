@@ -10,7 +10,7 @@
 void GRigibody::Init()
 {
     m_transform = Obj()->Transform();
-    m_phy_world = Obj()->PhyWorld();
+    m_phy_world = GWorld::s_instance->PhyWorld();
 }
 
 void GRigibody::Start()
@@ -23,11 +23,6 @@ void GRigibody::Start()
         btRigidBody::btRigidBodyConstructionInfo rbinfo(mass, this, collider->m_shape.get(), inertia);
         m_rigidbody = std::make_shared<btRigidBody>(rbinfo);
         m_rigidbody->setUserPointer(this);
-
-        m_rigidbody->setAnisotropicFriction(btVector3(1,1,1));
-        m_rigidbody->setRollingFriction(1);  // 滚动摩擦
-        m_rigidbody->setSpinningFriction(1); // 旋转摩擦
-        m_rigidbody->setHitFraction(1);
 
         m_rigidbody->setActivationState(DISABLE_DEACTIVATION);
         m_phy_world.lock()->AddRigiBody(m_rigidbody);

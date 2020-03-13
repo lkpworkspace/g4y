@@ -41,17 +41,17 @@ void build_scene(std::shared_ptr<GScene> s)
     s->AddChild(g1);
     s->AddChild(g3);
 
-    s->DelChild(g1);
+    GObj::Destroy(g1);
 }
 
 int main(int argc, char** argv)
 {
-    auto w = std::make_shared<GWorld>();
-    auto s = std::make_shared<GScene>();
-    
-    w->SetScene(s);
+    GWorld::StaticInit();
+    std::shared_ptr<GScene> s = std::make_shared<GScene>();
+
+    GWorld::s_instance->SetScene(s);
 
     build_scene(s);
 
-    return w->Run();
+    return GWorld::s_instance->Run();
 }

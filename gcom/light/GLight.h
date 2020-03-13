@@ -15,7 +15,7 @@ public:
 
     virtual void OnRender() override;
 
-    virtual void Exit() override;
+    virtual void OnDestroy() override;
 
     /* 环境光 */
     glm::vec3 ambient;

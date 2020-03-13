@@ -107,13 +107,14 @@ void GOpenGLView::BeginRender()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
+        ImGui::StyleColorsClassic();
         static bool show_demo = false;
         ImGuiWindowFlags window_flags = 0;
         window_flags |= ImGuiWindowFlags_NoTitleBar;
         window_flags |= ImGuiWindowFlags_MenuBar;
         window_flags |= ImGuiWindowFlags_NoBackground;
 
-        ImGui::Begin("G4Y Infomation", NULL, window_flags);                          // Create a window called "Hello, world!" and append into it.
+        ImGui::Begin("G4Y Infomation");                          // Create a window called "Hello, world!" and append into it.
         ImGui::Checkbox("show demo", &show_demo);
         if(show_demo)
             ImGui::ShowDemoWindow(&show_demo);
@@ -138,21 +139,18 @@ bool GOpenGLView::WindowShouldClose()
     return true;
 }
 
-bool GOpenGLView::GetMouseBtn(int btn)
+void GOpenGLView::SetCursorPos(double x, double y)
 {
 #ifdef USE_GUI
-    return glfwGetMouseButton(window, btn);
-#else
-    return false;
+    glfwSetCursorPos(window, x, y);
 #endif
 }
 
-bool GOpenGLView::GetKey(int key)
+void GOpenGLView::GetWindowSize(int& w, int& h)
 {
 #ifdef USE_GUI
-    std::cout << glfwGetKey(window, key) << std::endl;
+    glfwGetWindowSize(window, &w, &h);
 #endif
-    return true;
 }
 
 void GOpenGLView::EndRender()

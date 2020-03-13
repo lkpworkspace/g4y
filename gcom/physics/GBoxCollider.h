@@ -1,15 +1,15 @@
-#ifndef __GSPHERE_H__
-#define __GSPHERE_H__
+#ifndef __GBOXCOLLIDER_H__
+#define __GBOXCOLLIDER_H__
 #include "GCollider.h"
 #include "GPhyWorld.h"
 
 class GTransform;
 class GPhyWorld;
-class GSphereCollider : public GCollider
+class GBoxCollider : public GCollider
 {
 public:
-    GSphereCollider(){}
-    virtual ~GSphereCollider(){}
+    GBoxCollider(){}
+    virtual ~GBoxCollider(){}
 
     virtual void Init() override;
 
@@ -17,7 +17,7 @@ public:
 
     virtual void OnDestroy() override;
 
-    virtual std::string ColliderName() { return "GSphereCollider"; }
+    virtual std::string ColliderName() { return "GBoxCollider"; }
 
 // private:
     std::weak_ptr<GPhyWorld>                    m_phy_world;

@@ -1,13 +1,13 @@
-#ifndef __CameraScripts_H__
-#define __CameraScripts_H__
+#ifndef __CameraScript_H__
+#define __CameraScript_H__
 #include "G4Y.h"
 
-class CameraScripts : public GCom
+class CameraScript : public GCom
 {
 public:
-    CameraScripts(){}
+    CameraScript(){}
 
-    CameraScripts(glm::vec3 pos) :
+    CameraScript(glm::vec3 pos) :
         x(pos.x),
         y(pos.y),
         z(pos.z)

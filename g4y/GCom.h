@@ -44,23 +44,20 @@ public:
 
     virtual void OnRender(){}
 
-    virtual void OnGUI(){}
+    /* 移除场景被调用 */
+    virtual void OnDestroy(){}
 
-    /* 移除世界场景被调用 */
-    virtual void Exit(){}
+    std::shared_ptr<GObj> Obj() { assert(!m_obj.expired()); return m_obj.lock(); }
 
-    std::shared_ptr<GObj> Obj() { return m_obj.lock(); }
-
-    std::shared_ptr<GPhyWorld> PhyWorld() { return m_phy_world.lock(); }
+    std::shared_ptr<GPhyWorld> PhyWorld() { assert(!m_phy_world.expired()); return m_phy_world.lock(); }
 
     virtual std::string ComName() { return "GCom"; }
-
-    double GetTime();
 
 protected:
     void OnStart();
 private:
     bool                     m_start;
+    bool                     m_destroy;
     std::weak_ptr<GObj>      m_obj;
     std::weak_ptr<GPhyWorld> m_phy_world;
 };

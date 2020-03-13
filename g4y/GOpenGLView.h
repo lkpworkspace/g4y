@@ -22,9 +22,9 @@ public:
 
     bool WindowShouldClose();
 
-    bool GetMouseBtn(int btn);
+    void SetCursorPos(double x, double y);
 
-    bool GetKey(int key);
+    void GetWindowSize(int& w, int& h);
 
     void BeginRender();
 

@@ -87,7 +87,7 @@ void GAxis::OnRender()
     glDisable(GL_LINE_SMOOTH);
 }
 
-void GAxis::Exit() 
+void GAxis::OnDestroy() 
 {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);

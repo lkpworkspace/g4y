@@ -16,7 +16,7 @@ public:
 
     virtual void Start() override;
 
-    virtual void Exit() override;
+    virtual void OnDestroy() override;
 
     virtual std::string ColliderName() { return "GMeshCollider"; }
 

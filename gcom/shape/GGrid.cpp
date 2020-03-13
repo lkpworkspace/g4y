@@ -119,7 +119,7 @@ void GGrid::OnRender()
     glDisable(GL_BLEND);
 }
 
-void GGrid::Exit()
+void GGrid::OnDestroy()
 {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);

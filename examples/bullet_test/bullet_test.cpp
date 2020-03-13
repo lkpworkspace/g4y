@@ -4,7 +4,7 @@
 #include <chrono>
 
 #include "G4Y.h"
-#include "CameraScripts.h"
+#include "CameraScript.h"
 
 class ColliderScripts : public GCom
 {
@@ -16,7 +16,7 @@ public:
     virtual void Start() override
     {
         m_tranform = Obj()->Transform();
-        m_dwld = Obj()->Scene()->PhyWorld();
+        m_dwld = g4y::phyworld();
         m_rigibody = Obj()->GetCom<GRigibody>("GRigibody");
     }
 
@@ -39,7 +39,7 @@ public:
             //m_rigibody.lock()->m_rigidbody->setAnisotropicFriction(btVector3(2,2,2), btCollisionObject::CF_ANISOTROPIC_FRICTION);
             btVector3 pivotInA(0,5,0);
             btTypedConstraint* p2p = new btPoint2PointConstraint(*m_rigibody.lock()->m_rigidbody.get(), pivotInA);
-            Obj()->PhyWorld()->m_dynamics_world->addConstraint(p2p);
+            g4y::phyworld()->m_dynamics_world->addConstraint(p2p);
         }
 
         if(ImGui::Button("SetY")){
@@ -133,7 +133,7 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
-    camera->AddCom(std::make_shared<CameraScripts>());
+    camera->AddCom(std::make_shared<CameraScript>());
 
     grid->AddDefaultComs();
     grid->AddCom(std::make_shared<GGrid>(-100, 100, 1));
@@ -163,14 +163,14 @@ void build_scene(std::shared_ptr<GScene> s)
 int main(int argc, char** argv)
 {
 #if 1
-    std::shared_ptr<GWorld> w = std::make_shared<GWorld>();
+    GWorld::StaticInit();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
-    
-    w->SetScene(s);
-    
+
+    GWorld::s_instance->SetScene(s);
+
     build_scene(s);
 
-    return w->Run();
+    return GWorld::s_instance->Run();
 #else
     glm::mat4 m(1.0f);
 

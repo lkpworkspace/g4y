@@ -1,11 +1,11 @@
-#ifndef __MoveScripts_H__
-#define __MoveScripts_H__
+#ifndef __MoveScript_H__
+#define __MoveScript_H__
 #include "G4Y.h"
 
-class MoveScripts : public GCom
+class MoveScript : public GCom
 {
 public:
-    MoveScripts(std::string title, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0)) :
+    MoveScript(std::string title, glm::vec3 pos = glm::vec3(0,0,0), glm::vec3 rot = glm::vec3(0,0,0)) :
         title(title),
         x(pos.x),
         y(pos.y),

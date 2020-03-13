@@ -3,7 +3,8 @@
 #include "GWorld.h"
 
 GCom::GCom() :
-    m_start(false)
+    m_start(false),
+    m_destroy(false)
 {}
 
 GCom::~GCom()
@@ -15,9 +16,4 @@ void GCom::OnStart()
         m_start = true;
         Start();
     }
-}
-
-double GCom::GetTime()
-{
-    return GWorld::GetTime();
 }

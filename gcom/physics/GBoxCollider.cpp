@@ -1,14 +1,14 @@
-#include "GSphereCollider.h"
+#include "GBoxCollider.h"
 #include "GCommon.h"
 
-void GSphereCollider::Init()
+void GBoxCollider::Init()
 {
    m_transform = Obj()->Transform();
    m_phy_world = GWorld::s_instance->PhyWorld();
-   m_shape     = std::static_pointer_cast<btCollisionShape>(std::make_shared<btSphereShape>(1));
+   m_shape     = std::static_pointer_cast<btCollisionShape>(std::make_shared<btBoxShape>(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))));
 }
 
-void GSphereCollider::Start()
+void GBoxCollider::Start()
 {
    auto com = Obj()->GetCom("GRigibody");
    if(com == nullptr){
@@ -19,7 +19,7 @@ void GSphereCollider::Start()
    }
 }
 
-void GSphereCollider::OnDestroy()
+void GBoxCollider::OnDestroy()
 {
    auto com = Obj()->GetCom("GRigibody");
    if(com == nullptr){

@@ -21,7 +21,6 @@ public:
     bool IsActive(){ return m_active; }
 
     bool AddChild(std::shared_ptr<GObj> obj);
-    void DelChild(std::shared_ptr<GObj> obj);
 
     template<typename T>
     bool AddCom(std::shared_ptr<T> com){
@@ -29,13 +28,7 @@ public:
         if(c) return AddCom(c);
         return false;
     }
-    template<typename T>
-    void DelCom(std::shared_ptr<T> com){
-        auto c = std::dynamic_pointer_cast<GCom>(com);
-        if(c) DelCom(c);
-    }
     bool AddCom(std::shared_ptr<GCom> com);
-    void DelCom(std::shared_ptr<GCom> com);
 
     template<typename T>
     std::shared_ptr<T> GetCom(std::string com_name){
@@ -58,14 +51,20 @@ public:
 
     std::shared_ptr<GScene> Scene(){ return GScene::CurScene(); }
 
-    std::shared_ptr<GPhyWorld> PhyWorld(){ return GScene::CurScene()->PhyWorld(); }
-
     void AddDefaultComs();
 
     std::string& UUID() { return m_uuid; }
 
     static std::shared_ptr<GObj> FindWithTag(std::string tag);
     static std::vector<std::shared_ptr<GObj>> FindObjsWithTag(std::string tag);
+
+    static void Destroy(std::shared_ptr<GObj>);
+    static void Destroy(std::shared_ptr<GCom>);
+    template<typename T>
+    static void Destroy(std::shared_ptr<T> com){
+        auto c = std::dynamic_pointer_cast<GCom>(com);
+        if(c) Destroy(c);
+    }
 
 protected:
 
@@ -79,11 +78,17 @@ protected:
 
     void UpdateRender();
 
-    void UpdateUI();
-
 private:
+    void DelCom(std::shared_ptr<GCom>);
+    void DelChild(std::shared_ptr<GObj> obj);
 
     bool         m_active;
+
+    /* 被标记将要销毁 */
+    bool         m_destroy_flag;
+
+    /* 是否已经被销毁,防止被重复删除 */
+    bool         m_destroy;
 
     std::string m_uuid;
 
@@ -99,6 +104,8 @@ private:
     std::unordered_set<std::shared_ptr<GObj>> m_children;
 
     static std::unordered_multimap<std::string, std::weak_ptr<GObj>> s_tagged_objs;
+    static std::vector<std::weak_ptr<GCom>>                          s_destroy_coms;
+    static std::vector<std::weak_ptr<GObj>>                          s_destroy_objs;
 };
 
 #endif

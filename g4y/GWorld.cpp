@@ -4,9 +4,18 @@
 #include "GPhyWorld.h"
 #include "GOpenGLView.h"
 
+std::unique_ptr<GWorld> GWorld::s_instance = nullptr;
+
 auto g_begin_time = std::chrono::system_clock::now();
-GWorld::GWorld() :
-    std::enable_shared_from_this<GWorld>()
+double g_frame_begin = 0.0f;
+double g_delta_time = 0.0f;
+
+void GWorld::StaticInit()
+{
+    s_instance.reset(new GWorld());
+}
+
+GWorld::GWorld()
 {
     m_gl_view = std::make_shared<GOpenGLView>();
     m_gl_view->InitGL();
@@ -28,11 +37,27 @@ double GWorld::GetTime()
     return (d.count() * 1.0f / 1e6);
 }
 
+double GWorld::GetDeltaTime()
+{
+    return g_delta_time;
+}
+
+std::shared_ptr<GPhyWorld> GWorld::PhyWorld()
+{
+    return m_phy_world;
+}
+std::shared_ptr<GOpenGLView> GWorld::GLView()
+{
+    return m_gl_view;
+}
+
 int GWorld::Run()
 {
     while(!m_gl_view->WindowShouldClose()){
+        g_frame_begin = GetTime();
         m_scene->Update();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        g_delta_time = GetTime() - g_frame_begin;
     }
     return 0;
 }
@@ -45,8 +70,5 @@ void GWorld::Poll()
 void GWorld::SetScene(std::shared_ptr<GScene> s)
 {
     m_scene = s;
-    s->m_gl_view   = m_gl_view;
-    s->m_phy_world = m_phy_world;
     s->m_cur_scene = s;
-    s->m_world     = shared_from_this();
 }
