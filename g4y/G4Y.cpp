@@ -12,6 +12,15 @@ namespace g4y
         return false;
     }
 
+    bool getkeypress(int ch){
+        auto& io = ImGui::GetIO();
+        for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) 
+            if (ImGui::IsKeyPressed(i) && ch == i){ 
+                return true;
+            }
+        return false;
+    }
+
     bool getkeydown(int ch){
         auto& io = ImGui::GetIO();
         for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) 

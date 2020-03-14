@@ -17,8 +17,11 @@ public:
 
     virtual void OnDestroy() override;
 
-private:
+    void SetColor(glm::vec4 col);
+    glm::vec4 Color() { return color; }
 
+private:
+    glm::vec4 color;
     unsigned int VAO, VBO;
     std::shared_ptr<GShader> m_shader;
     std::weak_ptr<GCamera>   m_camera;

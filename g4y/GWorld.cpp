@@ -6,6 +6,7 @@
 
 std::unique_ptr<GWorld> GWorld::s_instance = nullptr;
 
+int g_sleep_ms = 10;
 auto g_begin_time = std::chrono::system_clock::now();
 double g_frame_begin = 0.0f;
 double g_delta_time = 0.0f;
@@ -56,8 +57,9 @@ int GWorld::Run()
     while(!m_gl_view->WindowShouldClose()){
         g_frame_begin = GetTime();
         m_scene->Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(g_sleep_ms));
         g_delta_time = GetTime() - g_frame_begin;
+        g_sleep_ms = g_delta_time > 0.017f ? (g_sleep_ms - 1 > 0 ? g_sleep_ms - 1: 1) : g_sleep_ms + 1;
     }
     return 0;
 }

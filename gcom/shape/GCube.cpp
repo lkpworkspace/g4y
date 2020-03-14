@@ -105,7 +105,7 @@ void GCube::Start()
 
 void GCube::OnRender()
 {
-    glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
+    //glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
     glm::mat4 P = m_camera.lock()->Projection();
     glm::mat4 V = m_camera.lock()->View();
     glm::mat4 M = m_transform.lock()->ToMat4();
@@ -121,6 +121,11 @@ void GCube::OnRender()
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glDisable(GL_BLEND);
+}
+
+void GCube::SetColor(glm::vec4 col)
+{
+    color = col;
 }
 
 void GCube::OnDestroy()

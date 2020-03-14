@@ -29,6 +29,8 @@ namespace g4y
 
     bool getkey(int ch);
 
+    bool getkeypress(int ch);
+    
     bool getkeydown(int ch);
 
     bool getmousedown(int b = 1);

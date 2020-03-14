@@ -19,24 +19,23 @@ public:
 
     virtual void Update() override
     {
-        ImGui::Begin(title.c_str());
-
+        // ImGui::Begin(title.c_str());
+        // {
+        //     auto p = m_transform.lock()->LocalPosition();
+        //     auto r = m_transform.lock()->LocalEulerAngles();
+        //     ImGui::Text("local pos     (%f, %f, %f)", p.x, p.y, p.z);
+        //     ImGui::Text("local rotate  (%f, %f, %f)", r.x, r.y, r.z);
+        // }
+        // {
+        //     auto p = m_transform.lock()->Position();
+        //     auto r = m_transform.lock()->EulerAngles();
+        //     auto s = m_transform.lock()->Scale();
+        //     ImGui::Text("global pos    (%f, %f, %f)", p.x, p.y, p.z);
+        //     ImGui::Text("global rotate (%f, %f, %f)", r.x, r.y, r.z);
+        //     ImGui::Text("       scale  (%f, %f, %f)", s.x, s.y, s.z);
+        // }
+        // ImGui::End();
         auto& io = ImGui::GetIO();
-        {
-            auto p = m_transform.lock()->LocalPosition();
-            auto r = m_transform.lock()->LocalEulerAngles();
-            ImGui::Text("local pos     (%f, %f, %f)", p.x, p.y, p.z);
-            ImGui::Text("local rotate  (%f, %f, %f)", r.x, r.y, r.z);
-        }
-        {
-            auto p = m_transform.lock()->Position();
-            auto r = m_transform.lock()->EulerAngles();
-            auto s = m_transform.lock()->Scale();
-            ImGui::Text("global pos    (%f, %f, %f)", p.x, p.y, p.z);
-            ImGui::Text("global rotate (%f, %f, %f)", r.x, r.y, r.z);
-            ImGui::Text("       scale  (%f, %f, %f)", s.x, s.y, s.z);
-        }
-
         float delta_time = GWorld::GetDeltaTime();
         float speed = 12.0f;
         if(g4y::getkeydown('W') || io.MouseWheel > 0.0f){
@@ -70,8 +69,6 @@ public:
         if(g4y::getmousedown() && (io.MouseDelta.x != 0.0f || io.MouseDelta.y != 0.0f)){
             m_transform.lock()->SetRotation(glm::vec3(-pitch, -yaw, 0));
         }
-        
-        ImGui::End();
     }
 
     float pitch = 0.0f;
