@@ -109,17 +109,19 @@ void GOpenGLView::BeginRender()
     {
         ImGui::StyleColorsClassic();
         static bool show_demo = false;
-        ImGuiWindowFlags window_flags = 0;
-        window_flags |= ImGuiWindowFlags_NoTitleBar;
-        window_flags |= ImGuiWindowFlags_MenuBar;
-        window_flags |= ImGuiWindowFlags_NoBackground;
+        if(m_show_demo){
+            ImGuiWindowFlags window_flags = 0;
+            window_flags |= ImGuiWindowFlags_NoTitleBar;
+            window_flags |= ImGuiWindowFlags_MenuBar;
+            window_flags |= ImGuiWindowFlags_NoBackground;
 
-        ImGui::Begin("G4Y Infomation");                          // Create a window called "Hello, world!" and append into it.
-        ImGui::Checkbox("show demo", &show_demo);
-        if(show_demo)
-            ImGui::ShowDemoWindow(&show_demo);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
+            ImGui::Begin("G4Y Infomation");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Checkbox("show demo", &show_demo);
+            if(show_demo)
+                ImGui::ShowDemoWindow(&show_demo);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
     }
 #endif
 }
@@ -151,6 +153,21 @@ void GOpenGLView::GetWindowSize(int& w, int& h)
 #ifdef USE_GUI
     glfwGetWindowSize(window, &w, &h);
 #endif
+}
+
+void GOpenGLView::SetRenderRect(glm::ivec4 rect)
+{
+#ifdef USE_GUI
+    int w, h;
+    GetWindowSize(w, h);
+    rect.y = h - rect.z - rect.y;
+    glViewport(rect.x, rect.y, rect.w, rect.z);
+#endif
+}
+
+void GOpenGLView::ShowDemo(bool b)
+{
+    m_show_demo = b;
 }
 
 void GOpenGLView::EndRender()

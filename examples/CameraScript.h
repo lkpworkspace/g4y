@@ -5,47 +5,67 @@
 class CameraScript : public GCom
 {
 public:
-    CameraScript(){}
-
-    CameraScript(glm::vec3 pos) :
-        x(pos.x),
-        y(pos.y),
-        z(pos.z)
-    {}
-
     virtual void Start() override
     {
-        Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
-        Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
+        m_camera = Obj()->GetCom<GCamera>("GCamera");
+        auto camera = m_camera.lock();
+        ortho_rect = camera->OrthoRect();
+        nearfar = camera->NearFar();
+        perspective = camera->FovAspect();
     }
 
     virtual void Update() override
     {
         ImGui::Begin("Camera");
 
-        bool slider_pos[3];
-        slider_pos[0] = ImGui::SliderFloat("Camera x", &x, -150.0f, 150.0f);
-        slider_pos[1] = ImGui::SliderFloat("Camera y", &y, -150.0f, 150.0f);
-        slider_pos[2] = ImGui::SliderFloat("Camera z", &z, -150.0f, 150.0f);
-        if(slider_pos[0] || slider_pos[1] || slider_pos[2])
-            Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
-
-        bool slider_rotate[3];
-        slider_rotate[0] = ImGui::SliderFloat("Camera rx", &rx, -180.0f, 180.0f);
-        slider_rotate[1] = ImGui::SliderFloat("Camera ry", &ry, -180.0f, 180.0f);
-        slider_rotate[2] = ImGui::SliderFloat("Camera rz", &rz, -180.0f, 180.0f);
-        if(slider_rotate[0] || slider_rotate[1] || slider_rotate[2])
-            Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
+        if(!m_camera.expired()){
+            auto camera = m_camera.lock(); 
+            bool ortho = camera->IsOrthographic();
+            // 设置正视图或透视图
+            const char* items[] = { "orthographic", "perspective" };
+            static int item_current = ortho ? 0 : 1;
+            if(ImGui::Combo("projection", &item_current, items, IM_ARRAYSIZE(items))){
+                camera->SetCameraType(item_current == 0 ? GCamera::ORTHO : GCamera::PERSPECTIVE);
+            }
+            float min = 0.0f, max = 1.0f;
+            {
+                float dis_min = -10000.0f, dis_max = 10000.0f;
+                bool drag_state[2];
+                drag_state[0] = ImGui::DragScalar("near",     ImGuiDataType_Float,  &nearfar.x, 0.05f,  &dis_min, &dis_max, "%f", 1.0f);
+                drag_state[1] = ImGui::DragScalar(" far",     ImGuiDataType_Float,  &nearfar.y, 0.05f,  &dis_min, &dis_max, "%f", 1.0f);
+                if(drag_state[0] || drag_state[1]){
+                    camera->SetNearFar(nearfar);
+                }
+            }
+            if(ortho){
+                float wh_min = 0.0f, wh_max = 10000.0f;
+                bool drag_state[4];
+                drag_state[0] = ImGui::DragScalar("X",     ImGuiDataType_Float,  &ortho_rect.x, 0.05f,  &min, &max, "%f", 1.0f);
+                drag_state[1] = ImGui::DragScalar("Y",     ImGuiDataType_Float,  &ortho_rect.y, 0.05f,  &min, &max, "%f", 1.0f);
+                drag_state[2] = ImGui::DragScalar("W",     ImGuiDataType_Float,  &ortho_rect.z, 0.05f,  &wh_min, &wh_max, "%f", 1.0f);
+                drag_state[3] = ImGui::DragScalar("H",     ImGuiDataType_Float,  &ortho_rect.w, 0.05f,  &wh_min, &wh_max, "%f", 1.0f);
+                if(drag_state[0] || drag_state[1] || drag_state[2] || drag_state[3]){
+                    camera->SetOrthoRect(ortho_rect);
+                }
+            }else{
+                float fov_min = 0.0f, fov_max = 180.0f;
+                float aspect_min = 0.0f, aspect_max = 1.0f;
+                bool drag_state[2];
+                drag_state[0] = ImGui::DragScalar("fov",     ImGuiDataType_Float,  &perspective.x, 0.05f,  &fov_min, &fov_max, "%f", 1.0f);
+                drag_state[1] = ImGui::DragScalar("aspect",  ImGuiDataType_Float,  &perspective.y, 0.05f,  &aspect_min, &aspect_max, "%f", 1.0f);
+                if(drag_state[0] || drag_state[1] || drag_state[2] || drag_state[3]){
+                    camera->SetFovAspect(perspective);
+                }
+            }
+        }
 
         ImGui::End();  
     }
 
-    float x = 0.0f;
-    float y = 10.0f;
-    float z = 15.0f;
-    float rx = -20.0f;
-    float ry = 0.0f;
-    float rz = 0.0f;
+    glm::vec2 perspective; // x fov, y aspect
+    glm::vec4 ortho_rect;
+    glm::vec2 nearfar;
+    std::weak_ptr<GCamera> m_camera;
 };
 
 #endif

@@ -24,7 +24,11 @@ public:
 
     void SetCursorPos(double x, double y);
 
+    void ShowDemo(bool);
+
     void GetWindowSize(int& w, int& h);
+
+    void SetRenderRect(glm::ivec4);
 
     void BeginRender();
 
@@ -41,6 +45,7 @@ private:
     std::shared_ptr<GShader> m_global_shader;
     GLFWwindow* window;
 #endif
+    bool m_show_demo = true;
 };
 
 #endif

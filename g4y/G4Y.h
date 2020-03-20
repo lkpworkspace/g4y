@@ -8,6 +8,7 @@
 
 #include "GResourceMgr.h"
 
+#include "GOpenGLView.h"
 #include "GTransform.h"
 #include "GCamera.h"
 #include "GPhyWorld.h"

@@ -9,7 +9,7 @@
 #include "GCliMsgMgr.h"
 #include "GPbTransformMsg.h"
 #include "GMsgNetIO.h"
-#include "CameraScript.h"
+#include "RoamScript.h"
 #include "MoveScript.h"
 
 /*
@@ -77,7 +77,7 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
-    camera->AddCom(std::make_shared<CameraScript>(glm::vec3(0, 20, 30)));
+    camera->AddCom(std::make_shared<RoamScript>(""));
 
     auto msgmgr_com = std::make_shared<GCliMsgMgr>();
     msgmgr_com->RegMsgCom("GTransformMsg", [](bool loc){ 

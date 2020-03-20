@@ -6,6 +6,7 @@ if(USE_GUI)
     add_subdirectory(gui_test)
     add_subdirectory(cs_test)
     add_subdirectory(snake)
+    add_subdirectory(editor)
 endif(USE_GUI)
 
 add_subdirectory(bullet_test)

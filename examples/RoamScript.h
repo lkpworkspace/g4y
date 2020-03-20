@@ -5,7 +5,7 @@
 class RoamScript : public GCom
 {
 public:
-    RoamScript(std::string title) :
+    RoamScript(std::string title = "") :
         title(title)
     {}
 
