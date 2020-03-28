@@ -23,5 +23,10 @@ cmake ../
 make 
 ```
 
+## 贪吃蛇示例
+![snake](https://github.com/lkpworkspace/demo/blob/master/pics/snake.gif)
+
+## 编辑器示例
+![snake](https://github.com/lkpworkspace/demo/blob/master/pics/editor.gif)
 
 
