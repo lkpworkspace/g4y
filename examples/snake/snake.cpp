@@ -11,6 +11,7 @@
 
 #include "G4Y.h"
 #include "RoamScript.h"
+#include "CameraScript.h"
 
 enum NODE_TYPE { NONE, FOOD, BODY };
 enum DIRECTION { LEFT = -1, RIGHT = 1, UP = 2, DOWN = -2};
@@ -359,6 +360,7 @@ void build_scene(std::shared_ptr<GScene> s)
     camera->AddCom(std::make_shared<GCamera>());
     camera->AddCom(std::make_shared<RoamScript>("Camera roam"));
     camera->AddCom(std::make_shared<SnakeScript>("Snake"));
+    camera->AddCom(std::make_shared<CameraScript>());
     // camera->AddCom(std::make_shared<GSkybox>(
     //     std::vector<std::string>({
     //         "/home/lkp/projs/gfy/build/skybox/right.jpg",
@@ -379,12 +381,12 @@ void build_scene(std::shared_ptr<GScene> s)
 
 int main(int argc, char** argv)
 {
-    GWorld::StaticInit();
+    const auto w = GWorld::Instance();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
 
-    GWorld::s_instance->SetScene(s);
+    w->SetScene(s);
 
     build_scene(s);
 
-    return GWorld::s_instance->Run();
+    return w->Run();
 }

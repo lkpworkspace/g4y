@@ -56,12 +56,12 @@ namespace g4y
 
     std::shared_ptr<GPhyWorld> phyworld()
     {
-        return GWorld::s_instance->PhyWorld();
+        return GWorld::Instance()->PhyWorld();
     }
 
     std::shared_ptr<GOpenGLView> glview()
     {
-        return GWorld::s_instance->GLView();
+        return GWorld::Instance()->GLView();
     }
 
 }

@@ -4,7 +4,7 @@
 void GSphereCollider::Init()
 {
    m_transform = Obj()->Transform();
-   m_phy_world = GWorld::s_instance->PhyWorld();
+   m_phy_world = GWorld::Instance()->PhyWorld();
    m_shape     = std::static_pointer_cast<btCollisionShape>(std::make_shared<btSphereShape>(1));
 }
 

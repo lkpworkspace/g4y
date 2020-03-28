@@ -10,7 +10,7 @@
 void GRigibody::Init()
 {
     m_transform = Obj()->Transform();
-    m_phy_world = GWorld::s_instance->PhyWorld();
+    m_phy_world = GWorld::Instance()->PhyWorld();
 }
 
 void GRigibody::Start()

@@ -12,10 +12,7 @@ class GWorld
 {
     friend class GScene;
 public:
-
-    static void StaticInit();
-
-    static std::unique_ptr< GWorld > s_instance;
+    static GWorld* const Instance();
 
     void LoadCfg(std::string cfg);
 
@@ -36,6 +33,7 @@ public:
     ~GWorld();
 private:
     GWorld();
+    static GWorld*                        s_instance;
 
     std::shared_ptr<GScene>                m_scene;
     std::shared_ptr<GPhyWorld>             m_phy_world;

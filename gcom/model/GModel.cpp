@@ -27,7 +27,7 @@ void GModel::Start()
 {
     m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
     m_transform = Obj()->Transform();
-    m_shader = GWorld::s_instance->GLView()->GetShader();
+    m_shader = GWorld::Instance()->GLView()->GetShader();
 }
 
 void GModel::OnRender()

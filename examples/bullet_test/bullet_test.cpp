@@ -163,14 +163,14 @@ void build_scene(std::shared_ptr<GScene> s)
 int main(int argc, char** argv)
 {
 #if 1
-    GWorld::StaticInit();
+    const auto w = GWorld::Instance();
     std::shared_ptr<GScene> s = std::make_shared<GScene>();
 
-    GWorld::s_instance->SetScene(s);
+    w->SetScene(s);
 
     build_scene(s);
 
-    return GWorld::s_instance->Run();
+    return w->Run();
 #else
     glm::mat4 m(1.0f);
 

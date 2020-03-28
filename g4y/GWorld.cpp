@@ -4,16 +4,18 @@
 #include "GPhyWorld.h"
 #include "GOpenGLView.h"
 
-std::unique_ptr<GWorld> GWorld::s_instance = nullptr;
+GWorld* GWorld::s_instance = nullptr;
 
 int g_sleep_ms = 10;
 auto g_begin_time = std::chrono::system_clock::now();
 double g_frame_begin = 0.0f;
 double g_delta_time = 0.0f;
 
-void GWorld::StaticInit()
+GWorld* const GWorld::Instance()
 {
-    s_instance.reset(new GWorld());
+    if(s_instance == nullptr)
+        s_instance = new GWorld();
+    return s_instance;
 }
 
 GWorld::GWorld()
@@ -54,12 +56,16 @@ std::shared_ptr<GOpenGLView> GWorld::GLView()
 
 int GWorld::Run()
 {
+    float per_frame = 0.017f;
+    float exec_time = 0.0f;
     while(!m_gl_view->WindowShouldClose()){
         g_frame_begin = GetTime();
         m_scene->Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(g_sleep_ms));
+        exec_time = GetTime() - g_frame_begin;
+        if(exec_time < per_frame){
+            std::this_thread::sleep_for(std::chrono::milliseconds((int)((per_frame - exec_time) * 1000)));
+        }
         g_delta_time = GetTime() - g_frame_begin;
-        g_sleep_ms = g_delta_time > 0.017f ? (g_sleep_ms - 1 > 0 ? g_sleep_ms - 1: 1) : g_sleep_ms + 1;
     }
     return 0;
 }

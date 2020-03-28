@@ -10,7 +10,7 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 set(Boost_USE_STATIC_LIBS       OFF) # only find static libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package(Boost 1.65 COMPONENTS date_time system log)
+find_package(Boost 1.65 COMPONENTS python3 date_time system log)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
@@ -87,6 +87,19 @@ if(USE_GUI)
     )
 endif(USE_GUI)
 
+if(USE_GUI)
+set(G4Y_ALL_SRCS
+    ${GCOM_SRCS} 
+    ${GCOM_GUI_SRCS}
+    ${G4Y_SRCS}
+)
+else()
+set(G4Y_ALL_SRCS
+    ${GCOM_SRCS}
+    ${G4Y_SRCS}
+)
+endif(USE_GUI)
+
 set(G4Y_LIBRARIES
     rt
     GL 
@@ -100,4 +113,5 @@ set(G4Y_LIBRARIES
 )
 
 include_directories(examples)
+add_subdirectory(pyg4y)
 add_subdirectory(examples)
