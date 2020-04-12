@@ -2,7 +2,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
 
 set(GFY_EDITOR_SRCS
     ${GCOM_SRCS} 
-    ${GCOM_GUI_SRCS}
+    ${GCOM_GRAPHICS_SRCS}
     ${G4Y_SRCS} 
     Panel.cpp
     PanelMgr.cpp

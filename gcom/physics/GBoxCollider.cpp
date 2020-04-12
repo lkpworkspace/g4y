@@ -1,11 +1,29 @@
 #include "GBoxCollider.h"
 #include "GCommon.h"
 
+GBoxCollider::GBoxCollider() :
+   m_box_half_extents(.5, .5, .5)
+{}
+
+GBoxCollider::GBoxCollider(glm::vec3 box_half_extents) :
+   m_box_half_extents(box_half_extents.x, box_half_extents.y, box_half_extents.z)
+{}
+
+void GBoxCollider::SetBoxHalfExtents(glm::vec3 v)
+{
+   m_box_half_extents = v;
+   auto box_shape = std::static_pointer_cast<btBoxShape>(m_shape);
+}
+glm::vec3 GBoxCollider::GetBoxHalfExtents()
+{
+   return m_box_half_extents;
+}
+
 void GBoxCollider::Init()
 {
    m_transform = Obj()->Transform();
    m_phy_world = GWorld::Instance()->PhyWorld();
-   m_shape     = std::static_pointer_cast<btCollisionShape>(std::make_shared<btBoxShape>(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))));
+   m_shape     = std::static_pointer_cast<btCollisionShape>(std::make_shared<btBoxShape>(btVector3(m_box_half_extents.x, m_box_half_extents.y, m_box_half_extents.z)));
 }
 
 void GBoxCollider::Start()

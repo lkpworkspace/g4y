@@ -8,7 +8,8 @@ class GPhyWorld;
 class GBoxCollider : public GCollider
 {
 public:
-    GBoxCollider(){}
+    GBoxCollider();
+    GBoxCollider(glm::vec3);
     virtual ~GBoxCollider(){}
 
     virtual void Init() override;
@@ -19,9 +20,13 @@ public:
 
     virtual std::string ColliderName() { return "GBoxCollider"; }
 
+    void SetBoxHalfExtents(glm::vec3);
+    glm::vec3 GetBoxHalfExtents();
+
 // private:
     std::weak_ptr<GPhyWorld>                    m_phy_world;
     std::weak_ptr<GTransform>                   m_transform;
+    glm::vec3                                   m_box_half_extents;
 };
 
 #endif

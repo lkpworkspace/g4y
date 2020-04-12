@@ -2,6 +2,7 @@
 #include "GCommon.h"
 #include "GCollider.h"
 #include "GRigibody.h"
+#include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
 
 void GPhyWorld::InitPhysics()
 {
@@ -17,6 +18,24 @@ void GPhyWorld::InitPhysics()
     );
 
     m_dynamics_world->setGravity(btVector3(0, -10, 0));
+}
+
+bool GPhyWorld::RayTest(glm::vec3 from, glm::vec3 to, GRayHit& hit)
+{
+    btVector3 f(from.x, from.y, from.z);
+    btVector3 t(to.x, to.y, to.z);
+    btCollisionWorld::ClosestRayResultCallback ray_cb(f, t);
+    ray_cb.m_flags |= btTriangleRaycastCallback::kF_UseGjkConvexCastRaytest;
+    m_dynamics_world->rayTest(f, t, ray_cb);
+    if(ray_cb.hasHit()){
+        btVector3 pick_pos = ray_cb.m_hitPointWorld;
+        hit.pick_pos = glm::vec3(pick_pos[0], pick_pos[1], pick_pos[2]);
+        void* p = ray_cb.m_collisionObject->getUserPointer();
+        auto com = static_cast<GCom*>(p);
+        hit.obj = com->Obj();
+        return true;
+    }
+    return false;
 }
 
 void GPhyWorld::UpdateDynamicsWorld()

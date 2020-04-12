@@ -7,6 +7,7 @@
 #include "RoamScript.h"
 #include "CameraScript.h"
 #include "BulletScript.h"
+#include "MoveScript.h"
 
 void create_bullet(std::shared_ptr<GScene> s, glm::vec3 pos, glm::quat rot, float speed)
 {
@@ -54,8 +55,20 @@ public:
     std::weak_ptr<GTransform> m_tranform;
 };
 
+template<typename T>
+std::string GType()
+{
+    return typeid(T).name();
+}
+
 void build_scene(std::shared_ptr<GScene> s)
 {
+    double t = g4y::gettime();
+    g4y::resourcemgr()->SetResourceDir("/home/lkp/projs/g4y/asset/");
+    g4y::resourcemgr()->LoadModel("nanosuit/nanosuit.obj");
+    g4y::resourcemgr()->LoadModel("MC4/MCblocks.obj");
+    std::cout << "load model : " << g4y::gettime() - t << std::endl;
+
     auto  camera = std::make_shared<GObj>();
     auto  grid = std::make_shared<GObj>();
 
@@ -94,7 +107,6 @@ void build_scene(std::shared_ptr<GScene> s)
     cube2->AddCom(std::make_shared<RotateScript>("rotate"));
 
     // model->AddDefaultComs();
-    // model->AddCom(std::make_shared<ModelScripts>("Model1", glm::vec3(-10, 0, -10)));
     // model->AddCom(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj"));
 
     // model2->AddDefaultComs();
@@ -105,11 +117,23 @@ void build_scene(std::shared_ptr<GScene> s)
     // model3->AddCom(std::make_shared<ModelScripts>("Model3", glm::vec3(10, 0, -10)));
     // model3->AddCom(std::make_shared<GModel>("/home/lkp/projs/gfy/build/nanosuit/nanosuit.obj"));
 
- 
     s->AddChild(camera);
     s->AddChild(grid);
     s->AddChild(cube);
     s->AddChild(cube2);
+    for(int i = 0; i < 10; ++i){
+        // auto obj = g4y::resourcemgr()->Instantiate("MC2/MCblocks.obj");
+        //polySurface820
+        std::string node_name = "polySurface";
+        node_name += std::to_string(i + 800);
+        auto obj = g4y::resourcemgr()->CloneChildNode("MC4/MCblocks.obj", node_name);
+        if(obj == nullptr){
+            std::cout << "find null" << std::endl;
+            break;
+        }
+        obj->AddCom(std::make_shared<MoveScript>(std::string("obj") + std::to_string(i)));
+        s->AddChild(obj);
+    }
     //cube->AddChild(camera);
     // cube->AddChild(cube2);
     // s->AddChild(model);

@@ -4,6 +4,14 @@
 #include <memory>
 #include <vector>
 #include <btBulletDynamicsCommon.h>
+#include "GCommon.h"
+
+class GRayHit
+{
+public:
+    glm::vec3           pick_pos;
+    std::weak_ptr<GObj> obj;
+};
 
 class GPhyWorld
 {
@@ -41,6 +49,8 @@ public:
             m_dynamics_world->removeRigidBody(o.get());
         }
     }
+
+    bool RayTest(glm::vec3 from, glm::vec3 to, GRayHit& hit);
 
     void UpdateDynamicsWorld();
 

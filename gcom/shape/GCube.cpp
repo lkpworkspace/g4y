@@ -1,5 +1,5 @@
 #include "GCube.h"
-#include "GShader.h"
+#include "GShader.hpp"
 #include "GObj.h"
 #include "GCamera.h"
 
@@ -72,7 +72,8 @@ float vertices[] = {
     -0.5f,  0.5f, -0.5f,
 };
 
-GCube::GCube()
+GCube::GCube() :
+    color(1, 1, 1, 1)
 {}
 
 GCube::~GCube()

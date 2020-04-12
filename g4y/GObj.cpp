@@ -3,7 +3,7 @@
 #include "GCom.h"
 #include "GScene.h"
 #include "GTransform.h"
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
 #include "GAxis.h"
 #endif
 
@@ -195,7 +195,7 @@ void GObj::UpdateRender()
 void GObj::AddDefaultComs()
 {
     AddCom(std::static_pointer_cast<GCom>(std::make_shared<GTransform>()));
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     AddCom(std::make_shared<GAxis>());
 #endif
 }

@@ -21,7 +21,7 @@ set(MSG_SRC
 
 set(CS_TEST_SRCS
     ${GCOM_SRCS} 
-    ${GCOM_GUI_SRCS}
+    ${GCOM_GRAPHICS_SRCS}
     ${G4Y_SRCS}
     ${MSG_SRC}
 )

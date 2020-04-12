@@ -70,6 +70,7 @@ void GModel::LoadModel(std::string const &path)
 // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
 void GModel::ProcessNode(aiNode *node, const aiScene *scene)
 {
+    std::cout << "load node: " << node->mName.C_Str() << ", mesh cnt: " << node->mNumMeshes << std::endl;
     // process each mesh located at the current node
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
     {
@@ -170,11 +171,13 @@ GMesh GModel::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 // the required info is returned as a Texture struct.
 std::vector<GTexture> GModel::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
 {
+    std::cout << typeName << ": " << mat->GetTextureCount(type) << std::endl;
     std::vector<GTexture> textures;
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
+        // std::cout << str.C_Str() << std::endl;
         // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
         bool skip = false;
         for(unsigned int j = 0; j < textures_loaded.size(); j++)
@@ -201,7 +204,7 @@ std::vector<GTexture> GModel::LoadMaterialTextures(aiMaterial *mat, aiTextureTyp
 
 unsigned int GModel::TextureFromFile(const char *path, const std::string &directory, bool gamma)
 {
-    std::cout << "load texture : "<< path << std::endl;
+    //std::cout << "load texture : "<< path << std::endl;
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
 

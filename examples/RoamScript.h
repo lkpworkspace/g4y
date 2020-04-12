@@ -38,35 +38,35 @@ public:
         auto& io = ImGui::GetIO();
         float delta_time = GWorld::GetDeltaTime();
         float speed = 12.0f;
-        if(g4y::getkeydown('W') || io.MouseWheel > 0.0f){
+        if(ImGui::IsKeyDown('W') || io.MouseWheel > 0.0f){
             m_transform.lock()->Translate(m_transform.lock()->Forward() * delta_time * speed * -1.0f);
         }
-        if(g4y::getkeydown('S') || io.MouseWheel < 0.0f){
+        if(ImGui::IsKeyDown('S') || io.MouseWheel < 0.0f){
             auto back = m_transform.lock()->Forward();
             m_transform.lock()->Translate(back * delta_time * speed);
         }
-        if(g4y::getkeydown('A')){
+        if(ImGui::IsKeyDown('A')){
             auto left = m_transform.lock()->Position() + (m_transform.lock()->Right() * delta_time * speed * -1.0f);
             m_transform.lock()->SetPosition(left);
         }
-        if(g4y::getkeydown('D')){
+        if(ImGui::IsKeyDown('D')){
             auto right = m_transform.lock()->Position() + (m_transform.lock()->Right() * delta_time * speed);
             m_transform.lock()->SetPosition(right);
         }
-        if(g4y::getkeydown(0x20)){ // key space
+        if(ImGui::IsKeyDown(0x20)){ // key space
             m_transform.lock()->Translate(glm::vec3(0, 1, 0) * delta_time * speed);
         }
-        if(g4y::getkeydown(0x155)){ // key left ctrl
+        if(ImGui::IsKeyDown(0x155)){ // key left ctrl
             m_transform.lock()->Translate(glm::vec3(0, -1, 0) * delta_time * speed);
         }
 
-        if(g4y::getmousedown() && io.MouseDelta.y != 0.0f){
+        if(ImGui::IsMouseDown(1) && io.MouseDelta.y != 0.0f){
             pitch += io.MouseDelta.y * 10 * delta_time;
         }
-        if(g4y::getmousedown() && io.MouseDelta.x != 0.0f){
+        if(ImGui::IsMouseDown(1) && io.MouseDelta.x != 0.0f){
             yaw += io.MouseDelta.x * 10 * delta_time;
         }
-        if(g4y::getmousedown() && (io.MouseDelta.x != 0.0f || io.MouseDelta.y != 0.0f)){
+        if(ImGui::IsMouseDown(1) && (io.MouseDelta.x != 0.0f || io.MouseDelta.y != 0.0f)){
             m_transform.lock()->SetRotation(glm::vec3(-pitch, -yaw, 0));
         }
     }

@@ -1,5 +1,5 @@
-#ifndef __GSHADER_H__
-#define __GSHADER_H__
+#ifndef __GSHADER_HPP__
+#define __GSHADER_HPP__
 #include <string>
 #include <glm/glm.hpp>
 

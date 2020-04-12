@@ -311,10 +311,10 @@ public:
             ImGui::Text("You Win");
         }
         // UP 0x109, DOWN 0x108, LEFT 0x107, RIGHT 0x106
-        if(g4y::getkeypress(0x109)) dir = UP;
-        if(g4y::getkeypress(0x108)) dir = DOWN;
-        if(g4y::getkeypress(0x107)) dir = LEFT;
-        if(g4y::getkeypress(0x106)) dir = RIGHT;
+        if(ImGui::IsKeyPressed(0x109)) dir = UP;
+        if(ImGui::IsKeyPressed(0x108)) dir = DOWN;
+        if(ImGui::IsKeyPressed(0x107)) dir = LEFT;
+        if(ImGui::IsKeyPressed(0x106)) dir = RIGHT;
         
         ImGui::End();
     }

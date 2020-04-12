@@ -1,6 +1,6 @@
 #include "GOpenGLView.h"
 #include <iostream>
-#include "GShader.h"
+#include "GShader.hpp"
 
 #if 0
 static const char* VS_CODE = \
@@ -43,7 +43,7 @@ static void glfw_error_callback(int error, const char* description)
 }
 int GOpenGLView::InitGL()
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
@@ -97,7 +97,7 @@ void GOpenGLView::InitShader()
 
 void GOpenGLView::BeginRender()
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -128,14 +128,14 @@ void GOpenGLView::BeginRender()
 
 void GOpenGLView::PollEvents()
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     glfwPollEvents();
 #endif
 }
 
 bool GOpenGLView::WindowShouldClose()
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     return glfwWindowShouldClose(window);
 #endif
     return true;
@@ -143,21 +143,21 @@ bool GOpenGLView::WindowShouldClose()
 
 void GOpenGLView::SetCursorPos(double x, double y)
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     glfwSetCursorPos(window, x, y);
 #endif
 }
 
 void GOpenGLView::GetWindowSize(int& w, int& h)
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     glfwGetWindowSize(window, &w, &h);
 #endif
 }
 
 void GOpenGLView::SetRenderRect(glm::ivec4 rect)
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     int w, h;
     GetWindowSize(w, h);
     rect.y = h - rect.z - rect.y;
@@ -172,7 +172,7 @@ void GOpenGLView::ShowDemo(bool b)
 
 void GOpenGLView::EndRender()
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     ImGui::Render();
     int display_w, display_h;
     glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -185,7 +185,7 @@ void GOpenGLView::EndRender()
 
 void GOpenGLView::ExitGL()
 {
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

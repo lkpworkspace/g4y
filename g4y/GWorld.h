@@ -8,6 +8,7 @@
 class GScene;
 class GPhyWorld;
 class GOpenGLView;
+class GResourceMgr;
 class GWorld
 {
     friend class GScene;
@@ -20,6 +21,7 @@ public:
 
     std::shared_ptr<GPhyWorld> PhyWorld();
     std::shared_ptr<GOpenGLView> GLView();
+    std::shared_ptr<GResourceMgr> ResourceMgr();
 
     /* second */
     static double GetTime();
@@ -38,6 +40,7 @@ private:
     std::shared_ptr<GScene>                m_scene;
     std::shared_ptr<GPhyWorld>             m_phy_world;
     std::shared_ptr<GOpenGLView>           m_gl_view;
+    std::shared_ptr<GResourceMgr>           m_resource_mgr;
 };
 
 #endif

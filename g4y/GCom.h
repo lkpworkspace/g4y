@@ -5,12 +5,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #endif
 
 class GObj;
@@ -49,8 +47,6 @@ public:
 
     std::shared_ptr<GObj> Obj() { assert(!m_obj.expired()); return m_obj.lock(); }
 
-    std::shared_ptr<GPhyWorld> PhyWorld() { assert(!m_phy_world.expired()); return m_phy_world.lock(); }
-
     virtual std::string ComName() { return "GCom"; }
 
 protected:
@@ -59,7 +55,6 @@ private:
     bool                     m_start;
     bool                     m_destroy;
     std::weak_ptr<GObj>      m_obj;
-    std::weak_ptr<GPhyWorld> m_phy_world;
 };
 
 #endif

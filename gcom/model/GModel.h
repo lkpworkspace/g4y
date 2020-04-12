@@ -6,7 +6,7 @@
 #include <assimp/postprocess.h>
 
 #include "GCom.h"
-#include "GShader.h"
+#include "GShader.hpp"
 #include "GMesh.h"
 
 class GCamera;

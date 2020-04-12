@@ -1,5 +1,5 @@
 #include "GLight.h"
-#include "GShader.h"
+#include "GShader.hpp"
 #include "GObj.h"
 #include "GCamera.h"
 

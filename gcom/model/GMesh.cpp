@@ -1,6 +1,6 @@
 #include "GMesh.h"
 #include <GL/glew.h>
-#include "GShader.h"
+#include "GShader.hpp"
 
 GMesh::GMesh(std::vector<GVertex> vertices, std::vector<unsigned int> indices, std::vector<GTexture> textures)
 {

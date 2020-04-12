@@ -3,6 +3,7 @@
 #include "GScene.h"
 #include "GPhyWorld.h"
 #include "GOpenGLView.h"
+#include "GResourceMgr.h"
 
 GWorld* GWorld::s_instance = nullptr;
 
@@ -20,11 +21,14 @@ GWorld* const GWorld::Instance()
 
 GWorld::GWorld()
 {
+    m_resource_mgr = std::make_shared<GResourceMgr>();
+
     m_gl_view = std::make_shared<GOpenGLView>();
     m_gl_view->InitGL();
 
     m_phy_world = std::make_shared<GPhyWorld>();
     m_phy_world->InitPhysics();
+
 }
 
 GWorld::~GWorld()
@@ -52,6 +56,11 @@ std::shared_ptr<GPhyWorld> GWorld::PhyWorld()
 std::shared_ptr<GOpenGLView> GWorld::GLView()
 {
     return m_gl_view;
+}
+
+std::shared_ptr<GResourceMgr> GWorld::ResourceMgr()
+{
+    return m_resource_mgr;
 }
 
 int GWorld::Run()

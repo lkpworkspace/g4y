@@ -42,6 +42,9 @@ public:
     void SetTag(std::string tag);
     std::string Tag() { return m_tag; }
 
+    void SetObjName(std::string objname){ m_objname = objname; }
+    std::string ObjName() { return m_objname; }
+
     std::shared_ptr<GObj> Parent() { return m_parent.expired() ? nullptr : m_parent.lock(); }
     std::vector<std::shared_ptr<GObj>> Children();
 
@@ -94,6 +97,8 @@ private:
 
     /* for search */
     std::string  m_tag;
+
+    std::string  m_objname;
 
     std::weak_ptr<GObj> m_parent;
     

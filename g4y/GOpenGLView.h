@@ -1,7 +1,7 @@
 #ifndef __GOPENGLVIEW_H__
 #define __GOPENGLVIEW_H__
 #include <memory>
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -39,7 +39,7 @@ public:
     void ExitGL();
 
 private:
-#ifdef USE_GUI
+#ifdef USE_GRAPHICS
     void InitShader();
 
     std::shared_ptr<GShader> m_global_shader;

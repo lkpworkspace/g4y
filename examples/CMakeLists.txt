@@ -2,11 +2,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_subdirectory(g4y_test)
 
-if(USE_GUI)
+if(USE_GRAPHICS)
     add_subdirectory(gui_test)
     add_subdirectory(cs_test)
     add_subdirectory(snake)
     add_subdirectory(editor)
-endif(USE_GUI)
+    add_subdirectory(minecraft)
+endif(USE_GRAPHICS)
 
 add_subdirectory(bullet_test)

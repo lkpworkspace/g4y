@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "GShader.h"
+#include "GShader.hpp"
 
 struct GVertex {
     glm::vec3 position;
