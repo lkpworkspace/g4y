@@ -9,6 +9,9 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 add_definitions(-DUSE_GRAPHICS)
 add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
 add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLEW)
+if(WIN32)
+add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)
+endif()
 
 set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/G4Y.cpp
@@ -63,6 +66,9 @@ find_package(OpenGL REQUIRED)
 # glew
 find_package(GLEW REQUIRED)
 
+# glfw
+find_package(glfw3 REQUIRED)
+
 # glm
 find_package(glm REQUIRED)
 
@@ -71,7 +77,11 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 set(Boost_USE_STATIC_LIBS       OFF) # only find static libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package(Boost REQUIRED COMPONENTS python date_time system log)
+if(WIN32)
+find_package(Boost REQUIRED COMPONENTS date_time system log)
+elseif(UNIX)
+find_package(Boost REQUIRED COMPONENTS python3 date_time system log)
+endif()
 
 # bullet
 find_package(Bullet REQUIRED)
@@ -120,5 +130,5 @@ elseif(UNIX)
     )
 endif()
 
-add_subdirectory(pyg4y)
+#add_subdirectory(pyg4y)
 add_subdirectory(examples)

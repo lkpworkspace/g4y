@@ -7,9 +7,11 @@
 #include "GAxis.h"
 #endif
 
+#include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/random_generator.hpp>
 
 std::unordered_multimap<std::string, std::weak_ptr<GObj>> GObj::s_tagged_objs;
 std::vector<std::weak_ptr<GCom>>                          GObj::s_destroy_coms;
@@ -30,8 +32,10 @@ GObj::~GObj()
 void GObj::Init()
 {
     m_active = true;
+#ifndef _WIN32
     boost::uuids::uuid a_uuid = boost::uuids::random_generator()(); 
     m_uuid = boost::uuids::to_string(a_uuid);
+#endif
 }
 
 void GObj::SetTag(std::string tag)
@@ -89,8 +93,11 @@ void GObj::Destroy(std::shared_ptr<GCom> c)
 
 bool GObj::AddChild(std::shared_ptr<GObj> obj)
 {
+	if (m_children.find(obj) != m_children.end()) return false;
     m_children.insert(obj);
     obj->m_parent = shared_from_this();
+
+	return true;
 }
 
 void GObj::DelChild(std::shared_ptr<GObj> obj)
@@ -99,12 +106,14 @@ void GObj::DelChild(std::shared_ptr<GObj> obj)
 }
 
 bool GObj::AddCom(std::shared_ptr<GCom> com)
-{    
+{   
+	if (m_coms.find(com) != m_coms.end()) return false;
     com->m_obj = shared_from_this();
     com->Init();
 
     m_coms.insert(com);
     m_named_coms[com->ComName()] = com;
+	return true;
 }
 
 void GObj::DelCom(std::shared_ptr<GCom> com)

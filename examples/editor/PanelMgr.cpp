@@ -108,12 +108,12 @@ void PanelMgr::Update()
 
 bool PanelMgr::SwapPanel(std::shared_ptr<PanelNode> panel1, std::shared_ptr<PanelNode> panel2)
 {
-
+	return false;
 }
 
 bool PanelMgr::DelPanel(std::shared_ptr<PanelNode> panel)
 {
-
+	return false;
 }
 
 bool PanelMgr::MovePanel(std::shared_ptr<PanelNode> panel, int delta)

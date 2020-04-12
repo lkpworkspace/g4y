@@ -88,6 +88,7 @@ int GOpenGLView::InitGL()
 
     InitShader();
 #endif
+	return 0;
 }
 
 void GOpenGLView::InitShader()
@@ -113,7 +114,7 @@ void GOpenGLView::BeginRender()
             ImGuiWindowFlags window_flags = 0;
             window_flags |= ImGuiWindowFlags_NoTitleBar;
             window_flags |= ImGuiWindowFlags_MenuBar;
-            window_flags |= ImGuiWindowFlags_NoBackground;
+            //window_flags |= ImGuiWindowFlags_NoBackground;
 
             ImGui::Begin("G4Y Infomation");                          // Create a window called "Hello, world!" and append into it.
             ImGui::Checkbox("show demo", &show_demo);
