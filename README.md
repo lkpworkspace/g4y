@@ -36,7 +36,7 @@ make
 ```
 
 ## 可执行程序
-![g4y-bin](https://gitee.com/lkpworkspace/g4y-bin.git)
+https://gitee.com/lkpworkspace/g4y-bin.git
 
 ## 贪吃蛇示例
 ![snake](https://github.com/lkpworkspace/demo/blob/master/pics/snake.gif)
