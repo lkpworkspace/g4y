@@ -3,7 +3,6 @@
 #include <memory>
 #include <queue>
 #include <unordered_set>
-#include <boost/timer.hpp>
 
 class GObj;
 class GWorld;

@@ -36,7 +36,7 @@ public:
         // }
         // ImGui::End();
         auto& io = ImGui::GetIO();
-        float delta_time = GWorld::GetDeltaTime();
+        float delta_time = (float)GWorld::GetDeltaTime();
         float speed = 12.0f;
         if(ImGui::IsKeyDown('W') || io.MouseWheel > 0.0f){
             m_transform.lock()->Translate(m_transform.lock()->Forward() * delta_time * speed * -1.0f);

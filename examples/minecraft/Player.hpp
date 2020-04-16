@@ -35,7 +35,7 @@ public:
     virtual void Update() override
     {
          if(ImGui::IsMouseClicked(0)){
-            auto pos = RayTo(m_camera.lock(), ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+            auto pos = RayTo(m_camera.lock(), (int)ImGui::GetMousePos().x, (int)ImGui::GetMousePos().y);
             GRayHit hit;
             if(g4y::phyworld()->RayTest(m_camera.lock()->Transform()->Position(), pos, hit)){
                 std::cout << hit.obj.lock()->Tag() << std::endl;

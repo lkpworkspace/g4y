@@ -57,7 +57,7 @@ void GMeshRenderer::OnRender()
     }
     
     glBindVertexArray(m_mesh.lock()->VAO);
-    glDrawElements(GL_TRIANGLES, m_mesh.lock()->m_indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (GLsizei)m_mesh.lock()->m_indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     // always good practice to set everything back to defaults once configured.

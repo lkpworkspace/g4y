@@ -70,7 +70,7 @@ int GWorld::Run()
     while(!m_gl_view->WindowShouldClose()){
         g_frame_begin = GetTime();
         m_scene->Update();
-        exec_time = GetTime() - g_frame_begin;
+        exec_time = (float)(GetTime() - g_frame_begin);
         if(exec_time < per_frame){
             std::this_thread::sleep_for(std::chrono::milliseconds((int)((per_frame - exec_time) * 1000)));
         }
