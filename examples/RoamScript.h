@@ -4,6 +4,7 @@
 
 class RoamScript : public GCom
 {
+    G_COM
 public:
     RoamScript(std::string title = "") :
         title(title)
@@ -11,7 +12,7 @@ public:
 
     virtual void Start() override
     {
-        m_transform = Obj()->Transform();
+        m_transform = GetCom<GTransform>();
         auto eulers = m_transform.lock()->EulerAngles();
         pitch = eulers.x;
         yaw = eulers.y;

@@ -7,6 +7,7 @@
 class GTransform;
 class GRigibody : public GCom, public btMotionState
 {
+    G_COM
 public:
     virtual void Init() override;
 
@@ -19,8 +20,6 @@ public:
     virtual void getWorldTransform(btTransform& worldTrans ) const override;
 
     virtual void setWorldTransform(const btTransform& worldTrans) override;
-
-    virtual std::string ComName() { return "GRigibody"; }
 
     std::weak_ptr<GPhyWorld>              m_phy_world;
     std::weak_ptr<GTransform>             m_transform;

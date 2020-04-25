@@ -7,6 +7,7 @@ class GCamera;
 class GTransform;
 class GLight : public GCom
 {
+    G_COM
 public:
     GLight();
     virtual ~GLight();
@@ -30,6 +31,7 @@ public:
 
 class GDirLight : public GLight
 {
+    G_COM
 public:
     GDirLight(){}
     virtual ~GDirLight(){}
@@ -40,6 +42,7 @@ public:
 
 class GPointLight : public GLight
 {
+    G_COM
 public:
     GPointLight(){}
     virtual ~GPointLight(){}
@@ -54,6 +57,7 @@ public:
 
 class GSpotLight : public GLight
 {
+    G_COM
 public:
     GSpotLight(){}
     virtual ~GSpotLight(){}

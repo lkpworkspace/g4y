@@ -152,7 +152,7 @@ glm::vec3 GTransform::Forward()
 
 glm::vec3 GTransform::LocalPosition()
 {
-    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    bool parent_valid = (Parent() == nullptr) ? false : true;
     if(!parent_valid){
         return wld_trans.pos;
     }
@@ -161,7 +161,7 @@ glm::vec3 GTransform::LocalPosition()
 glm::vec3 GTransform::LocalEulerAngles()
 {
     glm::vec3 radians;
-    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    bool parent_valid = (Parent() == nullptr) ? false : true;
     if(!parent_valid){
         radians = glm::eulerAngles(wld_trans.rot);
     }else{
@@ -171,7 +171,7 @@ glm::vec3 GTransform::LocalEulerAngles()
 }
 glm::quat GTransform::LocalRotation()
 {
-    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    bool parent_valid = (Parent() == nullptr) ? false : true;
     if(!parent_valid){
         return wld_trans.rot;
     }
@@ -179,7 +179,7 @@ glm::quat GTransform::LocalRotation()
 }
 glm::vec3 GTransform::Scale()
 {
-    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    bool parent_valid = (Parent() == nullptr) ? false : true;
     if(!parent_valid){
         return wld_trans.scale;
     }
@@ -188,7 +188,7 @@ glm::vec3 GTransform::Scale()
 
 void GTransform::SetLocalPostion(glm::vec3 pos)
 {
-    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    bool parent_valid = (Parent() == nullptr) ? false : true;
     if(!parent_valid){
         SetPosition(pos);
         return;
@@ -206,7 +206,7 @@ void GTransform::SetLocalRotation(glm::vec3 eulers)
 }
 void GTransform::SetLocalRotation(glm::quat q)
 {
-    bool parent_valid = (Obj()->Parent() == nullptr) ? false : true;
+    bool parent_valid = (Parent() == nullptr) ? false : true;
     if(!parent_valid){
         SetRotation(q);
         return;
@@ -222,9 +222,9 @@ glm::mat4 GTransform::ToMat4()
 
 void GTransform::Start()
 {
-    auto parent = Obj()->Parent();
+    auto parent = Parent();
     if(parent){
-        m_parent_trans = parent->Transform();
+        m_parent_trans = parent->GetCom<GTransform>();
     }
     UpdateTransform(Obj(), true);
 }
@@ -248,7 +248,7 @@ void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
     // }
 
     if(update_local && parent_valid){
-        auto inverted_trans = obj->Parent()->Transform()->wld_trans.Inverted();
+        auto inverted_trans = obj->Parent()->GetCom<GTransform>()->wld_trans.Inverted();
         // auto p = inverted_trans.pos;
         // auto s = inverted_trans.scale;
         // std::cout << "invert pos          : " << p.x << " " << p.y << " " << p.z << std::endl;
@@ -262,7 +262,7 @@ void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
 
     auto children = obj->Children();
     for(const auto& o : children){
-        o->Transform()->wld_trans = (wld_trans * o->Transform()->local_trans);
+        o->GetCom<GTransform>()->wld_trans = (wld_trans * o->GetCom<GTransform>()->local_trans);
         // auto p = o->Transform()->wld_trans.pos;
         // auto e = o->Transform()->EulerAngles();
         // auto s = o->Transform()->local_trans.scale;
@@ -275,7 +275,7 @@ void GTransform::UpdateTransform(std::shared_ptr<GObj> obj, bool update_local)
 
 void GTransform::UpdateGlobalTransform(std::shared_ptr<GObj> obj)
 {
-    wld_trans = obj->Parent()->Transform()->wld_trans * local_trans;
+    wld_trans = obj->Parent()->GetCom<GTransform>()->wld_trans * local_trans;
     UpdateTransform(Obj(), false);
 }
 

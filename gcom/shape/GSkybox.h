@@ -9,6 +9,7 @@ class GCamera;
 class GTransform;
 class GSkybox : public GCom
 {
+    G_COM
 public:
     /* 右左 上下 后前 */
     GSkybox(std::vector<std::string> tex_path) :

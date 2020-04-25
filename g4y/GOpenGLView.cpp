@@ -32,8 +32,13 @@ static const char* FS_CODE = \
 
 #define GLSL_LOAD false
 #else
+#ifdef _WIN32
+#define VS_CODE "D:/projects/g4y/g4y/g4y.vs"
+#define FS_CODE "D:/projects/g4y/g4y/g4y.fs"
+#else
 #define VS_CODE "/home/lkp/projs/gfy/g4y/g4y.vs"
 #define FS_CODE "/home/lkp/projs/gfy/g4y/g4y.fs"
+#endif
 #define GLSL_LOAD true
 #endif
 

@@ -2,6 +2,8 @@
 #include "GShader.hpp"
 #include "GObj.h"
 #include "GCamera.h"
+#include <iostream>
+#include "GTransform.h"
 
 #include "stb_image.h"
 
@@ -108,8 +110,8 @@ void GSkybox::LoadCubemap()
 
 void GSkybox::Start()
 {
-    m_transform = Obj()->Transform();
-    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
+    m_transform = GetCom<GTransform>();
+    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>();
     m_shader = std::make_shared<GShader>(vs_code, fs_code, false);
 
     glGenVertexArrays(1, &VAO);

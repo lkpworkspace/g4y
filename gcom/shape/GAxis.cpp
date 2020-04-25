@@ -2,6 +2,7 @@
 #include "GShader.hpp"
 #include "GObj.h"
 #include "GCamera.h"
+#include "GTransform.h"
 
 static const char* vs_code = \
 "#version 330 core\n"
@@ -40,8 +41,8 @@ static float line_vertices[] = {
 
 void GAxis::Start()
 {
-    m_transform = Obj()->Transform();
-    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
+    m_transform = GetCom<GTransform>();
+    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>();
     m_shader = std::make_shared<GShader>(vs_code, fs_code, false);
 
     glGenVertexArrays(1, &VAO);

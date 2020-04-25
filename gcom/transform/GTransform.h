@@ -7,6 +7,7 @@
 #include <iostream>
 class GTransform : public GCom
 {
+    G_COM
 public:
     GTransform();
     virtual ~GTransform();
@@ -38,8 +39,6 @@ public:
 
     void Translate(glm::vec3 translation);
     void Translate(float x, float y, float z);
-
-    virtual std::string ComName() override { return "GTransform"; }
 
     glm::mat4 ToMat4();
 

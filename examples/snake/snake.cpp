@@ -19,6 +19,7 @@ enum GAME_STATE{ UNKNOWN_STATE, UNINIT, GAMESTART, GAMEING, GAME_WIN, GAME_LOST 
 
 class NodeScript : public GCom
 {
+    G_COM
 public:
     void SetNodeType(NODE_TYPE t){
         this->type = t;
@@ -28,7 +29,7 @@ public:
 
     virtual void Start() override
     {
-        m_transform = Obj()->Transform();
+        m_transform = GetCom<GTransform>();
     }
 
     virtual void Update() override
@@ -43,8 +44,6 @@ public:
         }
     }
 
-    virtual std::string ComName() override { return "NodeScript"; }
-
     float yaw = 0.0f;
     NODE_TYPE type = FOOD;
     std::weak_ptr<GTransform> m_transform;
@@ -53,6 +52,7 @@ public:
 
 class SnakeScript : public GCom
 {
+    G_COM
 public:
     SnakeScript(std::string title) :
         title(title),
@@ -82,9 +82,9 @@ public:
             for(int j = 0; j <= col_cnt + 1; ++j){
                 if(i == 0 || j == 0 || i == row_cnt + 1 || j == col_cnt + 1){
                     auto o = CreateNode(glm::vec4(1, 1, 1, 0.5));
-                    auto script = o->GetCom<NodeScript>("NodeScript");
+                    auto script = o->GetCom<NodeScript>();
                     script->SetNodeType(NONE);
-                    o->Transform()->SetPosition(glm::vec3(i * offset, j * offset, 0));
+                    o->GetCom<GTransform>()->SetPosition(glm::vec3(i * offset, j * offset, 0));
                 }
             }
         }
@@ -143,18 +143,18 @@ public:
         m_empty_chess_vec.pop_back();
         m_used_chess_vec.push_back(idx);
         
-        auto script = o->GetCom<NodeScript>("NodeScript");
+        auto script = o->GetCom<NodeScript>();
         script->SetNodeType(t);
-        o->Transform()->SetPosition(m_chessboard[idx.first][idx.second].pos);
+        o->GetCom<GTransform>()->SetPosition(m_chessboard[idx.first][idx.second].pos);
         m_chessboard[idx.first][idx.second].obj = o;
         return true;
     }
 
     void InsertNode(std::shared_ptr<GObj> o, NODE_TYPE t, int i, int j)
     {
-        auto script = o->GetCom<NodeScript>("NodeScript");
+        auto script = o->GetCom<NodeScript>();
         script->SetNodeType(t);
-        o->Transform()->SetPosition(m_chessboard[i][j].pos);
+        o->GetCom<GTransform>()->SetPosition(m_chessboard[i][j].pos);
 
         auto it = std::remove(m_empty_chess_vec.begin(), m_empty_chess_vec.end(), std::make_pair(i, j));
         m_empty_chess_vec.erase(it, m_empty_chess_vec.end());
@@ -179,7 +179,7 @@ public:
         assert(!m_chessboard.empty());
         if(m_chessboard[i][j].obj.expired()) return NONE;
         auto obj = m_chessboard[i][j].obj.lock();
-        auto node_com = obj->GetCom<NodeScript>("NodeScript");
+        auto node_com = obj->GetCom<NodeScript>();
         return node_com->GetType();
     }
 
@@ -187,7 +187,7 @@ public:
     {
         // 设置食物变成蛇的身体，添加至蛇的链表头
         auto obj = m_chessboard[i][j].obj.lock();
-        auto node_com = obj->GetCom<NodeScript>("NodeScript");
+        auto node_com = obj->GetCom<NodeScript>();
         node_com->SetNodeType(BODY);
         m_snake.push_front(std::make_pair(i, j));
     }
@@ -318,8 +318,6 @@ public:
         
         ImGui::End();
     }
-
-    virtual std::string ComName() override { return "SnakeScript"; }
 
     struct NodeInfo{
         int idx[2];

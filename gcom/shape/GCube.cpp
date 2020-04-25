@@ -2,6 +2,7 @@
 #include "GShader.hpp"
 #include "GObj.h"
 #include "GCamera.h"
+#include "GTransform.h"
 
 static const char* vs_code = \
 "#version 330 core\n"
@@ -82,8 +83,8 @@ GCube::~GCube()
 
 void GCube::Start()
 {    
-    m_transform = Obj()->Transform();
-    m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom("GCamera"));
+    m_transform = GetCom<GTransform>();
+    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>();
     m_shader = std::make_shared<GShader>(vs_code, fs_code, false);
 
     glGenVertexArrays(1, &VAO);

@@ -1,16 +1,17 @@
 #include "GSphereCollider.h"
 #include "GCommon.h"
+#include "GRigibody.h"
 
 void GSphereCollider::Init()
 {
-   m_transform = Obj()->Transform();
+   m_transform = GetCom<GTransform>();
    m_phy_world = GWorld::Instance()->PhyWorld();
    m_shape     = std::static_pointer_cast<btCollisionShape>(std::make_shared<btSphereShape>(1));
 }
 
 void GSphereCollider::Start()
 {
-   auto com = Obj()->GetCom("GRigibody");
+   auto com = GetCom<GRigibody>();
    if(com == nullptr){
       m_col_obj = std::make_shared<btCollisionObject>();
       m_col_obj->setUserPointer(this);
@@ -21,8 +22,8 @@ void GSphereCollider::Start()
 
 void GSphereCollider::OnDestroy()
 {
-   auto com = Obj()->GetCom("GRigibody");
-   if(com == nullptr){
-      m_phy_world.lock()->DelCollisionObj(m_col_obj);
-   }
+	auto com = GetCom<GRigibody>();
+	if (com == nullptr) {
+		m_phy_world.lock()->DelCollisionObj(m_col_obj);
+	}
 }

@@ -35,20 +35,9 @@ void build_scene(std::shared_ptr<GScene> s)
     auto  panelmgr = std::make_shared<GObj>();
     auto  scenepanel = std::make_shared<GObj>();
 
-    camera->SetTag("GCamera");
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
     camera->AddCom(std::make_shared<RoamScript>());
-    // camera->AddCom(std::make_shared<GSkybox>(
-    //     std::vector<std::string>({
-    //         "/home/lkp/projs/gfy/build/skybox/right.jpg",
-    //         "/home/lkp/projs/gfy/build/skybox/left.jpg",
-    //         "/home/lkp/projs/gfy/build/skybox/top.jpg",
-    //         "/home/lkp/projs/gfy/build/skybox/bottom.jpg",
-    //         "/home/lkp/projs/gfy/build/skybox/front.jpg",
-    //         "/home/lkp/projs/gfy/build/skybox/back.jpg",
-    //     })
-    // ));
 
     auto scenepanel_com = std::make_shared<ScenePanel>();
     panelmgr->AddCom(scenepanel_com);

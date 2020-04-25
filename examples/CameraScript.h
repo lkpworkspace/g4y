@@ -2,12 +2,16 @@
 #define __CameraScript_H__
 #include "G4Y.h"
 
+/*
+	脚本需要添加至含有GCamera组件的对象中
+*/
 class CameraScript : public GCom
 {
+    G_COM
 public:
     virtual void Start() override
     {
-        m_camera = Obj()->GetCom<GCamera>("GCamera");
+        m_camera = GetCom<GCamera>();
         auto camera = m_camera.lock();
         ortho_rect = camera->OrthoRect();
         nearfar = camera->NearFar();

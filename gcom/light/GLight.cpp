@@ -2,6 +2,7 @@
 #include "GShader.hpp"
 #include "GObj.h"
 #include "GCamera.h"
+#include "GTransform.h"
 
 GLight::GLight()
 {}
@@ -12,8 +13,8 @@ GLight::~GLight()
 
 void GLight::Start()
 {    
-    m_transform = Obj()->Transform();
-    m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom("GCamera"));
+    m_transform = GetCom<GTransform>();
+    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>();
 }
 
 void GLight::OnRender()

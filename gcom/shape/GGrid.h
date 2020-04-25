@@ -6,6 +6,7 @@ class GShader;
 class GCamera;
 class GGrid : public GCom
 {
+    G_COM
 public:
     // [begin, end]
     GGrid(int begin, int end, int step);

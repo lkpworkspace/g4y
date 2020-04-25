@@ -9,24 +9,24 @@
 */
 void GRigibody::Init()
 {
-    m_transform = Obj()->Transform();
+    m_transform = GetCom<GTransform>();
     m_phy_world = GWorld::Instance()->PhyWorld();
 }
 
 void GRigibody::Start()
 {    
-    auto collider = Obj()->GetCom<GCollider>("GCollider");
-    if(collider != nullptr){
-        btScalar mass = 1;
-        btVector3 inertia(0, 0, 0);
-        collider->m_shape->calculateLocalInertia(mass, inertia);
-        btRigidBody::btRigidBodyConstructionInfo rbinfo(mass, this, collider->m_shape.get(), inertia);
-        m_rigidbody = std::make_shared<btRigidBody>(rbinfo);
-        m_rigidbody->setUserPointer(this);
+    auto collider = GetCom<GCollider>();
+	assert(collider != nullptr);
+    
+    btScalar mass = 1;
+    btVector3 inertia(0, 0, 0);
+    collider->m_shape->calculateLocalInertia(mass, inertia);
+    btRigidBody::btRigidBodyConstructionInfo rbinfo(mass, this, collider->m_shape.get(), inertia);
+    m_rigidbody = std::make_shared<btRigidBody>(rbinfo);
+    m_rigidbody->setUserPointer(this);
 
-        m_rigidbody->setActivationState(DISABLE_DEACTIVATION);
-        m_phy_world.lock()->AddRigiBody(m_rigidbody);
-    }
+    m_rigidbody->setActivationState(DISABLE_DEACTIVATION);
+    m_phy_world.lock()->AddRigiBody(m_rigidbody);
 }
 
 void GRigibody::OnCollision(const btCollisionObject* col_obj)

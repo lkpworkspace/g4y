@@ -1,5 +1,6 @@
 #include "GCamera.h"
 #include "GObj.h"
+#include "GTransform.h"
 
 GCamera::GCamera() :
     orthographic(false),
@@ -9,8 +10,8 @@ GCamera::GCamera() :
     far(1000.0f),
     x(0.0f),
     y(0.0f),
-    w(1.0f),
-    h(1.0f)
+    w(800.0f),
+    h(600.0f)
 {}
 
 GCamera::~GCamera()
@@ -18,7 +19,8 @@ GCamera::~GCamera()
 
 void GCamera::Init()
 {
-    m_transform = Obj()->Transform();
+    m_transform = GetCom<GTransform>();
+	Obj()->SetTag("GCamera");
 }
 
 glm::mat4 GCamera::Projection()

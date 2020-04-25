@@ -16,14 +16,17 @@ public:
 
     virtual void Start() override;
 
-    virtual void OnDestroy() override;
+	virtual void Update() override;
 
-    virtual std::string ColliderName() { return "GBoxCollider"; }
+    virtual void OnDestroy() override;
 
     void SetBoxHalfExtents(glm::vec3);
     glm::vec3 GetBoxHalfExtents();
 
+    virtual std::string ColliderName() { return "GBoxCollider"; }
+
 // private:
+	bool                                        m_has_rigibody;
     std::weak_ptr<GPhyWorld>                    m_phy_world;
     std::weak_ptr<GTransform>                   m_transform;
     glm::vec3                                   m_box_half_extents;

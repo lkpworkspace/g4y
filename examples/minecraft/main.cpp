@@ -14,36 +14,36 @@
 
 void load_resource(std::shared_ptr<GScene> s)
 {
-    g4y::resourcemgr()->SetResourceDir("/home/lkp/projs/g4y/asset/");
-    g4y::resourcemgr()->LoadModel("MC2/MCblocks.obj");
+    g4y::resourcemgr()->SetResourceDir("D:/projects/g4y/asset/");
+	for (int i = 0; i < 37; ++i) {
+		std::string model_name = "MC/" + std::to_string(i + 1) + ".obj";
+		g4y::resourcemgr()->LoadModel(model_name);
+	}
 }
 
 void build_scene(std::shared_ptr<GScene> s)
 {
     auto  camera = std::make_shared<GObj>();
     auto  grid = std::make_shared<GObj>();
+	auto  player_obj = std::make_shared<GObj>();
 
-    camera->SetTag("GCamera");
+	player_obj->AddCom(std::make_shared<Player>());
+
     camera->AddDefaultComs();
     camera->AddCom(std::make_shared<GCamera>());
     camera->AddCom(std::make_shared<RoamScript>("Camera roam"));
-    camera->AddCom(std::make_shared<Player>());
-    camera->AddCom(std::make_shared<GSkybox>(
-        std::vector<std::string>({
-            "/home/lkp/projs/gfy/build/skybox/right.jpg",
-            "/home/lkp/projs/gfy/build/skybox/left.jpg",
-            "/home/lkp/projs/gfy/build/skybox/top.jpg",
-            "/home/lkp/projs/gfy/build/skybox/bottom.jpg",
-            "/home/lkp/projs/gfy/build/skybox/front.jpg",
-            "/home/lkp/projs/gfy/build/skybox/back.jpg",
-        })
-    ));
 
     grid->AddDefaultComs();
     grid->AddCom(std::make_shared<GGrid>(-100, 100, 1));
 
     s->AddChild(camera);
     s->AddChild(grid);
+
+	/*auto mc_block = g4y::resourcemgr()->Instantiate("MC/polySurface178.obj");
+	mc_block->Transform()->SetPosition(glm::vec3(0, 0, 0));
+	s->AddChild(mc_block);*/
+
+	s->AddChild(player_obj);
 }
 
 int main(int argc, char** argv)

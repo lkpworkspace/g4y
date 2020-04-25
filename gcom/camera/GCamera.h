@@ -5,6 +5,7 @@
 class GTransform;
 class GCamera : public GCom
 {
+    G_COM
 public:
     enum CAMERRA_TYPE{ ORTHO, PERSPECTIVE };
 
@@ -24,8 +25,6 @@ public:
 
     glm::vec2 NearFar() { return glm::vec2(near, far); }
     void SetNearFar(glm::vec2 nf){ near = nf.x; far = nf.y; }
-
-    virtual std::string ComName() override { return "GCamera"; }
 
     glm::mat4 Projection();
     glm::mat4 View();

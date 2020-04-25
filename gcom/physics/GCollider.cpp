@@ -68,3 +68,12 @@ void GCollider::OnCollisionEnd()
     m_last_cols.insert(m_cur_cols.begin(), m_cur_cols.end());
     m_cur_cols.clear();
 }
+
+void GCollider::SetPostion(glm::vec3 pos)
+{
+	if (m_col_obj != nullptr) {
+		btTransform trans = m_col_obj->getWorldTransform();
+		trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
+		m_col_obj->setWorldTransform(trans);
+	}
+}

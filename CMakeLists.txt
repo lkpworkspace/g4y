@@ -18,6 +18,7 @@ endif()
 set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/G4Y.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GLog.cpp
+	${PROJECT_SOURCE_DIR}/g4y/GSettings.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
     ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp

@@ -4,6 +4,7 @@
 
 class BulletScript : public GCom
 {
+    G_COM
 public:
     BulletScript(glm::vec3 pos, glm::quat rot, float speed = 8.0f) :
         m_speed(speed),
@@ -13,9 +14,9 @@ public:
 
     virtual void Start() override
     {
-        m_trans = Obj()->Transform();
-        Obj()->Transform()->SetPosition(m_pos);
-        Obj()->Transform()->SetRotation(m_rot);
+        m_trans = GetCom<GTransform>();
+		GetCom<GTransform>()->SetPosition(m_pos);
+		GetCom<GTransform>()->SetRotation(m_rot);
     }
 
     float Vec3Distance(glm::vec3 p1, glm::vec3 p2)

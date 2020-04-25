@@ -7,6 +7,6 @@ set(GUI_TEST_SRCS
     snake.cpp
 )
 
-ADD_EXECUTABLE(snake.out ${GUI_TEST_SRCS})
+ADD_EXECUTABLE(snake ${GUI_TEST_SRCS})
 
-target_link_libraries(snake.out ${G4Y_LIBRARIES})
+target_link_libraries(snake ${G4Y_LIBRARIES})

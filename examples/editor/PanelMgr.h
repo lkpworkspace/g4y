@@ -5,6 +5,7 @@
 
 class PanelMgr : public GCom, public std::enable_shared_from_this<PanelMgr>
 {
+    G_COM
     friend class PanelNode;
     friend class PanelTool;
 public:
@@ -13,8 +14,6 @@ public:
     virtual void Start() override;
 
     virtual void Update() override;
-
-    virtual std::string ComName() { return "PanelMgr"; }
 
     // 注册渲染的面板
     template<typename T>

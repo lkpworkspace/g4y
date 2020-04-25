@@ -18,41 +18,49 @@ class Player : public GCom
 {
     enum PUTPOS{
         PUT_NONE,
-        PUT_UP,       // +y
-        PUT_DOWN,     // -y
-        PUT_LEFT,     // -x
-        PUT_RIGHT,    // +x
-        PUT_FRONT,    // +z
-        PUT_BACK,     // -z
+        PUT_UP,       // +y 1
+        PUT_DOWN,     // -y 2
+        PUT_LEFT,     // -x 3
+        PUT_RIGHT,    // +x 4
+        PUT_FRONT,    // +z 5
+        PUT_BACK,     // -z 6
     };
 public:
     virtual void Start() override
     {
-        m_tranform = Obj()->Transform();
+        m_tranform = GetCom<GTransform>();
         m_camera = Obj()->FindWithTag("GCamera");
     }
 
     virtual void Update() override
     {
-         if(ImGui::IsMouseClicked(0)){
-            auto pos = RayTo(m_camera.lock(), (int)ImGui::GetMousePos().x, (int)ImGui::GetMousePos().y);
-            GRayHit hit;
-            if(g4y::phyworld()->RayTest(m_camera.lock()->Transform()->Position(), pos, hit)){
-                std::cout << hit.obj.lock()->Tag() << std::endl;
-                if(hit.obj.lock()->Tag() == "Block"){
-                    auto bpos = hit.obj.lock()->Transform()->Position();
-                    auto type = GetPutPos(bpos, hit.pick_pos);
-                    for(int i = 0; i < 6; ++i){
-                        if(type == ary[i].first){
-                            auto t = bpos + ary[i].second * 2.0f;
-                            printf("get target pos %f %f, %f, ret %f %f, %f\n", bpos.x, bpos.y, bpos.z, t.x, t.y, t.z);
-                            auto cube = CreateCube(t);
-                            g4y::curscene()->AddChild(cube);
-                        }
-                    }
-                    std::cout << "put type " << (int)type << std::endl;
-                }
-            }
+		
+        if(ImGui::IsMouseClicked(0)){
+			 
+			GRayHit hit;
+			auto from = m_camera.lock()->GetCom<GTransform>()->Position();
+			auto to = RayTo(m_camera.lock(), ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+
+			if(g4y::phyworld()->RayTest(from, to, hit)){
+				std::cout << hit.obj.lock()->Tag() << std::endl;
+				if(hit.obj.lock()->Tag() == "Block"){
+					PUTPOS type = PUT_NONE;
+					auto bpos = hit.obj.lock()->GetCom<GTransform>()->Position();
+
+					printf("click obj pos %f, %f, %f\n", bpos.x, bpos.y, bpos.z);
+					printf("hit       pos %f, %f, %f\n", hit.pick_pos.x, hit.pick_pos.y, hit.pick_pos.z);
+					type = GetPutPos(bpos, hit.pick_pos);
+					for(int i = 0; i < 6; ++i){
+						if(type == ary[i].first){
+							auto t = bpos + ary[i].second * 2.0f;
+							printf("get target pos %f %f, %f, ret %f %f, %f\n", bpos.x, bpos.y, bpos.z, t.x, t.y, t.z);
+							auto cube = CreateCube(t);
+							g4y::curscene()->AddChild(cube);
+						}
+					}
+					std::cout << "put type " << (int)type << std::endl << std::endl;
+				}
+			}
         }
 
         ImGui::Begin("Player");
@@ -65,26 +73,22 @@ public:
         ImGui::End(); 
     }
 
-    // TODO 第二个计算错误。。。
     enum PUTPOS GetPutPos(glm::vec3 objpos, glm::vec3 hitpos)
     {
+		auto v = hitpos - objpos;
         for(int i = 0; i < ary.size(); ++i){
-            auto v = glm::normalize(hitpos - objpos);
-            auto s = glm::normalize(ary[i].second);
-            auto r = glm::dot(v, s);
-            //printf("r %f,  v %f, %f, %f,  s %f, %f, %f\n", r, v.x, v.y, v.z, s.x, s.y, s.z);
-            if(r <= 1 && r >= (M_PI / 4)){
-                return ary[i].first;
-            }
+			for (int j = 0; j < 3; ++j) {
+				if (fabs(v[j] - ary[i].second[j]) <= 1e-3) return ary[i].first;
+			}
         }
         return PUT_NONE;
     }
 
-    glm::vec3 RayTo(std::weak_ptr<GObj> o/* camera */, int x, int y)
+    glm::vec3 RayTo(std::weak_ptr<GObj> o/* camera */, float x, float y)
     {
         int w, h;
-        auto camera = o.lock()->GetCom<GCamera>("GCamera");
-        auto camera_trans = o.lock()->Transform();
+        auto camera = o.lock()->GetCom<GCamera>();
+        auto camera_trans = o.lock()->GetCom<GTransform>();
 
         g4y::glview()->GetWindowSize(w, h);
 
@@ -110,30 +114,34 @@ public:
         auto dvert= vertical * 1.0f / (float)h;
 
         auto rayto = ray2center - 0.5f * hor + 0.5f * vertical;
-        rayto += float(x) * dhor;
-        rayto -= float(y) * dvert;
+        rayto += x * dhor;
+        rayto -= y * dvert;
         return rayto;
     }
 
     std::shared_ptr<GObj> CreateCube(glm::vec3 pos)
     {
-        auto obj = std::make_shared<GObj>();
+        //auto obj = std::make_shared<GObj>();
+		std::string model_name = "MC/" + std::to_string(obj_i + 1) + ".obj";
+		auto obj = g4y::resourcemgr()->Instantiate(model_name);
+		obj_i = obj_i++ % 36;
     
-        obj->AddDefaultComs();
-        obj->Transform()->SetPosition(pos);
+        obj->GetCom<GTransform>()->SetPosition(pos);
         
-        auto cube = std::make_shared<GCube>();
-        //cube->SetColor(glm::vec4());
-        obj->AddCom(cube);
+        //auto cube = std::make_shared<GCube>();
+        ////cube->SetColor(glm::vec4());
+        //obj->AddCom(cube);
 
         auto collider = std::make_shared<GBoxCollider>();
-        // obj->AddCom(std::make_shared<GRigibody>());
         obj->AddCom(collider);
+        // obj->AddCom(std::make_shared<GRigibody>());
         
         auto block = std::make_shared<Block>();
         obj->AddCom(block);
         return obj;
     }
+
+	int obj_i = 0;
 
     std::array<std::pair<enum PUTPOS, glm::vec3>, 6> ary{
             std::make_pair(PUT_UP,    glm::vec3(0, 0.5f, 0)),

@@ -25,14 +25,14 @@ public:
         slider_pos[1] = ImGui::SliderFloat("Move y", &y, -150.0f, 150.0f);
         slider_pos[2] = ImGui::SliderFloat("Move z", &z, -150.0f, 150.0f);
         if(slider_pos[0] || slider_pos[1] || slider_pos[2])
-            Obj()->Transform()->SetPosition(glm::vec3(x,y,z));
+			GetCom<GTransform>()->SetPosition(glm::vec3(x,y,z));
 
         bool slider_rotate[3];
         slider_rotate[0] = ImGui::SliderFloat("Rotate x", &rx, -180.0f, 180.0f);
         slider_rotate[1] = ImGui::SliderFloat("Rotate y", &ry, -180.0f, 180.0f);
         slider_rotate[2] = ImGui::SliderFloat("Rotate z", &rz, -180.0f, 180.0f);
         if(slider_rotate[0] || slider_rotate[1] || slider_rotate[2])
-            Obj()->Transform()->SetRotation(glm::vec3(rx,ry,rz));
+			GetCom<GTransform>()->SetRotation(glm::vec3(rx,ry,rz));
 
         ImGui::End();
     }

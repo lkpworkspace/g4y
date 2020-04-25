@@ -7,6 +7,6 @@ set(MINECRAFT_SRCS
     main.cpp
 )
 
-ADD_EXECUTABLE(minecraft.out ${MINECRAFT_SRCS})
+ADD_EXECUTABLE(minecraft ${MINECRAFT_SRCS})
 
-target_link_libraries(minecraft.out ${G4Y_LIBRARIES})
+target_link_libraries(minecraft ${G4Y_LIBRARIES})

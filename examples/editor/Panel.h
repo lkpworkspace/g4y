@@ -5,6 +5,7 @@
 class PanelMgr;
 class PanelNode : public GCom, public std::enable_shared_from_this<PanelNode>
 {
+    G_COM
     friend class PanelMgr;
 public:
     enum PANEL_TYPE{ PANEL_H, PANEL_V };
@@ -16,10 +17,9 @@ public:
 
     virtual void Start() override;
 
-    virtual void Update() override;
+    virtual void Update() override;    
 
-    virtual std::string ComName() { return "Panel"; }
-    
+	void AddPanelNode(std::shared_ptr<PanelNode> n);
     
     bool       isleft;
 
@@ -45,14 +45,13 @@ public:
 
 class Panel : public GCom
 {
+    G_COM
 public:
     virtual std::shared_ptr<Panel> Clone() = 0;
 
     virtual void Resize(glm::ivec4) = 0;
 
     virtual std::string PanelName() = 0;
-
-    virtual std::string ComName() { return "Panel"; }
 };
 
 #endif

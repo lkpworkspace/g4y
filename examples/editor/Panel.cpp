@@ -34,6 +34,14 @@ std::shared_ptr<PanelNode> PanelNode::CreateInitEmptyPanel()
     return e;
 }
 
+void PanelNode::AddPanelNode(std::shared_ptr<PanelNode> n)
+{
+	auto obj = std::make_shared<GObj>();
+	obj->AddDefaultComs();
+	obj->AddCom(n);
+	g4y::curscene()->AddChild(obj);
+}
+
 void PanelNode::Update()
 {
     if(!left.expired() && !right.expired()) return;
@@ -81,8 +89,10 @@ void PanelNode::Update()
             el->panel_idx = panel_idx;
             auto er = CreateInitEmptyPanel();
             if(panel_mgr.lock()->AddPanel(shared_from_this(), PanelNode::PANEL_H, el, er)){
-                Obj()->AddCom(el);
-                Obj()->AddCom(er);
+				AddPanelNode(el);
+				AddPanelNode(er);
+                /*Obj()->AddCom(el);
+                Obj()->AddCom(er);*/
             }
         }
     }ImGui::SameLine();
@@ -92,8 +102,10 @@ void PanelNode::Update()
             el->panel_idx = panel_idx;
             auto er = CreateInitEmptyPanel();
             if(panel_mgr.lock()->AddPanel(shared_from_this(), PanelNode::PANEL_V, el, er)){
-                Obj()->AddCom(el);
-                Obj()->AddCom(er);
+				AddPanelNode(el);
+				AddPanelNode(er);
+				/*Obj()->AddCom(el);
+				Obj()->AddCom(er);*/
             }
         }
     }ImGui::SameLine();

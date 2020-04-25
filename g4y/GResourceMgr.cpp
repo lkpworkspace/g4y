@@ -184,8 +184,8 @@ void GResourceMgr::InstantiateModel(std::shared_ptr<GObj> p, std::shared_ptr<GMo
 {
     std::shared_ptr<GObj> obj = nullptr;
     if(node->Empty()){
-        obj->SetObjName(node->name);
         obj = std::make_shared<GObj>();
+        obj->SetObjName(node->name);
         obj->AddDefaultComs();
         p->AddChild(obj);
     }else{

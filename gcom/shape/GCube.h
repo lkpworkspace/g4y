@@ -7,6 +7,7 @@ class GCamera;
 class GTransform;
 class GCube : public GCom
 {
+    G_COM
 public:
     GCube();
     virtual ~GCube();

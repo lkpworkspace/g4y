@@ -7,6 +7,7 @@ class GCamera;
 class GTransform;
 class GAxis : public GCom
 {
+    G_COM
 public:
     GAxis(){}
     virtual ~GAxis(){}

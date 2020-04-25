@@ -5,11 +5,7 @@
 #include <unordered_map>
 #include <memory>
 
-#include "GScene.h"
-#include "GTransform.h"
-#include "GCom.h"
-
-class GPhyWorld;
+class GCom;
 class GObj : public std::enable_shared_from_this<GObj>
 {
     friend class GScene;
@@ -30,13 +26,13 @@ public:
     }
     bool AddCom(std::shared_ptr<GCom> com);
 
-    template<typename T>
-    std::shared_ptr<T> GetCom(std::string com_name){
-        auto com = GetCom(com_name);
-        if(com == nullptr) return nullptr;
-        return std::dynamic_pointer_cast<T>(com);
-    }
-    std::shared_ptr<GCom> GetCom(std::string com_name);
+	template<typename T>
+	std::shared_ptr<T> GetCom() {
+		auto com = GetCom(typeid(T).name());
+		if (com == nullptr) return nullptr;
+		return std::dynamic_pointer_cast<T>(com);
+	}
+    
     std::vector<std::shared_ptr<GCom>> GetComs();
     
     void SetTag(std::string tag);
@@ -47,12 +43,6 @@ public:
 
     std::shared_ptr<GObj> Parent() { return m_parent.expired() ? nullptr : m_parent.lock(); }
     std::vector<std::shared_ptr<GObj>> Children();
-
-    std::shared_ptr<GTransform> Transform(){
-        return std::static_pointer_cast<GTransform>(GetCom("GTransform"));
-    }
-
-    std::shared_ptr<GScene> Scene(){ return GScene::CurScene(); }
 
     void AddDefaultComs();
 
@@ -82,6 +72,7 @@ protected:
     void UpdateRender();
 
 private:
+	std::shared_ptr<GCom> GetCom(std::string com_name);
     void DelCom(std::shared_ptr<GCom>);
     void DelChild(std::shared_ptr<GObj> obj);
 

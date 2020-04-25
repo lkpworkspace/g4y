@@ -2,6 +2,7 @@
 #define __GCOM_H__
 #include <string>
 #include <memory>
+#include <typeinfo>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -10,11 +11,17 @@
 #include <GLFW/glfw3.h>
 #include "imgui.h"
 #endif
+#include "GObj.h"
+
+#define G_COM \
+public: \
+virtual std::string ComName() { return typeid(*this).name(); }
 
 class GObj;
 class GPhyWorld;
 class GCom
 {
+	G_COM
     friend class GObj;
 public:
     GCom();
@@ -46,8 +53,12 @@ public:
     virtual void OnDestroy(){}
 
     std::shared_ptr<GObj> Obj() { assert(!m_obj.expired()); return m_obj.lock(); }
+	std::shared_ptr<GObj> Parent() { return Obj()->Parent(); }
 
-    virtual std::string ComName() { return "GCom"; }
+	template<typename T>
+	std::shared_ptr<T> GetCom() {
+		return Obj()->GetCom<T>();
+	}
 
 protected:
     void OnStart();

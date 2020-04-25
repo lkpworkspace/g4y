@@ -108,6 +108,8 @@ void GObj::DelChild(std::shared_ptr<GObj> obj)
 bool GObj::AddCom(std::shared_ptr<GCom> com)
 {   
 	if (m_coms.find(com) != m_coms.end()) return false;
+	if (m_named_coms.find(com->ComName()) != m_named_coms.end()) return false;
+
     com->m_obj = shared_from_this();
     com->Init();
 
@@ -118,6 +120,9 @@ bool GObj::AddCom(std::shared_ptr<GCom> com)
 
 void GObj::DelCom(std::shared_ptr<GCom> com)
 {
+	assert(m_coms.find(com) != m_coms.end());
+	assert(m_named_coms.find(com->ComName()) != m_named_coms.end());
+
     com->OnDestroy();
     m_named_coms.erase(com->ComName());
     m_coms.erase(com);
@@ -127,8 +132,13 @@ std::shared_ptr<GCom> GObj::GetCom(std::string com_name)
 {
     if(m_named_coms.find(com_name) == m_named_coms.end())
         return nullptr;
-    else
-        return m_named_coms[com_name].lock();
+	else {
+		auto wp = m_named_coms[com_name];
+		if (wp.expired()) {
+			return nullptr;
+		}
+		return wp.lock();
+	}
 }
 
 std::vector<std::shared_ptr<GCom>> GObj::GetComs()

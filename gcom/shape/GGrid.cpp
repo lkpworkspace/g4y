@@ -64,7 +64,7 @@ void GGrid::Init()
 {
     CreateGridArr();
     
-    m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom("GCamera"));
+    m_camera = std::static_pointer_cast<GCamera>(Obj()->FindWithTag("GCamera")->GetCom<GCamera>());
     // 编译加载编译shader
     m_shader = std::make_shared<GShader>(vs_code, fs_code, false);
 

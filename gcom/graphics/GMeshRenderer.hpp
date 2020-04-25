@@ -10,14 +10,13 @@ class GTransform;
 class GCamera;
 class GMeshRenderer : public GCom
 {
+    G_COM
 public:
     virtual void Start() override;
 
     virtual void OnRender() override;
 
     virtual void OnDestroy() override;
-
-    virtual std::string ComName() override { return "GMeshRenderer"; }
 
     std::vector<GMaterial> m_materials;
     std::weak_ptr<GMesh>   m_mesh;

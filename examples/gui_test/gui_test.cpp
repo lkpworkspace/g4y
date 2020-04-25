@@ -27,7 +27,7 @@ public:
 
     virtual void Start() override
     {
-        m_tranform = Obj()->Transform();
+        m_tranform = GetCom<GTransform>();
         m_tranform.lock()->SetPosition(glm::vec3(0, 0, 0));
     }
 
@@ -45,7 +45,7 @@ public:
         static float time = 0.0f;
         time += delta_time;
         if(time > 0.5f){
-            create_bullet(Obj()->Scene(), m_tranform.lock()->Position(), m_tranform.lock()->Rotation(), 8.0f);
+            create_bullet(g4y::curscene(), m_tranform.lock()->Position(), m_tranform.lock()->Rotation(), 8.0f);
             time = 0.0f;
         }
     }

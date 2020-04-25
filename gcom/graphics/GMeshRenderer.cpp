@@ -3,8 +3,8 @@
 
 void GMeshRenderer::Start()
 {
-    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>("GCamera");
-    m_transform = Obj()->Transform();
+    m_camera = Obj()->FindWithTag("GCamera")->GetCom<GCamera>();
+    m_transform = GetCom<GTransform>();
 }
 
 void GMeshRenderer::OnRender()

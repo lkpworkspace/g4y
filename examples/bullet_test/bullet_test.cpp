@@ -16,9 +16,9 @@ public:
 
     virtual void Start() override
     {
-        m_tranform = Obj()->Transform();
+        m_tranform = GetCom<GTransform>();
         m_dwld = g4y::phyworld();
-        m_rigibody = Obj()->GetCom<GRigibody>("GRigibody");
+        m_rigibody = GetCom<GRigibody>();
     }
 
     virtual void Update() override
@@ -137,8 +137,8 @@ public:
 glm::vec3 get_rayto(std::weak_ptr<GObj> o, int x, int y)
 {
     int w, h;
-    auto camera = o.lock()->GetCom<GCamera>("GCamera");
-    auto camera_trans = o.lock()->Transform();
+    auto camera = o.lock()->GetCom<GCamera>();
+    auto camera_trans = o.lock()->GetCom<GTransform>();
 
     g4y::glview()->GetWindowSize(w, h);
 
@@ -174,7 +174,7 @@ std::shared_ptr<GObj> create_cube_collider(glm::vec3 pos)
     auto obj = std::make_shared<GObj>();
     
     obj->AddDefaultComs();
-    obj->Transform()->SetPosition(pos);
+    obj->GetCom<GTransform>()->SetPosition(pos);
     obj->AddCom(std::make_shared<GCube>());
 
     auto collider = std::make_shared<GBoxCollider>();
@@ -203,10 +203,9 @@ void build_scene(std::shared_ptr<GScene> s)
     auto  grid   = std::make_shared<GObj>();
     auto  ground = std::make_shared<GObj>();
 
-    camera->SetTag("GCamera");
     camera->AddDefaultComs();
-    camera->Transform()->SetPosition(glm::vec3(0, 30, 30));
-    camera->Transform()->SetRotation(glm::vec3(-45, 0, 0));
+    camera->GetCom<GTransform>()->SetPosition(glm::vec3(0, 30, 30));
+    camera->GetCom<GTransform>()->SetRotation(glm::vec3(-45, 0, 0));
     camera->AddCom(std::make_shared<GCamera>());
     camera->AddCom(std::make_shared<RoamScript>());
     // camera->AddCom(std::make_shared<CameraScript>());

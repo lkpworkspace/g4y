@@ -20,9 +20,11 @@ public:
 
     void OnCollisionEnd();
 
-    virtual std::string ComName() { return "GCollider"; }
-
     virtual std::string ColliderName() { return "GCollider"; }
+
+	virtual std::string ComName() { return typeid(GCollider).name(); }
+
+	void SetPostion(glm::vec3);
 
     std::shared_ptr<btCollisionShape>     m_shape;
     std::shared_ptr<btCollisionObject>    m_col_obj;
