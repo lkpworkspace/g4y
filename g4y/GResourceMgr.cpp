@@ -1,14 +1,66 @@
 #include "GResourceMgr.h"
 #include "GCommon.h"
 
+static const char* VS_CODE = \
+"#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec3 aNormal;\n"
+"layout (location = 2) in vec2 aTexCoords;\n"
+"out vec2 TexCoords;\n"
+"\n"
+"uniform mat4 model;\n"
+"uniform mat4 view;\n"
+"uniform mat4 projection;\n"
+"\n"
+"void main()\n"
+"{\n"
+"    TexCoords = aTexCoords;\n"
+"    gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+"}";
+
+static const char* FS_CODE = \
+"#version 330 core\n"
+"out vec4 FragColor;\n"
+"in vec2 TexCoords;\n"
+"uniform sampler2D texture_diffuse1;\n"
+"void main()\n"
+"{\n"
+"   FragColor = texture(texture_diffuse1, TexCoords);\n"
+"}";
+
 GResourceMgr::GResourceMgr()
-{
-    // load cfg
-}
+{}
 
 GResourceMgr::~GResourceMgr()
-{
+{}
 
+void GResourceMgr::Init(const boost::property_tree::ptree& cfg)
+{
+	auto w = GWorld::Instance();
+	m_resource_directory = w->GetAssetpath();
+
+	std::string main_shader_fs;
+	std::string main_shader_vs;
+	namespace pt = boost::property_tree;
+	pt::ptree item;
+
+	if (cfg.empty()) {
+		LoadShader("main_shader", VS_CODE, FS_CODE, false);
+	}
+	else {
+		try
+		{
+			main_shader_fs = cfg.get<std::string>("fs");
+			main_shader_vs = cfg.get<std::string>("vs");
+			if (LoadShader("main_shader", w->GetAssetpath() + main_shader_vs, w->GetAssetpath() + main_shader_fs, true)) {
+				std::cout << "Load main shader success" << std::endl;
+			}
+		}
+		catch (const std::exception&)
+		{
+			LoadShader("main_shader", VS_CODE, FS_CODE, false);
+		}
+	}
 }
 
 bool GResourceMgr::LoadShader(std::string name, std::string vs, std::string fs, bool str)
@@ -25,6 +77,23 @@ std::shared_ptr<GShader> GResourceMgr::Shader(std::string name)
 {
     if(m_shaders.find(name) == m_shaders.end()) return nullptr;
     return m_shaders[name];
+}
+
+bool GResourceMgr::LoadTexture(const std::string& name)
+{
+	if (m_textures.find(name) != m_textures.end()) return false;
+	auto tex = std::make_shared<GTexture>();
+	if (tex->LoadTextureFromFile(name)) {
+		m_textures[name] = tex;
+		return true;
+	}
+	return false;
+}
+
+std::shared_ptr<GTexture> GResourceMgr::Texture(const std::string& name)
+{
+	if (m_textures.find(name) == m_textures.end()) return nullptr;
+	return m_textures[name];
 }
 
 void GResourceMgr::ProcessNode(std::shared_ptr<GModelNodeInfo> r, aiNode *node, const aiScene *scene)
@@ -264,8 +333,4 @@ std::shared_ptr<GObj> GResourceMgr::CloneChildNode(std::string model_name, std::
 
 void GResourceMgr::Test()
 {
-    GResourceMgr mgr;
-    mgr.SetResourceDir("/home/lkp/projs/g4y/asset/");
-
-    mgr.LoadModel("nanosuit/nanosuit.obj");
 }

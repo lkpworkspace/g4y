@@ -38,10 +38,4 @@ make
 ## 可执行程序
 https://gitee.com/lkpworkspace/g4y-bin.git
 
-## 贪吃蛇示例
-![snake](https://github.com/lkpworkspace/demo/blob/master/pics/snake.gif)
-
-## 编辑器示例
-![snake](https://github.com/lkpworkspace/demo/blob/master/pics/editor.gif)
-
 

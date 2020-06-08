@@ -16,7 +16,7 @@ public:
 class GPhyWorld
 {
 public:
-    void InitPhysics();
+    void Init();
 
     template<typename T>
     void AddCollisionObj(std::shared_ptr<T> co){

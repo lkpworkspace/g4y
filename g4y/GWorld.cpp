@@ -1,5 +1,11 @@
 #include "GWorld.h"
 #include <iostream>
+#include <boost/program_options.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/foreach.hpp>
+#include <boost/system/error_code.hpp>
+#include <boost/filesystem.hpp>
+
 #include "GScene.h"
 #include "GPhyWorld.h"
 #include "GOpenGLView.h"
@@ -20,20 +26,60 @@ GWorld* const GWorld::Instance()
 }
 
 GWorld::GWorld()
-{
-    m_resource_mgr = std::make_shared<GResourceMgr>();
-
-    m_gl_view = std::make_shared<GOpenGLView>();
-    m_gl_view->InitGL();
-
-    m_phy_world = std::make_shared<GPhyWorld>();
-    m_phy_world->InitPhysics();
-
-}
+{}
 
 GWorld::~GWorld()
 {
     m_gl_view->ExitGL();
+}
+
+void GWorld::Init(int argc, char** argv)
+{
+	namespace pt = boost::property_tree;
+	try
+	{
+		std::error_code error;
+		if (argc == 2 && std::filesystem::is_regular_file(argv[1], error)) {
+			pt::read_json(argv[1], m_json_cfg);
+		}
+		else {
+			pt::read_json("../config.json", m_json_cfg);
+		}
+	}
+	catch (const std::exception&)
+	{
+		m_json_cfg.clear();
+	}
+	
+	pt::ptree item;
+
+	try
+	{
+		m_assets_path = m_json_cfg.get<std::string>("assets_path", "../assets/");
+		item = m_json_cfg.get_child("GOpenGLView");
+	}
+	catch (std::exception &e)
+	{
+		item.clear();
+		std::cout << e.what() << std::endl;
+	}
+	m_gl_view = std::make_shared<GOpenGLView>();
+	m_gl_view->Init(item);
+
+	try
+	{
+		item = m_json_cfg.get_child("GResourceMgr");
+	}
+	catch (std::exception &e)
+	{
+		item.clear();
+		std::cout << e.what() << std::endl;
+	}
+	m_resource_mgr = std::make_shared<GResourceMgr>();
+	m_resource_mgr->Init(item);
+
+	m_phy_world = std::make_shared<GPhyWorld>();
+	m_phy_world->Init();
 }
 
 double GWorld::GetTime()

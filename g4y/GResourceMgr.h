@@ -32,8 +32,7 @@ public:
     GResourceMgr();
     ~GResourceMgr();
 
-    std::string ResourceDir(){ return m_resource_directory; }
-    void SetResourceDir(std::string rd) { m_resource_directory = rd; }
+	void Init(const boost::property_tree::ptree& cfg);
 
     /* shader管理 */
     bool LoadShader(std::string name, std::string vs, std::string fs, bool str = true);
@@ -45,8 +44,8 @@ public:
     std::shared_ptr<GObj> CloneChildNode(std::string model_name, std::string node_name);    
 
     /* texture管理 */
-    /* 声音管理 */
-    /* TODO... */
+	bool LoadTexture(const std::string& name);
+	std::shared_ptr<GTexture> Texture(const std::string& name);
 
     static void Test();
 

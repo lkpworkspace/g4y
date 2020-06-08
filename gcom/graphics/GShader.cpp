@@ -2,9 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#ifdef USE_GRAPHICS
 #include <GL/glew.h>
-#endif
 GShader::GShader(const std::string &vs, const std::string &fs, bool filepath)
 {
     m_valid = false;
@@ -46,7 +44,6 @@ GShader::~GShader()
 
 void GShader::CompileShader(const char* vs_code, const char* fs_code)
 {    
-#ifdef USE_GRAPHICS
     unsigned int vertex, fragment;
 
     vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -67,12 +64,10 @@ void GShader::CompileShader(const char* vs_code, const char* fs_code)
     
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-#endif
 }
 
 void GShader::CheckCompileErrors(unsigned int shader, std::string type)
 {
-#ifdef USE_GRAPHICS
     int success;
     char info_log[1024];
     if (type != "PROGRAM")
@@ -100,90 +95,63 @@ void GShader::CheckCompileErrors(unsigned int shader, std::string type)
             m_valid = true;
         }
     }
-#endif
 }
 
 
 void GShader::Use() 
 { 
-#ifdef USE_GRAPHICS
     glUseProgram(m_id);
-#endif
 }
 
 void GShader::SetUniform(const std::string &name, bool value) const
 {
-#ifdef USE_GRAPHICS
     glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
-#endif
 }
 
 void GShader::SetUniform(const std::string &name, int value) const
 {
-#ifdef USE_GRAPHICS
     glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
-#endif
 }
 
 void GShader::SetUniform(const std::string &name, float value) const
 {
-#ifdef USE_GRAPHICS
     glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
-#endif
 }
 
 void GShader::SetUniform(const std::string &name, glm::vec2& value) const 
 {
-#ifdef USE_GRAPHICS
     glUniform2fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
-#endif
 }
 void GShader::SetUniform(const std::string &name, float x, float y) const
 {
-#ifdef USE_GRAPHICS
     glUniform2f(glGetUniformLocation(m_id, name.c_str()), x, y);
-#endif
 }
 void GShader::SetUniform(const std::string &name, glm::vec3& value) const 
 {
-#ifdef USE_GRAPHICS
     glUniform3fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
-#endif
 }
 void GShader::SetUniform(const std::string &name, float x, float y, float z) const 
 {
-#ifdef USE_GRAPHICS
     glUniform3f(glGetUniformLocation(m_id, name.c_str()), x, y, z);
-#endif
 }
 void GShader::SetUniform(const std::string &name, glm::vec4& value) const 
 {
-#ifdef USE_GRAPHICS
     glUniform4fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
-#endif
 }
 void GShader::SetUniform(const std::string &name, float x, float y, float z, float w) const
 {
-#ifdef USE_GRAPHICS
     glUniform4f(glGetUniformLocation(m_id, name.c_str()), x, y, z, w);
-#endif
 }
 
 void GShader::SetUniform(const std::string &name, glm::mat2& mat) const 
 {
-#ifdef USE_GRAPHICS
     glUniformMatrix2fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-#endif
 }
 void GShader::SetUniform(const std::string &name, glm::mat3& mat) const 
 {
-#ifdef USE_GRAPHICS
     glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-#endif
 }
 void GShader::SetUniform(const std::string &name, glm::mat4& mat) const 
 {
-#ifdef USE_GRAPHICS
     glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-#endif
 }

@@ -27,6 +27,7 @@
 #include "GMaterial.hpp"
 #include "GMeshRenderer.hpp"
 
+#include <boost/property_tree/ptree.hpp>
 #include <boost/log/sources/severity_feature.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/attributes/named_scope.hpp>

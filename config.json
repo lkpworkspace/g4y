@@ -1,0 +1,10 @@
+{
+  "assets_path": "../assets/",
+  "GOpenGLView":{
+    "nothing":"nothing"
+  },
+  "GResourceMgr": {
+    "vs": "shader/g4y.vs",
+    "fs": "shader/g4y.fs"
+  }
+}

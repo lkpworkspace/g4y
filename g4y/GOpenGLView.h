@@ -1,7 +1,7 @@
 #ifndef __GOPENGLVIEW_H__
 #define __GOPENGLVIEW_H__
 #include <memory>
-#ifdef USE_GRAPHICS
+#include <boost/property_tree/ptree.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -10,15 +10,15 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#endif
+
 
 class GShader;
 class GOpenGLView
 {
 public:
-    int InitGL();
+    int Init(const boost::property_tree::ptree& cfg);
 
-    std::shared_ptr<GShader> GetShader() { return m_global_shader; }
+	std::shared_ptr<GShader> GetShader();
 
     bool WindowShouldClose();
 
@@ -39,12 +39,10 @@ public:
     void ExitGL();
 
 private:
-#ifdef USE_GRAPHICS
     void InitShader();
 
-    std::shared_ptr<GShader> m_global_shader;
+    std::shared_ptr<GShader> m_main_shader;
     GLFWwindow* window;
-#endif
     bool m_show_demo = true;
 };
 

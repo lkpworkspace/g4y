@@ -4,7 +4,7 @@
 #include "GRigibody.h"
 #include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
 
-void GPhyWorld::InitPhysics()
+void GPhyWorld::Init()
 {
     m_collision_cfg             = std::make_shared<btDefaultCollisionConfiguration>();
     m_collision_dispatcher      = std::make_shared<btCollisionDispatcher>(m_collision_cfg.get());

@@ -11,16 +11,12 @@
 #include "GRigibody.h"
 #include "GBoxCollider.h"
 #include "GMeshCollider.h"
-#include "GSphereCollider.h"
 
-#ifdef USE_GRAPHICS
 #include "GOpenGLView.h"
-// #include "GModel.h"
 #include "GGrid.h"
 #include "GAxis.h"
 #include "GSkybox.h"
 #include "GCube.h"
-#endif
 
 namespace g4y
 {
