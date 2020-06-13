@@ -7,8 +7,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <SDL2/SDL.h>
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
+#include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 
 
@@ -20,30 +21,21 @@ public:
 
 	std::shared_ptr<GShader> GetShader();
 
-    bool WindowShouldClose();
+	bool WindowShouldClose();
 
-    void SetCursorPos(double x, double y);
-
-    void ShowDemo(bool);
-
-    void GetWindowSize(int& w, int& h);
-
-    void SetRenderRect(glm::ivec4);
+    int PollEvents();
 
     void BeginRender();
 
-    void PollEvents();
-
     void EndRender();
 
-    void ExitGL();
+    void Exit();
 
 private:
-    void InitShader();
-
     std::shared_ptr<GShader> m_main_shader;
-    GLFWwindow* window;
-    bool m_show_demo = true;
+	bool            m_quit;
+	SDL_Window*     m_wnd;
+	SDL_GLContext   m_glContext;
 };
 
 #endif
