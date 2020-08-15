@@ -1,6 +1,8 @@
 #include "GMeshCollider.h"
-#include "GCommon.h"
+#include "GWorld.h"
+#include "GPhyWorld.h"
 #include "GRigibody.h"
+#include "GTransform.h"
 
 void GMeshCollider::Init()
 {

@@ -1,5 +1,7 @@
 #include "GRigibody.h"
-#include "GCommon.h"
+#include "GWorld.h"
+#include "GPhyWorld.h"
+#include "GTransform.h"
 
 /*
     在Start中

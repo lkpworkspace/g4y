@@ -1,6 +1,7 @@
 #ifndef __ROAMSCRIPT_H__
 #define __ROAMSCRIPT_H__
 #include "G4Y.h"
+#include "imgui.h"
 
 class RoamScript : public GCom
 {
@@ -39,25 +40,25 @@ public:
         auto& io = ImGui::GetIO();
         float delta_time = (float)GWorld::GetDeltaTime();
         float speed = 12.0f;
-        if(ImGui::IsKeyDown('W') || io.MouseWheel > 0.0f){
+        if(ImGui::IsKeyDown(0x1A) || io.MouseWheel > 0.0f){
             m_transform.lock()->Translate(m_transform.lock()->Forward() * delta_time * speed * -1.0f);
         }
-        if(ImGui::IsKeyDown('S') || io.MouseWheel < 0.0f){
+        if(ImGui::IsKeyDown(0x16) || io.MouseWheel < 0.0f){
             auto back = m_transform.lock()->Forward();
             m_transform.lock()->Translate(back * delta_time * speed);
         }
-        if(ImGui::IsKeyDown('A')){
+        if(ImGui::IsKeyDown(0x4)){
             auto left = m_transform.lock()->Position() + (m_transform.lock()->Right() * delta_time * speed * -1.0f);
             m_transform.lock()->SetPosition(left);
         }
-        if(ImGui::IsKeyDown('D')){
+        if(ImGui::IsKeyDown(0x7)){
             auto right = m_transform.lock()->Position() + (m_transform.lock()->Right() * delta_time * speed);
             m_transform.lock()->SetPosition(right);
         }
-        if(ImGui::IsKeyDown(0x20)){ // key space
+        if(ImGui::IsKeyDown(0x2C)){ // key space
             m_transform.lock()->Translate(glm::vec3(0, 1, 0) * delta_time * speed);
         }
-        if(ImGui::IsKeyDown(0x155)){ // key left ctrl
+        if(ImGui::IsKeyDown(0xE0)){ // key left ctrl
             m_transform.lock()->Translate(glm::vec3(0, -1, 0) * delta_time * speed);
         }
 

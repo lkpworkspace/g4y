@@ -3,6 +3,8 @@
 #include "GObj.h"
 #include "GCamera.h"
 
+#include <GL/glew.h>
+
 static const char* vs_code = \
 "#version 330 core\n"
 "layout (location = 0) in vec2 pos;\n"

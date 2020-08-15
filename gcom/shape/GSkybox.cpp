@@ -2,8 +2,10 @@
 #include "GShader.hpp"
 #include "GObj.h"
 #include "GCamera.h"
-#include <iostream>
 #include "GTransform.h"
+
+#include <iostream>
+#include <GL/glew.h>
 
 #include "stb_image.h"
 

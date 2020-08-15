@@ -2,6 +2,8 @@
 #define __GCUBE_H__
 #include "GCom.h"
 
+#include <glm/glm.hpp>
+
 class GShader;
 class GCamera;
 class GTransform;

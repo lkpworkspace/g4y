@@ -309,3 +309,75 @@ void GTransform::UpdateGlobalTransform(std::shared_ptr<GObj> obj)
 //         model = m_parent_trans.lock()->model * t * r * s;
 //     }
 // }
+
+
+
+std::string GTransformWarp::getMethodInfo(const std::string& method_name)
+{
+	if (method_name == "setPosition"
+		|| method_name == "setEulerAngles"
+		|| method_name == "setScale"
+		|| method_name == "translate")
+	{
+/*
+{
+	"args":[
+		["FLOW",""],
+		["OBJECT","target"],
+		["FLOAT","x"],
+		["FLOAT","y"],
+		["FLOAT","z"]
+	],
+	"ret":[
+		["FLOW",""]
+	]
+}
+*/
+		return "{\n"
+			"	\"args\":[\n"
+			"		[\"FLOW\",\"\"],\n"
+			"		[\"OBJECT\",\"target\"],\n"
+			"		[\"FLOAT\",\"x\"],\n"
+			"		[\"FLOAT\",\"y\"],\n"
+			"		[\"FLOAT\",\"z\"]\n"
+			"	],\n"
+			"	\"ret\":[\n"
+			"		[\"FLOW\",\"\"]\n"
+			"	]\n"
+			"}";
+	}
+	if (method_name == "getPosition"
+		|| method_name == "getEulerAngles"
+		|| method_name == "getScale"
+		|| method_name == "getForward"
+		|| method_name == "getRight"
+		|| method_name == "getUp") {
+/*
+{
+	"args":[
+		["FLOW",""],
+		["OBJECT","target"]
+	],
+	"ret":[
+		["FLOW",""],
+		["FLOAT","x"],
+		["FLOAT","y"],
+		["FLOAT","z"]
+	]
+}	
+*/
+		return "{\n"
+			"    \"args\":[\n"
+			"        [\"FLOW\",\"\"],\n"
+			"        [\"OBJECT\",\"target\"]\n"
+			"    ],\n"
+			"    \"ret\":[\n"
+			"        [\"FLOW\",\"\"],\n"
+			"        [\"FLOAT\",\"x\"],\n"
+			"        [\"FLOAT\",\"y\"],\n"
+			"        [\"FLOAT\",\"z\"]\n"
+			"    ]\n"
+			"}";
+	}
+	return "";
+}

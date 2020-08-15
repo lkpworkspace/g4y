@@ -3,6 +3,7 @@
 #include "GWorld.h"
 #include "GPhyWorld.h"
 #include "GOpenGLView.h"
+#include "GCom.h"
 
 GScene::GScene() :
     std::enable_shared_from_this<GScene>()

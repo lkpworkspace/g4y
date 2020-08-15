@@ -4,6 +4,8 @@
 #include "GCamera.h"
 #include "GTransform.h"
 
+#include <GL/glew.h>
+
 static const char* vs_code = \
 "#version 330 core\n"
 "layout (location = 0) in vec3 pos;\n"

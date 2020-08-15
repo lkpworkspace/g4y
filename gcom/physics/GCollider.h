@@ -1,9 +1,10 @@
 #ifndef __GCOLLIDER_H__
 #define __GCOLLIDER_H__
 #include "GCom.h"
-#include "GPhyWorld.h"
 #include <iostream>
 #include <set>
+#include <btBulletDynamicsCommon.h>
+#include <glm/glm.hpp>
 
 class GCollider;
 class GCollision
@@ -14,6 +15,7 @@ public:
 
 class GCollider : public GCom
 {
+	G_COM
 public:
 
     void OnCollision(const btCollisionObject* col_obj);
@@ -21,8 +23,6 @@ public:
     void OnCollisionEnd();
 
     virtual std::string ColliderName() { return "GCollider"; }
-
-	virtual std::string ComName() { return typeid(GCollider).name(); }
 
 	void SetPostion(glm::vec3);
 

@@ -4,6 +4,10 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <memory>
+#include <typeinfo>
+
+#include <boost/python.hpp>
+namespace p = boost::python;
 
 class GCom;
 class GObj : public std::enable_shared_from_this<GObj>
@@ -24,6 +28,7 @@ public:
         if(c) return AddCom(c);
         return false;
     }
+	bool AddCom(p::object c);
     bool AddCom(std::shared_ptr<GCom> com);
 
 	template<typename T>

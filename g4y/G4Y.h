@@ -2,21 +2,33 @@
 #define __G4Y_H__
 #include "GCommon.h"
 
-#include "GResourceMgr.h"
+#include "GWorld.h"
+#include "GScene.h"
 
+#include "GCom.h"
+#include "GObj.h"
+
+#include "GResourceMgr.h"
 #include "GOpenGLView.h"
+#include "GPhyWorld.h"
+
 #include "GTransform.h"
 #include "GCamera.h"
-#include "GPhyWorld.h"
+
 #include "GRigibody.h"
 #include "GBoxCollider.h"
 #include "GMeshCollider.h"
 
-#include "GOpenGLView.h"
 #include "GGrid.h"
 #include "GAxis.h"
 #include "GSkybox.h"
 #include "GCube.h"
+
+#include "GShader.hpp"
+#include "GMesh.hpp"
+#include "GTexture.hpp"
+#include "GMaterial.hpp"
+#include "GMeshRenderer.hpp"
 
 namespace g4y
 {

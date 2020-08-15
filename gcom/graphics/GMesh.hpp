@@ -1,6 +1,7 @@
 #ifndef __GMESH_HPP__
 #define __GMESH_HPP__
-#include "GCommon.h"
+#include <vector>
+#include <glm/glm.hpp>
 
 struct GVertex {
     glm::vec3 position;

@@ -1,59 +1,99 @@
 #include "GOpenGLView.h"
+
 #include <iostream>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+
 #include "GShader.hpp"
 #include "GWorld.h"
 #include "GResourceMgr.h"
 
-static void glfw_error_callback(int error, const char* description)
-{
-    std::cout << "[ERROR] Glfw " << error << " : "<< description << std::endl;
-}
-
 int GOpenGLView::Init(const boost::property_tree::ptree& cfg)
 {
-    glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
-        return 1;
+	// init sdl2
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0) {
+		std::cout << "Failed to initialize SDL2" << std::endl;
+		return -1;
+	}
+	else
+		std::cout << "Initialized SDL2" << std::endl;
 
-    const char* glsl_version = "#version 410";
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+	// load window size
+	short wndWidth = 1920, wndHeight = 1080, wndPosX = 100, wndPosY = 100;
+	bool fullscreen = false, maximized = false;
 
-    // Create window with graphics context
-    window = glfwCreateWindow(1280, 854, "G4Y", NULL, NULL);
-    if (window == NULL)
-        return 1;
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+	// clamp to desktop size
+	SDL_DisplayMode desk;
+	SDL_GetCurrentDisplayMode(0, &desk);
+	if (wndWidth > desk.w)
+		wndWidth = desk.w;
+	if (wndHeight > desk.h)
+		wndHeight = desk.h;
 
-    // Initialize OpenGL loader
-    bool err = glewInit() != GLEW_OK;
-    if (err)
-    {
-        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-        return 1;
-    }
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // double buffering
 
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	// open window
+	m_wnd = SDL_CreateWindow("TankSoul",
+		(wndPosX == -1) ? SDL_WINDOWPOS_CENTERED : wndPosX,
+		(wndPosY == -1) ? SDL_WINDOWPOS_CENTERED : wndPosY,
+		wndWidth, wndHeight,
+		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
+	SDL_SetWindowMinimumSize(m_wnd, 200, 200);
 
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+	if (maximized)
+		SDL_MaximizeWindow(m_wnd);
+	if (fullscreen)
+		SDL_SetWindowFullscreen(m_wnd, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
-    io.Fonts->AddFontDefault();
+	// get GL context
+	m_glContext = SDL_GL_CreateContext(m_wnd);
+	SDL_GL_MakeCurrent(m_wnd, m_glContext);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
 
-	ShowDemo(false);
+	// init glew
+	glewExperimental = true;
+	if (glewInit() != GLEW_OK) {
+		std::cout << "Failed to initialize GLEW" << std::endl;
+		return -1;
+	}
+	else
+		std::cout << "Initialized GLEW" << std::endl;
+
+	// Initialize imgui
+	ImGui::CreateContext();
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontDefault();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard
+		| ImGuiConfigFlags_NoMouseCursorChange
+		| ImGuiConfigFlags_DockingEnable
+		/*| ImGuiConfigFlags_ViewportsEnable TODO: allow this on windows? test on linux?*/;
+	io.ConfigDockingWithShift = false;
+
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowMenuButtonPosition = ImGuiDir_Right;
+
+	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui_ImplSDL2_InitForOpenGL(m_wnd, m_glContext);
+
+	ImGui::StyleColorsDark();
+
+	// dpi
+	float dpi = 0.0f;
+	int wndDisplayIndex = SDL_GetWindowDisplayIndex(m_wnd);
+	SDL_GetDisplayDPI(wndDisplayIndex, &dpi, NULL, NULL);
+	std::cout << std::to_string(dpi) + " dpi" << std::endl;
 	return 0;
 }
 
@@ -65,85 +105,96 @@ std::shared_ptr<GShader> GOpenGLView::GetShader()
 	return m_main_shader; 
 }
 
-void GOpenGLView::BeginRender()
-{
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.14f, 0.14f, 0.14f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    {
-        ImGui::StyleColorsClassic();
-        static bool show_demo = false;
-        if(m_show_demo){
-            ImGuiWindowFlags window_flags = 0;
-            window_flags |= ImGuiWindowFlags_NoTitleBar;
-            window_flags |= ImGuiWindowFlags_MenuBar;
-            //window_flags |= ImGuiWindowFlags_NoBackground;
-
-            ImGui::Begin("G4Y Infomation");                          // Create a window called "Hello, world!" and append into it.
-            ImGui::Checkbox("show demo", &show_demo);
-            if(show_demo)
-                ImGui::ShowDemoWindow(&show_demo);
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-    }
-}
-
-void GOpenGLView::PollEvents()
-{
-    glfwPollEvents();
-}
-
 bool GOpenGLView::WindowShouldClose()
 {
-    return glfwWindowShouldClose(window);
+	return m_quit;
 }
 
-void GOpenGLView::SetCursorPos(double x, double y)
+int GOpenGLView::PollEvents()
 {
-    glfwSetCursorPos(window, x, y);
+	ImGuiIO& io = ImGui::GetIO();
+	SDL_Event event;
+	bool minimized = false;
+	bool hasFocus = true;
+	bool maximized = false;
+	bool fullscreen = false;
+	int rect[4] = { 0, 0, 0, 0 };
+	
+	while (SDL_PollEvent(&event)) {
+		if (event.type == SDL_QUIT) {
+			m_quit = true;
+			std::cout << "Received SDL_QUIT event -> quitting" << std::endl;
+		}
+		else if (event.type == SDL_WINDOWEVENT) {
+			if (event.window.event == SDL_WINDOWEVENT_MOVED || event.window.event == SDL_WINDOWEVENT_MAXIMIZED || event.window.event == SDL_WINDOWEVENT_RESIZED) {
+				Uint32 wndFlags = SDL_GetWindowFlags(m_wnd);
+
+				maximized = wndFlags & SDL_WINDOW_MAXIMIZED;
+				fullscreen = wndFlags & SDL_WINDOW_FULLSCREEN_DESKTOP;
+				minimized = false;
+
+				// cache window size and position
+				if (!maximized) {
+					int tempX = 0, tempY = 0;
+					SDL_GetWindowPosition(m_wnd, &tempX, &tempY);
+					rect[0] = tempX;
+					rect[1] = tempY;
+					SDL_GetWindowSize(m_wnd, &tempX, &tempY);
+					rect[2] = tempX;
+					rect[3] = tempY;
+				}
+			}
+			else if (event.window.event == SDL_WINDOWEVENT_MINIMIZED)
+				minimized = true;
+			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+				hasFocus = false;
+			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+				hasFocus = true;
+		}
+		ImGui_ImplSDL2_ProcessEvent(&event);
+	}
+	return 0;
 }
 
-void GOpenGLView::GetWindowSize(int& w, int& h)
+void GOpenGLView::BeginRender()
 {
-    glfwGetWindowSize(window, &w, &h);
-}
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(m_wnd);
+	ImGui::NewFrame();
 
-void GOpenGLView::SetRenderRect(glm::ivec4 rect)
-{
-    int w, h;
-    GetWindowSize(w, h);
-    rect.y = h - rect.z - rect.y;
-    glViewport(rect.x, rect.y, rect.w, rect.z);
-}
-
-void GOpenGLView::ShowDemo(bool b)
-{
-    m_show_demo = b;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void GOpenGLView::EndRender()
 {
-    ImGui::Render();
-    int display_w, display_h;
-    glfwGetFramebufferSize(window, &display_w, &display_h);
-    glViewport(0, 0, display_w, display_h);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	// render ImGUI
+	ImGui::Render();
 
-    glfwSwapBuffers(window);
+	ImDrawData* drawData = ImGui::GetDrawData();
+	if (drawData != NULL) {
+		// actually render to back buffer
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		// Update and Render additional Platform Windows
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
+	}
+	SDL_GL_SwapWindow(m_wnd);
 }
 
-void GOpenGLView::ExitGL()
+void GOpenGLView::Exit()
 {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+	// sdl2
+	SDL_GL_DeleteContext(m_glContext);
+	SDL_DestroyWindow(m_wnd);
+	SDL_Quit();
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+	// imgui
+	ImGui_ImplSDL2_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui::DestroyContext();
 }

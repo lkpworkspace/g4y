@@ -30,7 +30,7 @@ GWorld::GWorld()
 
 GWorld::~GWorld()
 {
-    m_gl_view->ExitGL();
+    m_gl_view->Exit();
 }
 
 void GWorld::Init(int argc, char** argv)

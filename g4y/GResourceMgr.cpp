@@ -1,5 +1,11 @@
 #include "GResourceMgr.h"
-#include "GCommon.h"
+#include "GWorld.h"
+#include "GShader.hpp"
+#include "GTexture.hpp"
+#include "GMesh.hpp"
+#include "GMeshRenderer.hpp"
+#include "GOpenGLView.h"
+#include "GMaterial.hpp"
 
 static const char* VS_CODE = \
 "#version 330 core\n"
@@ -82,8 +88,12 @@ std::shared_ptr<GShader> GResourceMgr::Shader(std::string name)
 bool GResourceMgr::LoadTexture(const std::string& name)
 {
 	if (m_textures.find(name) != m_textures.end()) return false;
+	auto w = GWorld::Instance();
+	m_resource_directory = w->GetAssetpath();
+
 	auto tex = std::make_shared<GTexture>();
-	if (tex->LoadTextureFromFile(name)) {
+	std::string fullpath = m_resource_directory + name;
+	if (tex->LoadTextureFromFile(fullpath)) {
 		m_textures[name] = tex;
 		return true;
 	}
