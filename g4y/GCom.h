@@ -3,17 +3,12 @@
 #include <string>
 #include <memory>
 #include <typeinfo>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include "imgui.h"
+
 #include "GObj.h"
 
 #define G_COM \
 public: \
-virtual std::string ComName() { return typeid(*this).name(); }
+virtual std::string TypeName() { return typeid(*this).name(); }
 
 class GObj;
 class GPhyWorld;
@@ -58,12 +53,36 @@ public:
 		return Obj()->GetCom<T>();
 	}
 
+	void SetPyComRef(boost::python::object& com) { m_pycom = com; }
+	boost::python::object& GetPyComRef() { return m_pycom; }
+
+	virtual std::string Name() { return "GCom"; }
+	virtual void SetName(std::string) {}
+
 protected:
     void OnStart();
 private:
     bool                     m_start;
     bool                     m_destroy;
     std::weak_ptr<GObj>      m_obj;
+	boost::python::object    m_pycom;
+};
+
+class GComWarp
+{
+public:
+	template<typename T>
+	std::shared_ptr<T> get() {
+		return std::static_pointer_cast<T>(m_com);
+	}
+
+	std::string objType() {
+		return "cppObj";
+	}
+
+	virtual std::string getMethodInfo(const std::string&) { return ""; };
+
+	std::shared_ptr<GCom> m_com;
 };
 
 #endif

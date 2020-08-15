@@ -1,5 +1,13 @@
 #include "GMeshRenderer.hpp"
-#include "GCommon.h"
+#include "GMaterial.hpp"
+#include "GCamera.h"
+#include "GTransform.h"
+#include "GTexture.hpp"
+#include "GMesh.hpp"
+#include <GShader.hpp>
+#include <iostream>
+#include <glm/glm.hpp>
+#include <GL/glew.h>
 
 void GMeshRenderer::Start()
 {

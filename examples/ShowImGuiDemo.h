@@ -1,7 +1,7 @@
 #ifndef __SHOWIMGUIDEMO_H__
 #define __SHOWIMGUIDEMO_H__
 #include "G4Y.h"
-
+#include "imgui.h"
 class ShowImGuiDemoScript : public GCom
 {
 	G_COM

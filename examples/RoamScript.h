@@ -1,6 +1,7 @@
 #ifndef __ROAMSCRIPT_H__
 #define __ROAMSCRIPT_H__
 #include "G4Y.h"
+#include "imgui.h"
 
 class RoamScript : public GCom
 {

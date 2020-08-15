@@ -4,8 +4,9 @@
 #include <memory>
 #include <vector>
 #include <btBulletDynamicsCommon.h>
-#include "GCommon.h"
+#include <glm/glm.hpp>
 
+class GObj;
 class GRayHit
 {
 public:

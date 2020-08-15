@@ -15,6 +15,7 @@ add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)
 endif()
 
 set(G4Y_SRCS
+	${PROJECT_SOURCE_DIR}/g4y/GCommon.h
 	${PROJECT_SOURCE_DIR}/g4y/G4Y.h
     ${PROJECT_SOURCE_DIR}/g4y/G4Y.cpp
 	${PROJECT_SOURCE_DIR}/g4y/GLog.h
@@ -23,6 +24,8 @@ set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
 	${PROJECT_SOURCE_DIR}/g4y/GCom.h
     ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
+	#${PROJECT_SOURCE_DIR}/g4y/GPyCom.hpp
+	#${PROJECT_SOURCE_DIR}/g4y/GPyComBase.hpp
 	${PROJECT_SOURCE_DIR}/g4y/GScene.h
     ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
 	${PROJECT_SOURCE_DIR}/g4y/GWorld.h
@@ -42,28 +45,43 @@ set(GCOM_SRCS
     ${PROJECT_SOURCE_DIR}/3rd/imgui/examples/imgui_impl_opengl3.cpp
 
 # transform
+	${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.h
     ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
 
 # camera
+	${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.h
     ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
 
 # physics
+	${PROJECT_SOURCE_DIR}/gcom/physics/GCollider.h
     ${PROJECT_SOURCE_DIR}/gcom/physics/GCollider.cpp
+	${PROJECT_SOURCE_DIR}/gcom/physics/GRigibody.h
     ${PROJECT_SOURCE_DIR}/gcom/physics/GRigibody.cpp
+	${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.h
     ${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.cpp
+	${PROJECT_SOURCE_DIR}/gcom/physics/GBoxCollider.h
     ${PROJECT_SOURCE_DIR}/gcom/physics/GBoxCollider.cpp
 
 # graphics
+	${PROJECT_SOURCE_DIR}/gcom/graphics/GMesh.hpp
     ${PROJECT_SOURCE_DIR}/gcom/graphics/GMesh.cpp
+	${PROJECT_SOURCE_DIR}/gcom/graphics/GShader.hpp
     ${PROJECT_SOURCE_DIR}/gcom/graphics/GShader.cpp
+	${PROJECT_SOURCE_DIR}/gcom/graphics/GMaterial.hpp
     ${PROJECT_SOURCE_DIR}/gcom/graphics/GMaterial.cpp
+	${PROJECT_SOURCE_DIR}/gcom/graphics/GTexture.hpp
     ${PROJECT_SOURCE_DIR}/gcom/graphics/GTexture.cpp
+	${PROJECT_SOURCE_DIR}/gcom/graphics/GMeshRenderer.hpp
     ${PROJECT_SOURCE_DIR}/gcom/graphics/GMeshRenderer.cpp
 
 # shape
+	${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.h
     ${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.h
     ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/shape/GSkybox.h
     ${PROJECT_SOURCE_DIR}/gcom/shape/GSkybox.cpp
+    ${PROJECT_SOURCE_DIR}/gcom/shape/GCube.h
     ${PROJECT_SOURCE_DIR}/gcom/shape/GCube.cpp
 )
 
@@ -121,7 +139,6 @@ include_directories(gcom/shape)
 include_directories(gcom/physics)
 include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui)
 include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui/examples)
-include_directories(${PROJECT_SOURCE_DIR}/3rd/stb)
 include_directories(
 	${GLM_INCLUDE_DIRS} 
 	${GLEW_INCLUDE_DIRS} 
@@ -163,4 +180,4 @@ elseif(UNIX)
 endif()
 
 add_subdirectory(examples)
-add_subdirectory(tanksoul)
+#add_subdirectory(tanksoul)

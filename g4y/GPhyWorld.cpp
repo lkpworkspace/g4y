@@ -81,14 +81,14 @@ void GPhyWorld::UpdateDynamicsWorld()
             btManifoldPoint& pt = contact_manifold->getContactPoint(j);
             // printf("distance %f\n", pt.getDistance());
             if(pt.getDistance() <= 0.f){
-                if(comA->ComName() == typeid(GCollider).name()){
+                if(comA->TypeName() == typeid(GCollider).name()){
                     auto collider = static_cast<GCollider*>(comA);
                     collider->OnCollision(obB);
                 }else{
                     auto rigibody = static_cast<GRigibody*>(comA);
                     rigibody->OnCollision(obB);
                 }
-                if(comB->ComName() == typeid(GCollider).name()){
+                if(comB->TypeName() == typeid(GCollider).name()){
                     auto collider = static_cast<GCollider*>(comB);
                     collider->OnCollision(obA);
                 }else{
@@ -116,10 +116,10 @@ void GPhyWorld::UpdateDynamicsWorld()
     for(const auto& o : m_all_col_objs){
         void* pobj = o->getUserPointer();
         auto com_obj = static_cast<GCom*>(pobj);
-        if(com_obj->ComName() == typeid(GCollider).name()){
+        if(com_obj->TypeName() == typeid(GCollider).name()){
             auto collider = static_cast<GCollider*>(com_obj);
             collider->OnCollisionEnd();
-        }else if(com_obj->ComName() == typeid(GRigibody).name()){
+        }else if(com_obj->TypeName() == typeid(GRigibody).name()){
             auto rigibody = static_cast<GRigibody*>(com_obj);
             rigibody->OnCollisionEnd();
 		}

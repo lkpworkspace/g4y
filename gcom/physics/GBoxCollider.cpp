@@ -1,5 +1,7 @@
 #include "GBoxCollider.h"
-#include "GCommon.h"
+#include "GWorld.h"
+#include "GPhyWorld.h"
+#include "GTransform.h"
 #include "GRigibody.h"
 
 GBoxCollider::GBoxCollider() :

@@ -1,7 +1,6 @@
 #ifndef __GBOXCOLLIDER_H__
 #define __GBOXCOLLIDER_H__
 #include "GCollider.h"
-#include "GPhyWorld.h"
 
 class GTransform;
 class GPhyWorld;

@@ -1,6 +1,7 @@
 #ifndef __GCAMERA_H__
 #define __GCAMERA_H__
 #include "GCom.h"
+#include <glm/glm.hpp>
 
 class GTransform;
 class GCamera : public GCom

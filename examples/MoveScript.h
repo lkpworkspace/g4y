@@ -1,7 +1,7 @@
 #ifndef __MoveScript_H__
 #define __MoveScript_H__
 #include "G4Y.h"
-
+#include "imgui.h"
 class MoveScript : public GCom
 {
 public:

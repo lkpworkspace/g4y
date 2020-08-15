@@ -1,10 +1,9 @@
 #ifndef __GRIGIBODY_H__
 #define __GRIGIBODY_H__
 #include "GCollider.h"
-#include "GPhyWorld.h"
-#include <set>
 
 class GTransform;
+class GPhyWorld;
 class GRigibody : public GCom, public btMotionState
 {
     G_COM

@@ -3,9 +3,6 @@
 #include "GCom.h"
 #include "GScene.h"
 #include "GTransform.h"
-#ifdef USE_GRAPHICS
-#include "GAxis.h"
-#endif
 
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -104,27 +101,40 @@ void GObj::DelChild(std::shared_ptr<GObj> obj)
 {
     m_children.erase(obj);
 }
-
+bool GObj::AddCom(p::object c) {
+	std::string type = p::extract<std::string>(c.attr("objType")());
+	if (type == "pyObj") {
+		// TODO ...
+		return false;
+	}
+	else if (type == "cppObj") {
+		GComWarp& com = p::extract<GComWarp&>(c);
+		bool ret = AddCom(com.m_com);
+		if (ret) com.m_com->SetPyComRef(c);
+		return ret;
+	}
+	return false;
+}
 bool GObj::AddCom(std::shared_ptr<GCom> com)
 {   
 	if (m_coms.find(com) != m_coms.end()) return false;
-	if (m_named_coms.find(com->ComName()) != m_named_coms.end()) return false;
+	if (m_named_coms.find(com->TypeName()) != m_named_coms.end()) return false;
 
     com->m_obj = shared_from_this();
     com->Init();
 
     m_coms.insert(com);
-    m_named_coms[com->ComName()] = com;
+    m_named_coms[com->TypeName()] = com;
 	return true;
 }
 
 void GObj::DelCom(std::shared_ptr<GCom> com)
 {
 	assert(m_coms.find(com) != m_coms.end());
-	assert(m_named_coms.find(com->ComName()) != m_named_coms.end());
+	assert(m_named_coms.find(com->TypeName()) != m_named_coms.end());
 
     com->OnDestroy();
-    m_named_coms.erase(com->ComName());
+    m_named_coms.erase(com->TypeName());
     m_coms.erase(com);
 }
 
@@ -214,7 +224,4 @@ void GObj::UpdateRender()
 void GObj::AddDefaultComs()
 {
     AddCom(std::static_pointer_cast<GCom>(std::make_shared<GTransform>()));
-#ifdef USE_GRAPHICS
-    AddCom(std::make_shared<GAxis>());
-#endif
 }
