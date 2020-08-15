@@ -24,8 +24,6 @@ set(G4Y_SRCS
     ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
 	${PROJECT_SOURCE_DIR}/g4y/GCom.h
     ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
-	#${PROJECT_SOURCE_DIR}/g4y/GPyCom.hpp
-	#${PROJECT_SOURCE_DIR}/g4y/GPyComBase.hpp
 	${PROJECT_SOURCE_DIR}/g4y/GScene.h
     ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
 	${PROJECT_SOURCE_DIR}/g4y/GWorld.h
@@ -124,11 +122,11 @@ find_package(assimp REQUIRED)
 # stb
 find_package(stb REQUIRED)
 
-# node editor
-find_package(imgui_node_editor REQUIRED)
+# imgui
+find_package(imgui REQUIRED)
 
-# blueprintr
-find_package(blueprint-utilities REQUIRED)
+# python3
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 include_directories(g4y)
 include_directories(examples)
@@ -146,6 +144,7 @@ include_directories(
 	${ASSIMP_INCLUDE_DIR} 
 	${BULLET_INCLUDE_DIRS} 
 	${Boost_INCLUDE_DIRS}
+	${Python3_INCLUDE_DIRS}
 )
 
 
@@ -156,11 +155,10 @@ if(WIN32)
 		SDL2::SDL2main
         assimp::assimp
         imgui
-        imgui_node_editor
-		blueprint-utilities
         ${OPENGL_LIBRARIES}
         ${BULLET_LIBRARIES}
         ${Boost_LIBRARIES}
+		${Python3_LIBRARIES}
     )
 elseif(UNIX)
     set(G4Y_LIBRARIES
@@ -169,7 +167,6 @@ elseif(UNIX)
         GLEW
         assimp
         imgui
-        imgui_node_editor
 		SDL2::SDL2 
 		SDL2::SDL2main
 		blueprint-utilities
@@ -180,4 +177,3 @@ elseif(UNIX)
 endif()
 
 add_subdirectory(examples)
-#add_subdirectory(tanksoul)
