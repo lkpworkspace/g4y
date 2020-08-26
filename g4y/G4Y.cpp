@@ -2,12 +2,12 @@
 
 namespace g4y
 {
-    double gettime()
+	double gettime()
     {
         return GWorld::GetTime();
     }
 
-    double getdeltatime()
+	double getdeltatime()
     {
         return GWorld::GetDeltaTime();
     }

@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <typeinfo>
-
+#include "GConfig.hpp"
 #include "GObj.h"
 
 #define G_COM \
@@ -12,7 +12,7 @@ virtual std::string TypeName() { return typeid(*this).name(); }
 
 class GObj;
 class GPhyWorld;
-class GCom
+class G4Y_DLL GCom
 {
 	G_COM
     friend class GObj;

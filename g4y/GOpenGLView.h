@@ -3,9 +3,10 @@
 #include <memory>
 #include <boost/property_tree/ptree.hpp>
 #include <SDL2/SDL.h>
+#include "GConfig.hpp"
 
 class GShader;
-class GOpenGLView
+class G4Y_DLL GOpenGLView
 {
 public:
     int Init(const boost::property_tree::ptree& cfg);

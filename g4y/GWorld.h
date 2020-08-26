@@ -7,12 +7,12 @@
 #include <filesystem>
 
 #include <boost/property_tree/ptree.hpp>
-
+#include "GConfig.hpp"
 class GScene;
 class GPhyWorld;
 class GOpenGLView;
 class GResourceMgr;
-class GWorld
+class G4Y_DLL GWorld
 {
     friend class GScene;
 public:

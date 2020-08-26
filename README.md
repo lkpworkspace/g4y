@@ -1,41 +1,72 @@
 # G4Y
 
-## 安装依赖
+## 概述
+一个示例性的3D游戏引擎框架；
+该项目并不打算做成一个真正的游戏引擎，可能在很长一段时间都不会有动画系统，音频系统，渲染系统等等；
+但是它会持续添加一些足够简单的组件和一些有趣的小项目(会放到分支上开发)。
 
-### Ubuntu 18.04
-- sudo apt-get install libassimp-dev
-- sudo apt-get install libglew-dev
-- sudo apt-get install libglfw3-dev
-- sudo apt-get install libglm-dev
-- sudo apt-get install libbullet-dev
+## 为什么要使用它？
+- 一个组件模型的引擎框架，它的主要特色就是简单，如果你想了解一些框架类的知识，你就可以阅读很少的代码就可以知道一个引擎框架的全貌；
+- 集成原生的OpenGL API，并没有进行封装，你可以直接使用原生的OpenGL API去学习OpenGL，也可以使用引擎经过简单封装的Shader，Texture，MeshRender类来加载着色器，图片和模型；
+- 基础的坐标系统，可以设置坐标的父子关系，以及各种的旋转变换等操作；
+- 集成了bullet物理系统，你可以给物体添加一些碰撞框让它拥有物理特性。
 
-### Windows
-- git clone https://github.com/microsoft/vcpkg.git
-- ./bootstrap-vcpkg.bat
-- vcpkg install glm:x64-windows
-- vcpkg install assimp:x64-windows
-- vcpkg install glew:x64-windows
-- vcpkg install glfw3:x64-windows
-- vcpkg install bullet3:x64-windows
-- vcpkg install python3:x64-windows
-- vcpkg install protobuf:x64-windows
-- vcpkg install boost:x64-windows
-- vcpkg install boost-asio:x64-windows
-- vcpkg install boost-python:x64-windows
+## 引擎
+- 引擎里主要有几个主要的概念：
+    - GWorld: 世界类
+        - 用来控制切换场景使用。
+    - GScene: 场景类
+        - 所有的游戏物体都在场景中呈现。
+    - GObj: 游戏物体
+        - 代表一个游戏物体，其本身只是一个组件的容器。
+    - GCom: 组件抽象类
+        - 所有的组件都继承该类；
+        - C++的控制逻辑也是继承该类，实现控制游戏物体和组件。
 
-## 构建
+- 引擎里主要的几个组件
+    - GTransform: 物体变换组件
+        - 所有的游戏物体必须添加该组件
+    - GCamera: 相机组件
+        - 主要用于场景漫游，目前一个场景里必须添加一个相机组件(且只能添加一个)
+    - RoamScript: 控制相机漫游的C++脚本
+        - 将该组件添加至有相机组件的游戏物体上就可以按住WASD按键实现场景漫游
+    - GAxis: 坐标轴
+        - 主要用作调试
+    - GGrid: 绘制网格的组件
+        - 也是主要用作调试
+    - GCube: 立方体组件
+    - GSkybox: 天空盒组件
+    - GMeshRenderer: 模型渲染组件
 
-```sh
-git clone https://github.com/lkpworkspace/g4y.git
-git submodule init
-git submodule update
-mkdir build
-cd build
-cmake ../
-make 
-```
+## 特性
+- 基于组件模型的编程方式
+- 使用现代化的C++编程语言
+- 使用智能指针做内存管理
 
-## 可执行程序
-https://gitee.com/lkpworkspace/g4y-bin.git
+## 将要添加的特性
+- 蓝图(^_^)
+    - 可视化的编程方式有利于原型的快速实现，所以蓝图还是主要用于快速的原型构建；
+    - 目前会通过做一个小游戏的形式开发蓝图。
 
+## 编译引擎
+### Windows(x64)
+1. 先把库给下载下来
+    - git clone https://github.com/lkpworkspace/g4y.git
+2. 然后再下载依赖
+    - 开始用vcpkg的，但是为了能提升使用体验，我把该项目的所有依赖库都预编译好了(除了BOOST，^-^||)，放到了另一个开源库里，将 **https://github.com/lkpworkspace/g4y-3rd-party-libs-bin/win32/x64/** 下的文件拷贝到 **https://github.com/lkpworkspace/g4y/3rd** 目录下即可(这个下载速度感人，所以我准备在码云上也放一份)，下载完后再下载一个boost吧(boost 1.72有编译好的版本，可以直接安装使用^_^)。
+3. 最后编译引擎
+    - 在g4y目录下创建build目录；
+    - 使用cmake指定源码目录和二进制生成目录，再设置一下boost的根目录，好让cmake找到boost;
+    - 好的，到此估计工程就可以生成了，编译后会在g4y/libs下生成该引擎的动态库，nice，引擎编译完成了。
 
+## 编译hello,world
+- 生成一个hello,world玩玩
+    1. 在g4y/templates/有一个hello,world工程;
+    2. 在g4y/template/下创建一个build目录;
+    3. 然后使用cmake指定源码目录g4y/templates,指定二进制生成目录g4y/templates/build;
+    4. 再设置一下boost的根目录，好让cmake找到boost;
+    5. 开编...如果不出意外就能生成一个hello,world的程序了;
+    6. 将g4y/libs/和g4y/3rd/libs/目录下的所有dll库拷贝到hello,world可执行程序的目录里就可以运行了。
+
+## 创建一个自定义工程
+emmm...把hello,world拷贝一份再改吧改吧吧(^_^)。
