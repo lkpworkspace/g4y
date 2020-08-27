@@ -3,18 +3,24 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include <btBulletDynamicsCommon.h>
 #include <glm/glm.hpp>
-
+#include "GConfig.hpp"
 class GObj;
-class GRayHit
+class btCollisionObject;
+class btRigidBody;
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btBroadphaseInterface;
+class btSequentialImpulseConstraintSolver;
+class btDiscreteDynamicsWorld;
+class G4Y_DLL GRayHit
 {
 public:
     glm::vec3           pick_pos;
     std::weak_ptr<GObj> obj;
 };
 
-class GPhyWorld
+class G4Y_DLL GPhyWorld final
 {
 public:
     void Init();
@@ -35,26 +41,16 @@ public:
         }
     }
 
-    template<typename T>
-    void AddRigiBody(std::shared_ptr<T> rb){
-        auto o = std::dynamic_pointer_cast<btRigidBody>(rb);
-        if(o){
-            m_dynamics_world->addRigidBody(o.get());
-        }
-    }
-
-    template<typename T>
-    void DelRigiBody(std::shared_ptr<T> rb){
-        auto o = std::dynamic_pointer_cast<btRigidBody>(rb);
-        if(o){
-            m_dynamics_world->removeRigidBody(o.get());
-        }
-    }
+	void AddRigiBody(btRigidBody* rb);
+	void DelRigiBody(btRigidBody* rb);
 
     bool RayTest(glm::vec3 from, glm::vec3 to, GRayHit& hit);
 
     void UpdateDynamicsWorld();
 
+	void PreSimulate();
+
+	void PostSimulate();
 // private:
     std::shared_ptr<btDefaultCollisionConfiguration>        m_collision_cfg;
     std::shared_ptr<btCollisionDispatcher>                  m_collision_dispatcher;

@@ -32,17 +32,17 @@
 
 namespace g4y
 {
-    double gettime();
+	double gettime();
 
-    double getdeltatime();
+	double getdeltatime();
 
-    std::shared_ptr<GScene> curscene();
+	std::shared_ptr<GScene> curscene();
 
-    std::shared_ptr<GPhyWorld> phyworld();
+	std::shared_ptr<GPhyWorld> phyworld();
 
-    std::shared_ptr<GOpenGLView> glview();
+	std::shared_ptr<GOpenGLView> glview();
 
-    std::shared_ptr<GResourceMgr> resourcemgr();
+	std::shared_ptr<GResourceMgr> resourcemgr();
 }
 
 #endif

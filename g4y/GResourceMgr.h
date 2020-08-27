@@ -3,12 +3,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
+#include "GConfig.hpp"
 #include "GCommon.h"
 
 class GMesh;
 class GTexture;
-struct GModelNodeInfo
+struct G4Y_DLL GModelNodeInfo
 {
     GModelNodeInfo() :
         empty(true)
@@ -26,7 +26,7 @@ struct GModelNodeInfo
 
 class GObj;
 class GShader;
-class GResourceMgr
+class G4Y_DLL GResourceMgr
 {
 public:
     GResourceMgr();

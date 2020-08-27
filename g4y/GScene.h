@@ -3,12 +3,12 @@
 #include <memory>
 #include <queue>
 #include <unordered_set>
-
+#include "GConfig.hpp"
 class GObj;
 class GWorld;
 class GOpenGLView;
 class GPhyWorld;
-class GScene : public std::enable_shared_from_this<GScene>
+class G4Y_DLL GScene : public std::enable_shared_from_this<GScene>
 {
     friend class GWorld;
 public:
@@ -28,7 +28,7 @@ private:
     void SetCurScene() { m_cur_scene = shared_from_this(); }
 
     std::unordered_set<std::shared_ptr<GObj>> m_objs;
-    static std::weak_ptr<GScene>              m_cur_scene;
+	static std::weak_ptr<GScene>              m_cur_scene;
 };
 
 #endif

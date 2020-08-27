@@ -9,8 +9,10 @@
 #include <boost/python.hpp>
 namespace p = boost::python;
 
+#include "GConfig.hpp"
+
 class GCom;
-class GObj : public std::enable_shared_from_this<GObj>
+class G4Y_DLL GObj : public std::enable_shared_from_this<GObj>
 {
     friend class GScene;
 public:

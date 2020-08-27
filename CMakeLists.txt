@@ -2,178 +2,52 @@ cmake_minimum_required(VERSION 3.5)
 
 project(g4y)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+set(G4Y_VERSION 0.1)
 
-set(CMAKE_CXX_STANDARD            17)
-set(CMAKE_CXX_STANDARD_REQUIRED   YES)
-add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
-add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLEW)
-if(WIN32)
-add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-add_definitions(-D_ENABLE_EXTENDED_ALIGNED_STORAGE)
-endif()
+set(G4Y_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND CMAKE_MODULE_PATH ${G4Y_ROOT_PATH}/cmake)
+set(BUILD_SHARED_LIBS TRUE)
 
-set(G4Y_SRCS
-	${PROJECT_SOURCE_DIR}/g4y/GCommon.h
-	${PROJECT_SOURCE_DIR}/g4y/G4Y.h
-    ${PROJECT_SOURCE_DIR}/g4y/G4Y.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GLog.h
-    ${PROJECT_SOURCE_DIR}/g4y/GLog.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GObj.h
-    ${PROJECT_SOURCE_DIR}/g4y/GObj.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GCom.h
-    ${PROJECT_SOURCE_DIR}/g4y/GCom.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GScene.h
-    ${PROJECT_SOURCE_DIR}/g4y/GScene.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GWorld.h
-    ${PROJECT_SOURCE_DIR}/g4y/GWorld.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GPhyWorld.h
-    ${PROJECT_SOURCE_DIR}/g4y/GPhyWorld.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GOpenGLView.h
-    ${PROJECT_SOURCE_DIR}/g4y/GOpenGLView.cpp
-	${PROJECT_SOURCE_DIR}/g4y/GResourceMgr.h
-    ${PROJECT_SOURCE_DIR}/g4y/GResourceMgr.cpp
-)
+include(G4YBuildSet)
 
-set(GCOM_SRCS
-
-# imgui
-    ${PROJECT_SOURCE_DIR}/3rd/imgui/examples/imgui_impl_sdl.cpp
-    ${PROJECT_SOURCE_DIR}/3rd/imgui/examples/imgui_impl_opengl3.cpp
-
-# transform
-	${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.h
-    ${PROJECT_SOURCE_DIR}/gcom/transform/GTransform.cpp
-
-# camera
-	${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.h
-    ${PROJECT_SOURCE_DIR}/gcom/camera/GCamera.cpp
-
-# physics
-	${PROJECT_SOURCE_DIR}/gcom/physics/GCollider.h
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GCollider.cpp
-	${PROJECT_SOURCE_DIR}/gcom/physics/GRigibody.h
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GRigibody.cpp
-	${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.h
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GMeshCollider.cpp
-	${PROJECT_SOURCE_DIR}/gcom/physics/GBoxCollider.h
-    ${PROJECT_SOURCE_DIR}/gcom/physics/GBoxCollider.cpp
-
-# graphics
-	${PROJECT_SOURCE_DIR}/gcom/graphics/GMesh.hpp
-    ${PROJECT_SOURCE_DIR}/gcom/graphics/GMesh.cpp
-	${PROJECT_SOURCE_DIR}/gcom/graphics/GShader.hpp
-    ${PROJECT_SOURCE_DIR}/gcom/graphics/GShader.cpp
-	${PROJECT_SOURCE_DIR}/gcom/graphics/GMaterial.hpp
-    ${PROJECT_SOURCE_DIR}/gcom/graphics/GMaterial.cpp
-	${PROJECT_SOURCE_DIR}/gcom/graphics/GTexture.hpp
-    ${PROJECT_SOURCE_DIR}/gcom/graphics/GTexture.cpp
-	${PROJECT_SOURCE_DIR}/gcom/graphics/GMeshRenderer.hpp
-    ${PROJECT_SOURCE_DIR}/gcom/graphics/GMeshRenderer.cpp
-
-# shape
-	${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.h
-    ${PROJECT_SOURCE_DIR}/gcom/shape/GGrid.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.h
-    ${PROJECT_SOURCE_DIR}/gcom/shape/GAxis.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/shape/GSkybox.h
-    ${PROJECT_SOURCE_DIR}/gcom/shape/GSkybox.cpp
-    ${PROJECT_SOURCE_DIR}/gcom/shape/GCube.h
-    ${PROJECT_SOURCE_DIR}/gcom/shape/GCube.cpp
-)
-
-set(G4Y_ALL_SRCS
-    ${GCOM_SRCS}
-    ${G4Y_SRCS}
-)
-
-# boost
-add_definitions(-DBOOST_LOG_DYN_LINK)
-set(Boost_USE_STATIC_LIBS       OFF) # only find static libs
-set(Boost_USE_MULTITHREADED      ON)
-set(Boost_USE_STATIC_RUNTIME    OFF)
-if(WIN32)
-find_package(Boost REQUIRED COMPONENTS python37 date_time system log)
-elseif(UNIX)
-find_package(Boost REQUIRED COMPONENTS python3 date_time system log)
-endif()
-message(STATUS ${Boost_INCLUDE_DIRS})
-message(STATUS ${Boost_LIBRARIES})
-
-# sdl2
-find_package(SDL2 REQUIRED)
-
-# opengl
-find_package(OpenGL REQUIRED)
-
-# glew
-find_package(GLEW REQUIRED)
-
-# glm
-find_package(glm REQUIRED)
-
-# bullet
-find_package(Bullet REQUIRED)
-
-# assimp
-find_package(assimp REQUIRED)
-
-# stb
-find_package(stb REQUIRED)
-
-# imgui
-find_package(imgui REQUIRED)
-
-# python3
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-
-include_directories(g4y)
-include_directories(examples)
-include_directories(gcom/camera)
-include_directories(gcom/transform)
-include_directories(gcom/graphics)
-include_directories(gcom/shape)
-include_directories(gcom/physics)
-include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui)
-include_directories(${PROJECT_SOURCE_DIR}/3rd/imgui/examples)
 include_directories(
-	${GLM_INCLUDE_DIRS} 
-	${GLEW_INCLUDE_DIRS} 
-	${OPENGL_INCLUDE_DIRS} 
-	${ASSIMP_INCLUDE_DIR} 
-	${BULLET_INCLUDE_DIRS} 
-	${Boost_INCLUDE_DIRS}
-	${Python3_INCLUDE_DIRS}
+	${G4Y_ROOT_PATH}/g4y
+	${G4Y_ROOT_PATH}/g4y/gcom
+	${G4Y_ROOT_PATH}/g4y/gcom/camera
+	${G4Y_ROOT_PATH}/g4y/gcom/transform
+	${G4Y_ROOT_PATH}/g4y/gcom/graphics
+	${G4Y_ROOT_PATH}/g4y/gcom/shape
+	${G4Y_ROOT_PATH}/g4y/gcom/physics
+	${G4Y_ROOT_PATH}/examples
+	${G4Y_ROOT_PATH}/3rd/include/imgui
+	${G4Y_ROOT_PATH}/3rd/include/imgui/examples
 )
 
+include(${G4Y_ROOT_PATH}/g4y/CMakeLists.txt)
 
-if(WIN32)
-    set(G4Y_LIBRARIES
-        GLEW::GLEW
-		SDL2::SDL2 
-		SDL2::SDL2main
-        assimp::assimp
-        imgui
-        ${OPENGL_LIBRARIES}
-        ${BULLET_LIBRARIES}
-        ${Boost_LIBRARIES}
-		${Python3_LIBRARIES}
-    )
-elseif(UNIX)
-    set(G4Y_LIBRARIES
-        rt
-        pthread
-        GLEW
-        assimp
-        imgui
-		SDL2::SDL2 
-		SDL2::SDL2main
-		blueprint-utilities
-        ${OPENGL_LIBRARIES}
-        ${BULLET_LIBRARIES}
-        ${Boost_LIBRARIES}
-    )
-endif()
+add_library(g4y SHARED ${G4Y_SRC} ${G4Y_COM_SRC})
 
-add_subdirectory(examples)
+use_g4y_compile_define(g4y)
+use_g4y_compile_options(g4y)
+use_g4y_libs_depend(g4y)
+
+set_target_properties(g4y
+    PROPERTIES
+    VERSION "${G4Y_VERSION}"
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} 
+	POST_BUILD 
+	COMMAND ${CMAKE_COMMAND} -E 
+		make_directory
+		"${CMAKE_CURRENT_SOURCE_DIR}/libs/$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>/"
+	COMMAND ${CMAKE_COMMAND} -E 
+	   copy
+	   "${CMAKE_CURRENT_BINARY_DIR}/$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>/${PROJECT_NAME}.lib"
+		"${CMAKE_CURRENT_SOURCE_DIR}/libs/$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>/" 
+	COMMAND ${CMAKE_COMMAND} -E 
+		copy 
+		"${CMAKE_CURRENT_BINARY_DIR}/$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>/${PROJECT_NAME}.dll"
+		"${CMAKE_CURRENT_SOURCE_DIR}/libs/$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>/" 
+)
+

@@ -1,16 +1,20 @@
-if (TARGET imgui)
-    return()
-endif()
+set(imgui_INCLUDE_DIR ${G4Y_ROOT_PATH}/3rd/include/imgui)
+set(imgui_INCLUDE_DIRS 
+    ${imgui_INCLUDE_DIR}
+    ${imgui_INCLUDE_DIR}/examples
+)
 
-set(_imgui_SourceDir ${CMAKE_SOURCE_DIR}/3rd/imgui)
-set(_imgui_BinaryDir ${CMAKE_BINARY_DIR}/3rd/imgui)
+set(imgui_LIBRARY ${G4Y_ROOT_PATH}/3rd/libs/$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>/imgui.lib)
+set(imgui_LIBRARYS "${imgui_LIBRARY}")
 
-add_subdirectory(${_imgui_SourceDir} ${_imgui_BinaryDir})
-
-include(${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(
     imgui
-    REQUIRED_VARS
-        _imgui_SourceDir
+    DEFAULT_MSG
+        imgui_INCLUDE_DIR
+        imgui_LIBRARY
+        imgui_LIBRARYS
 )
+
+mark_as_advanced(imgui_INCLUDE_DIR imgui_LIBRARY imgui_LIBRARYS)

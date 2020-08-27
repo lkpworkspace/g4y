@@ -2,6 +2,7 @@
 #include "GCommon.h"
 #include "GCollider.h"
 #include "GRigibody.h"
+#include <btBulletDynamicsCommon.h>
 #include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
 
 void GPhyWorld::Init()
@@ -38,9 +39,43 @@ bool GPhyWorld::RayTest(glm::vec3 from, glm::vec3 to, GRayHit& hit)
     return false;
 }
 
+void GPhyWorld::AddRigiBody(btRigidBody* rb) {
+	m_dynamics_world->addRigidBody(rb);
+}
+
+void GPhyWorld::DelRigiBody(btRigidBody* rb) {
+	m_dynamics_world->removeRigidBody(rb);
+}
+
+void GPhyWorld::PreSimulate()
+{
+	for (const auto& o : m_all_col_objs) {
+		void* pobj = o->getUserPointer();
+		auto com_obj = static_cast<GCom*>(pobj);
+		if (com_obj->TypeName() == typeid(GRigibody).name()) {
+			auto rigibody = static_cast<GRigibody*>(com_obj);
+			rigibody->SyncNodeToPhysics();
+		}
+	}
+}
+
+void GPhyWorld::PostSimulate()
+{
+	for (const auto& o : m_all_col_objs) {
+		void* pobj = o->getUserPointer();
+		auto com_obj = static_cast<GCom*>(pobj);
+		if (com_obj->TypeName() == typeid(GRigibody).name()) {
+			auto rigibody = static_cast<GRigibody*>(com_obj);
+			rigibody->SyncPhysicsToNode();
+		}
+	}
+}
+
 void GPhyWorld::UpdateDynamicsWorld()
 {
+	PreSimulate();
     m_dynamics_world->stepSimulation (1.f /60.f, 10);
+	PostSimulate();
 
     m_all_col_objs.clear();
     for(int i =  m_dynamics_world->getNumCollisionObjects() - 1; i >= 0; --i){

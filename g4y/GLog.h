@@ -1,7 +1,8 @@
 #ifndef __GLOG_H__
 #define __GLOG_H__
+#include "GConfig.hpp"
 
-class GLog
+class G4Y_DLL GLog
 {
 public:
     GLog();

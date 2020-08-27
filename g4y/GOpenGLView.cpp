@@ -42,7 +42,7 @@ int GOpenGLView::Init(const boost::property_tree::ptree& cfg)
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // double buffering
 
 	// open window
-	m_wnd = SDL_CreateWindow("TankSoul",
+	m_wnd = SDL_CreateWindow("G4Y",
 		(wndPosX == -1) ? SDL_WINDOWPOS_CENTERED : wndPosX,
 		(wndPosY == -1) ? SDL_WINDOWPOS_CENTERED : wndPosY,
 		wndWidth, wndHeight,
